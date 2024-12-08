@@ -21,8 +21,8 @@ class User extends Authenticatable
         'email',
         'mobile',
     ];
-    public function selectedCompany(): HasMany
+    public function selectedCompany(): HasOne
     {
-        return $this->hasMany(SelectedCompany::class);
+        return $this->hasOne(SelectedCompany::class);
     }
 }

@@ -15,11 +15,17 @@ class AuthenticationController extends Controller
     {
         $request->validate([
             'idp_user_id' => 'required|unique:users,idp_user_id',
-            'client_app' => 'required|in:hrms,HRMS'
+            'client_app' => 'required|in:hrms,HRMS',
+            'name' => 'required',
+            'email' => 'required|email',
+            'mobile' => 'required'
         ]);
 
         $user = new User;
         $user->idp_user_id = $request->idp_user_id;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->mobile = $request->mobile;
         $user->save();
 
         return response()->json(['success' => true, 'message' => 'User added in TMS application'], 201);
@@ -30,11 +36,17 @@ class AuthenticationController extends Controller
         try {
             $request->validate([
                 'idp_user_id' => 'required|exists:users,idp_user_id',
-                'client_app' => 'required|in:hrms,HRMS'
+                'client_app' => 'required|in:hrms,HRMS',
+                'name' => 'nullable',
+                'email' => 'nullable|email',
+                'mobile' => 'nullable'
             ]);
-
             $user = User::where('idp_user_id', $request->idp_user_id)->first();
-
+            $user->update([
+                'name' => $request['name'],
+                'email' => $request['email'],
+                'mobile' => $request['mobile'],
+            ]);
             // access token -> laravel passport
 
             $tokenResult = $user->createToken('Personal Access Token');

@@ -20,26 +20,26 @@ class SelectedCompanyController extends Controller
             'company_id' => 'required'
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
+            return response()->json([
+                'error' => true,
+                'errors' => $validator->errors(),
+                'message' => MessageHelper::getErrorMessage('form')
+            ], 422);
         }
         $user_id = Auth::id();
-        $selectCompany = SelectedCompany::where('user_id', $user_id)->first();
-        if ($selectCompany) {
-            $selectCompany->company_id = $request->company_id;
-            $selectCompany->save();
-            return response()->json(['success' => true, 'message' => 'Company changed successfully!'], 200);
-        }
-
-        $selectedCompany = new SelectedCompany();
-        $selectedCompany->user_id = $user_id;
-        $selectedCompany->company_id = $request->company_id;
-        $selectedCompany->save();
-        return response()->json(['success' => true, 'message' => 'Company selected successfully.'], 200);
+        SelectedCompany::updateOrCreate(
+            ['user_id' => $user_id],
+            ['company_id' => $request->company_id]
+        );
+        return response()->json([
+            'success' => true,
+            'message' => 'Company selected or updated successfully.'
+        ], 200);
     }
 
     public function selectedCompany() {
         if(Auth::user()->selectedCompany){
-            $selectCompany = Auth::user()->selectedCompany->company_id;
+            $selectCompany = Auth::user()->selectedCompany;
             return response()->json(['success' => true, 'data' => $selectCompany], 200);
         }
         else {

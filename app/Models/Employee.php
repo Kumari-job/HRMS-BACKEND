@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Helpers\DirectoryPathHelper;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Employee extends Model
 {
@@ -16,9 +19,25 @@ class Employee extends Model
         'address',
         'gender',
         'date_of_birth',
-        'citizenship_number',
-        'citizenship_front_image',
-        'citizenship_back_image',
-        'pan_number',
+        'marital_status',
+        'blood_group',
+        'religion',
     ];
+
+    protected function imagePath(): Attribute
+    {
+        $defaultPath = asset('assets/images/image.jpg');
+        $imgPath = DirectoryPathHelper::employeeImageDirectoryPath($this->company_id);
+
+
+        if ($this->image && Storage::disk('public')->exists($imgPath . '/' . $this->image)) {
+            $path = asset('storage/' . $imgPath . '/' . $this->image);
+        } else {
+            $path = $defaultPath;
+        }
+
+        return Attribute::make(
+            get: fn () => $path
+        );
+    }
 }

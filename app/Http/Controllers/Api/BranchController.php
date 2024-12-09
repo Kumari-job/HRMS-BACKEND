@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\DateHelper;
 use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BranchRequest;
 use App\Http\Resources\BranchResource;
 use App\Models\Branch;
 use Illuminate\Http\Request;
@@ -35,20 +36,10 @@ class BranchController extends Controller
 
     }
 
-    public function store(Request $request)
+    public function store(BranchRequest $request)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'location' => 'required',
-            'employee_id' => 'nullable',
-            'contact_number' => 'nullable',
-            'established_date' => 'nullable|date|before_or_equal:today|required_without:established_date_nepali',
-            'established_date_nepali' => 'nullable|required_without:established_date',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
-        }
+
         if (Branch::where('company_id', $company_id)->where('name',$request->name)->exists()) {
             return response()->json(['error' => true, 'message' => 'Branch name already exists'], 422);
         }
@@ -70,20 +61,9 @@ class BranchController extends Controller
         return new BranchResource($branch);
     }
 
-    public function update(Request $request, $id)
+    public function update(BranchRequest $request, $id)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'location' => 'required',
-            'employee_id' => 'nullable',
-            'contact_number' => 'nullable',
-            'established_date' => 'nullable|date|before_or_equal:today|required_without:established_date_nepali',
-            'established_date_nepali' => 'nullable|required_without:established_date',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
-        }
 
         $branch = Branch::where('id', $id)->where('company_id', $company_id)->first();
         if (!$branch) {

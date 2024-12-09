@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class EmployeeRequest extends FormRequest
+class BranchRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,16 +25,11 @@ class EmployeeRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'required|email',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'mobile' => 'required',
-            'address' => 'required',
-            'gender' => 'required',
-            'date_of_birth' => 'required_without:date_of_birth_nepali|date',
-            'date_of_birth_nepali' => 'required_without:date_of_birth|date',
-            'marital_status' => 'required',
-            'blood_group' => 'required',
-            'religion' => 'required',
+            'location' => 'required',
+            'employee_id' => 'nullable',
+            'contact_number' => 'nullable',
+            'established_date' => 'nullable|date|before_or_equal:today|required_without:established_date_nepali',
+            'established_date_nepali' => 'nullable|required_without:established_date',
         ];
     }
 

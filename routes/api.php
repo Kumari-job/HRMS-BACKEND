@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
+use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\SelectedCompanyController;
 use App\Http\Middleware\VerifyCommonToken;
@@ -23,6 +24,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('selected-company/disable',[SelectedCompanyController::class,'disableCompanyUser']);
     Route::get('selected-company/disable-status/{company_id}/{user_id}',[SelectedCompanyController::class,'checkDisableStatus']);
 
+    Route::prefix('data')->group(function () {
+        Route::get('gender',[DataController::class, 'gender']);
+        Route::get('marital-status',[DataController::class, 'maritalStatus']);
+        Route::get('blood-group',[DataController::class, 'bloodGroup']);
+        Route::get('religion',[DataController::class, 'religion']);
+    });
     Route::prefix('branch')->group(function () {
         Route::get('list',[BranchController::class, 'index']);
         Route::post('store',[BranchController::class, 'store']);

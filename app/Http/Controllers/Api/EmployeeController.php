@@ -45,12 +45,10 @@ class EmployeeController extends Controller
     public function store(EmployeeRequest $request)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
-
         if (Employee::where('company_id', $company_id)->where('name',$request['name'])->where('email',$request['email'])->exists()) {
             return response()->json(['error'=>true,"message"=>"Employee already exists"],400);
         }
-
-        $employee = new Employee($request->except('image','citizenship_front_image','citizenship_back_image'));
+        $employee = new Employee($request->except('image'));
 
         if ($request->hasFile('image')) {
             $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id);

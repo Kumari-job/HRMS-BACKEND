@@ -18,7 +18,7 @@ class DepartmentRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'branches' => 'required|exists:branches,id',
+            'branch_id' => 'required|exists:branches,id',
         ];
     }
 

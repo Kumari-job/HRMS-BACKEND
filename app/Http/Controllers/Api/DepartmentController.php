@@ -16,17 +16,21 @@ class DepartmentController extends Controller
     public function index(Request $request)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
-        $departments = Department::
-            whereHas('branch', fn($q) => $q->where('company_id', $company_id))
-            ->where('company_id', $company_id)->where(function ($query) use ($request) {
-                if ($request->filled('branch_id')) {
-                    $query->where('branch_id', $request->branch_id);
+        $query = Department::
+            with('branch')
+            ->whereHas('branch', fn($q) => $q->where('company_id', $company_id));
+            if (!empty($request->except('page', 'page_size'))) {
+                foreach ($request->except('page', 'page_size') as $key => $value) {
+                    if (isset($value) && !empty($value)) {
+                        if (in_array($key, ['id', 'company_id'])) {
+                            $query->where($key, $value);
+                        } else {
+                            $query->where($key, 'LIKE', '%' . $value . '%');
+                        }
+                    }
                 }
-                if ($request->filled('name')) {
-                    $query->where('name', 'LIKE', '%' . $request->name . '%');
-                }
-            })->where('company_id', $company_id)->latest()
-            ->paginate($request->page_size ?? 10);
+            }
+        $departments= $query->latest()->paginate($request->page_size ?? 10);
 
         return DepartmentResource::collection($departments);
 
@@ -89,14 +93,15 @@ class DepartmentController extends Controller
         if ($count > 0) {
             $deleteStatus = $departments->delete();
 
-            return response()->json(['success' => true, 'message' => 'departments trashed successfully.'], 200);
+            return response()->json(['success' => true, 'message' => 'Departments trashed successfully.'], 200);
         }
-        return response()->json(['error' => true, 'message' => 'departments not found.'], 400);
+        return response()->json(['error' => true, 'message' => 'Departments not found.'], 400);
     }
 
     public function trashed(Request $request)
     {
-        $query = Department::onlyTrashed();
+        $company_id = Auth::user()->selectedCompany->company_id;
+        $query = Department::onlyTrashed()->whereHas('branch', fn($q) => $q->where('company_id', $company_id));
         if (!empty($request->except('page', 'page_size'))) {
             foreach ($request->except('page', 'page_size') as $key => $value) {
                 if (isset($value) && !empty($value)) {
@@ -108,8 +113,8 @@ class DepartmentController extends Controller
                 }
             }
         }
-        $company_id = Auth::user()->selectedCompany->company_id;
-        $departments = $query->where('company_id', $company_id)->latest()->paginate($request->page_size ?? 10);
+
+        $departments = $query->latest()->paginate($request->page_size ?? 10);
         return DepartmentResource::collection($departments);
     }
     public function restore(Request $request)
@@ -139,8 +144,8 @@ class DepartmentController extends Controller
         if ($count > 0) {
 
             $departments->forceDelete();
-            return response()->json(['success' => true, 'message' => 'departments deleted successfully.'], 200);
+            return response()->json(['success' => true, 'message' => 'Departments deleted successfully.'], 200);
         }
-        return response()->json(['error' => true, 'message' => 'departments not found.'], 404);
+        return response()->json(['error' => true, 'message' => 'Departments not found.'], 404);
     }
 }

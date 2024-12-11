@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('branch_id')->index()->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

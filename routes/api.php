@@ -3,9 +3,11 @@
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\DataController;
+use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\SelectedCompanyController;
 use App\Http\Middleware\VerifyCommonToken;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +32,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('blood-group',[DataController::class, 'bloodGroup']);
         Route::get('religion',[DataController::class, 'religion']);
     });
+
     Route::prefix('branch')->group(function () {
         Route::get('list',[BranchController::class, 'index']);
         Route::post('store',[BranchController::class, 'store']);
@@ -39,6 +42,17 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('trashed',[BranchController::class, 'trashed']);
         Route::post('restore',[BranchController::class, 'restore']);
         Route::post('force-delete',[BranchController::class, 'forceDelete']);
+    });
+
+    Route::prefix('department')->group(function () {
+        Route::get('list',[DepartmentController::class, 'index']);
+        Route::post('store',[DepartmentController::class, 'store']);
+        Route::get('show/{id}',[DepartmentController::class, 'show']);
+        Route::post('update/{id}',[DepartmentController::class, 'update']);
+        Route::post('destroy',[DepartmentController::class, 'destroy']);
+        Route::get('trashed',[DepartmentController::class, 'trashed']);
+        Route::post('restore',[DepartmentController::class, 'restore']);
+        Route::post('force-delete',[DepartmentController::class, 'forceDelete']);
     });
 
     Route::prefix('employee')->group(function () {

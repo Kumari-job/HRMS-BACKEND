@@ -22,6 +22,7 @@ class EmployeeDocumentRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'employee_id' => 'required|exists:employees,id',
             'citizenship_front' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'citizenship_back' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'driving_license' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',

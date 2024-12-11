@@ -97,7 +97,7 @@ class EmployeeController extends Controller
         }
 
         $employee->update($data);
-        return response()->json(['success'=>true,"message"=>"Employee updated successfully"],200);
+        return response()->json(['success'=>true,"message"=>"Employee updated successfully",'id'=>$employee->id],200);
     }
 
     /**

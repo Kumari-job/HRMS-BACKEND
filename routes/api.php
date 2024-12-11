@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\EmployeeController;
+use App\Http\Controllers\Api\EmployeeDocumentController;
 use App\Http\Controllers\Api\SelectedCompanyController;
 use App\Http\Middleware\VerifyCommonToken;
 use App\Models\Department;
@@ -64,5 +65,10 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('trashed',[EmployeeController::class, 'trashed']);
         Route::post('restore',[EmployeeController::class, 'restore']);
         Route::post('force-delete',[EmployeeController::class, 'forceDelete']);
+
+        Route::prefix('document')->group(function () {
+            Route::post('store',[EmployeeDocumentController::class, 'store']);
+            Route::post('update/{employee_id}',[EmployeeDocumentController::class, 'update']);
+        });
     });
 });

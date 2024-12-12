@@ -58,7 +58,7 @@ class EmployeeController extends Controller
 
         $employee->company_id = $company_id;
         $employee->save();
-        return response()->json(['success'=>true,"message"=>"Employee added successfully"],201);
+        return response()->json(['success'=>true,"message"=>"Employee added successfully",'id'=>$employee->id],201);
     }
 
     /**

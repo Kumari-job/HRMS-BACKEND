@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\BloodGroupEnum;
+use App\Enums\ContractTypeEnum;
 use App\Enums\EmploymentTypeEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
@@ -40,5 +41,10 @@ class DataController extends Controller
     {
         $religion = collect(ReligionEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->customTitle()])->toArray();
         return response()->json(['success' => true, 'data' => $religion], 200);
+    }
+    public function contractType(): JsonResponse
+    {
+        $contractType = collect(ContractTypeEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->customTitle()])->toArray();
+        return response()->json(['success' => true, 'data' => $contractType], 200);
     }
 }

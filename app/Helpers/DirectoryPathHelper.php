@@ -7,31 +7,36 @@ class DirectoryPathHelper
 
     public static function citizenshipFrontDirectoryPath(int $company_id): string
     {
-        return "companies/company_" . $company_id . "/citizenships/front";
+        return "companies/company_" . $company_id . "/employees/citizenships/front";
     }
 
     public static function citizenshipBackDirectoryPath(int $company_id): string
     {
-        return "companies/company_" . $company_id . "/citizenships/back";
+        return "companies/company_" . $company_id . "/employees/citizenships/back";
     }
 
     public static function drivingLicenseDirectoryPath(int $company_id): string
     {
-        return "companies/company_" . $company_id . "/driving_licenses";
+        return "companies/company_" . $company_id . "/employees/driving_licenses";
     }
 
     public static function passportDirectoryPath(int $company_id): string
     {
-        return "companies/company_" . $company_id . "/passports";
+        return "companies/company_" . $company_id . "/employees/passports";
     }
 
     public static function experienceDirectoryPath(int $company_id): string
     {
-        return "companies/company_" . $company_id . "/employee-experiences";
+        return "companies/company_" . $company_id . "/employees/experiences";
+    }
+
+    public static function educationDirectoryPath(int $company_id): string
+    {
+        return "companies/company_" . $company_id . "/employees/education";
     }
     public static function panCardDirectoryPath(int $company_id): string
     {
-        return "companies/company_" . $company_id . "/pan_cards";
+        return "companies/company_" . $company_id . "/employees/pan_cards";
     }
     public static function employeeImageDirectoryPath(int $company_id): string
     {

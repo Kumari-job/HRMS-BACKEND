@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\EmployeeBenefitController;
 use App\Http\Controllers\Api\EmployeeContractController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\EmployeeDocumentController;
+use App\Http\Controllers\Api\EmployeeEducationController;
 use App\Http\Controllers\Api\EmployeeExperienceController;
 use App\Http\Controllers\Api\EmployeeOnboardingController;
 use App\Http\Controllers\Api\SelectedCompanyController;
@@ -91,6 +92,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::prefix('experience')->group(function () {
             Route::post('store',[EmployeeExperienceController::class, 'store']);
+        });
+
+        Route::prefix('education')->group(function () {
+            Route::post('store',[EmployeeEducationController::class, 'store']);
         });
         Route::prefix('document')->group(function () {
             Route::post('store',[EmployeeDocumentController::class, 'store']);

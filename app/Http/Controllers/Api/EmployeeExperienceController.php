@@ -20,7 +20,7 @@ class EmployeeExperienceController extends Controller
     public function store(EmployeeExperienceRequest $request)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
-        $employeeExperience = new EmployeeExperience($request->all());
+        $employeeExperience = new EmployeeExperience($request->except('experience_letter'));
 
         if ($request->hasFile('experience_letter')) {
             $path = DirectoryPathHelper::experienceDirectoryPath($company_id);

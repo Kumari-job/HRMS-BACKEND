@@ -25,6 +25,10 @@ class DirectoryPathHelper
         return "companies/company_" . $company_id . "/passports";
     }
 
+    public static function experienceDirectoryPath(int $company_id): string
+    {
+        return "companies/company_" . $company_id . "/employee-experiences";
+    }
     public static function panCardDirectoryPath(int $company_id): string
     {
         return "companies/company_" . $company_id . "/pan_cards";

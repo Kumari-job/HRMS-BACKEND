@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\BloodGroupEnum;
+use App\Enums\EmploymentTypeEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
 use App\Enums\ReligionEnum;
@@ -17,22 +18,27 @@ class DataController extends Controller
         $gender = collect(GenderEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
         return response()->json(['success' => true, 'data' => $gender], 200);
     }
+    public function employmentType(): JsonResponse
+    {
+        $employmentType = collect(EmploymentTypeEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
+        return response()->json(['success' => true, 'data' => $employmentType], 200);
+    }
 
     public function maritalStatus(): JsonResponse
     {
-        $gender = collect(MaritalStatusEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
-        return response()->json(['success' => true, 'data' => $gender], 200);
+        $maritalStatus = collect(MaritalStatusEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
+        return response()->json(['success' => true, 'data' => $maritalStatus], 200);
     }
 
     public function bloodGroup(): JsonResponse
     {
-        $paymentApproveStatus = collect(BloodGroupEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->customTitle()])->toArray();
-        return response()->json(['success' => true, 'data' => $paymentApproveStatus], 200);
+        $bloodGroup = collect(BloodGroupEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->customTitle()])->toArray();
+        return response()->json(['success' => true, 'data' => $bloodGroup], 200);
     }
 
     public function religion(): JsonResponse
     {
-        $paymentApproveStatus = collect(ReligionEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->customTitle()])->toArray();
-        return response()->json(['success' => true, 'data' => $paymentApproveStatus], 200);
+        $religion = collect(ReligionEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->customTitle()])->toArray();
+        return response()->json(['success' => true, 'data' => $religion], 200);
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class EmployeeDocumentRequest extends FormRequest
+class EmployeeOnboardingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,14 @@ class EmployeeDocumentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employee_id' => 'required|exists:employees,id',
-            'citizenship_front' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'citizenship_back' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'driving_license' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'passport' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'pan_card' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'employee_id' => 'required|integer|exists:employees,id',
+            'shortlisted_at' => 'nullable|date',
+            'interviewed_at' => 'nullable|date',
+            'offered_at' => 'nullable|date',
+            'offer_letter' => 'nullable|string',
+            'offered_by' => 'nullable|integer|exists:employees,id',
+            'joined_at' => 'nullable|date',
+            'employment_type' => 'required|string',
         ];
     }
     protected function failedValidation(Validator $validator)

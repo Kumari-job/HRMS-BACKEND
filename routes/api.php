@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DepartmentController;
+use App\Http\Controllers\Api\EmployeeBenefitController;
 use App\Http\Controllers\Api\EmployeeContractController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\EmployeeDocumentController;
@@ -76,6 +77,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::prefix('contract')->group(function () {
             Route::post('store',[EmployeeContractController::class, 'store']);
+        });
+
+        Route::prefix('benefit')->group(function () {
+            Route::post('store',[EmployeeBenefitController::class, 'store']);
         });
         Route::prefix('document')->group(function () {
             Route::post('store',[EmployeeDocumentController::class, 'store']);

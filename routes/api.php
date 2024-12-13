@@ -92,6 +92,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::prefix('experience')->group(function () {
             Route::post('store',[EmployeeExperienceController::class, 'store']);
+            Route::get('list',[EmployeeExperienceController::class,'index']);
         });
 
         Route::prefix('education')->group(function () {

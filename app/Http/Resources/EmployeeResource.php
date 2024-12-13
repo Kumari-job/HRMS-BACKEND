@@ -26,9 +26,13 @@ class EmployeeResource extends JsonResource
             'date_of_birth' => $this->date_of_birth,
             'image_path' => $this->image_path,
             'marital_status' => $this->marital_status,
+            'blood_group' => $this->blood_group,
             'religion' => $this->religion,
             'employee_address' => new EmployeeAddressResource($this->whenLoaded('employeeAddress')),
             'employee_benefit' => new EmployeeBenefitResource($this->whenLoaded('employeeBenefit')),
+            'employee_contracts' => EmployeeContractResource::collection($this->whenLoaded('employeeContracts')),
+            'employee_document' => new EmployeeDocumentResource($this->whenLoaded('employeeDocument')),
+            'employee_educations' => EmployeeEducationResource::collection($this->whenLoaded('employeeEducations')),
         ];
     }
 }

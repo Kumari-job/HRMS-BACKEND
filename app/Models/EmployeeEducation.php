@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Helpers\DirectoryPathHelper;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeEducation extends Model
 {
@@ -20,6 +23,21 @@ class EmployeeEducation extends Model
         'to_date',
     ];
 
+    protected function certificatePath(): Attribute
+    {
+        $defaultPath = asset('assets/images/image.jpg');
+        $imgPath = DirectoryPathHelper::educationDirectoryPath($this->employee->company_id);
+
+        if ($this->certificate && Storage::disk('public')->exists($imgPath . '/' . $this->certificate)) {
+            $path = asset('storage/' . $imgPath . '/' . $this->certificate);
+        } else {
+            $path = $defaultPath;
+        }
+
+        return Attribute::make(
+            get: fn () => $path
+        );
+    }
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class,'employee_id');

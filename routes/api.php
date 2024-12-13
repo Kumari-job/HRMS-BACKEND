@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\EmployeeDocumentController;
 use App\Http\Controllers\Api\EmployeeEducationController;
 use App\Http\Controllers\Api\EmployeeExperienceController;
+use App\Http\Controllers\Api\EmployeeFamilyController;
 use App\Http\Controllers\Api\EmployeeOnboardingController;
 use App\Http\Controllers\Api\SelectedCompanyController;
 use App\Http\Middleware\VerifyCommonToken;
@@ -96,6 +97,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::prefix('education')->group(function () {
             Route::post('store',[EmployeeEducationController::class, 'store']);
+        });
+
+        Route::prefix('family')->group(function () {
+            Route::post('store',[EmployeeFamilyController::class, 'store']);
         });
         Route::prefix('document')->group(function () {
             Route::post('store',[EmployeeDocumentController::class, 'store']);

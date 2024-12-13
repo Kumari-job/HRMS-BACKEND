@@ -33,6 +33,9 @@ class EmployeeResource extends JsonResource
             'employee_contracts' => EmployeeContractResource::collection($this->whenLoaded('employeeContracts')),
             'employee_document' => new EmployeeDocumentResource($this->whenLoaded('employeeDocument')),
             'employee_educations' => EmployeeEducationResource::collection($this->whenLoaded('employeeEducations')),
+            'employee_experiences' => EmployeeExperienceResource::collection($this->whenLoaded('employeeExperiences')),
+            'employee_families' => EmployeeFamilyResource::collection($this->whenLoaded('employeeFamilies')),
+            'employee_onboarding' => EmployeeOnboardingResource::collection($this->whenLoaded('employeeOnboardings')),
         ];
     }
 }

@@ -22,6 +22,11 @@ class EmployeeOnboarding extends Model
         'updated_by',
     ];
 
+    public function offeredBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'offered_by');
+    }
+
     public function employee()
     {
         return $this->belongsTo(Employee::class,'employee_id');

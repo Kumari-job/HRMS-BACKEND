@@ -37,4 +37,19 @@ class EmployeeExperienceController extends Controller
         $employeeExperience->save();
         return response()->json(['success' => true,'message'=>'Experience entered successfully'],201);
     }
+
+    public function destroy($id)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+        $employeeExperience = EmployeeExperience::find($id);
+        if(!$employeeExperience){
+            return response()->json(['error' => true,'message'=>'Experience not found'],404);
+        }
+        if ($employeeExperience->experience_letter) {
+            $path = DirectoryPathHelper::experienceDirectoryPath($company_id);
+            $this->fileDelete($path, $employeeExperience->experience_letter);
+        }
+        $employeeExperience->delete();
+        return response()->json(['success' => true,'message'=>'Experience deleted successfully'],200);
+    }
 }

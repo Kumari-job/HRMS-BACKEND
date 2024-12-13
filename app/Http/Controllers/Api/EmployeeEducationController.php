@@ -45,4 +45,19 @@ class EmployeeEducationController extends Controller
             return response()->json(['error' => true, 'message' => "Unable to create education"], 400);
         }
     }
+
+    public function destroy($id)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+        $employeeEducation = EmployeeEducation::find($id);
+        if(!$employeeEducation){
+            return response()->json(['error' => true,'message'=>'Education not found'],404);
+        }
+        if ($employeeEducation->certificate) {
+            $path = DirectoryPathHelper::educationDirectoryPath($company_id);
+            $this->fileDelete($path, $employeeEducation->certificate);
+        }
+        $employeeEducation->delete();
+        return response()->json(['success' => true,'message'=>'Education deleted successfully'],200);
+    }
 }

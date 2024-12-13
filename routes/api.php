@@ -98,10 +98,12 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::prefix('education')->group(function () {
             Route::post('store',[EmployeeEducationController::class, 'store']);
+            Route::get('list/{employee_id}',[EmployeeEducationController::class,'index']);
         });
 
         Route::prefix('family')->group(function () {
             Route::post('store',[EmployeeFamilyController::class, 'store']);
+            Route::get('list/{employee_id}',[EmployeeFamilyController::class,'index']);
         });
         Route::prefix('document')->group(function () {
             Route::post('store',[EmployeeDocumentController::class, 'store']);

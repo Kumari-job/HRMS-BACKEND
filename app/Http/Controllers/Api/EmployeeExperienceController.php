@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\DirectoryPathHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeExperienceRequest;
+use App\Http\Resources\EmployeeExperienceResource;
 use App\Models\Employee;
 use App\Models\EmployeeExperience;
 use App\Traits\FileHelper;
@@ -14,25 +15,13 @@ use Illuminate\Support\Facades\Auth;
 class EmployeeExperienceController extends Controller
 {
     use FileHelper;
-    public function index(Request $request , string $employee_id)
+    public function index(string $employee_id)
     {
         $employee = Employee::findOrFail($employee_id);
         $query = EmployeeExperience::query();
 
-        if (!empty($request->except('page', 'page_size'))) {
-            foreach ($request->except('page', 'page_size') as $key => $value) {
-                if (isset($value) && !empty($value)) {
-                    if (in_array($key, ['id', 'company_id'])) {
-                        $query->where($key, $value);
-                    } else {
-                        $query->where($key, 'LIKE', '%' . $value . '%');
-                    }
-                }
-            }
-        }
-
-        $employee_experience = $query->where('employee_id',$employee_id)->latest()->paginate($request->page_size ?? 10);
-        return response()->json($employee_experience);
+        $employee_experiences = $query->where('employee_id',$employee_id)->latest()->get();
+        return EmployeeExperienceResource::collection($employee_experiences);
     }
     public function store(EmployeeExperienceRequest $request)
     {

@@ -28,6 +28,7 @@ class EmployeeResource extends JsonResource
             'marital_status' => $this->marital_status,
             'religion' => $this->religion,
             'employee_address' => new EmployeeAddressResource($this->whenLoaded('employeeAddress')),
+            'employee_benefit' => new EmployeeBenefitResource($this->whenLoaded('employeeBenefit')),
         ];
     }
 }

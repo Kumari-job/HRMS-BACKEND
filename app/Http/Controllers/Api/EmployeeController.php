@@ -66,7 +66,7 @@ class EmployeeController extends Controller
      */
     public function show(string $id)
     {
-        $employee = Employee::with('employeeAddress')->find($id);
+        $employee = Employee::with(['employeeAddress','employeeBenefit'])->find($id);
 
         if(!$employee){
             return response()->json(['error'=>true,"message"=>"Employee not found"],404);

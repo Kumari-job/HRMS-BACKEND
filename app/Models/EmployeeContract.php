@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EmployeeContract extends Model
 {
@@ -26,5 +27,14 @@ class EmployeeContract extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class,'employee_id');
+    }
+
+    public function createdBy():BelongsTo
+    {
+        return $this->belongsTo(User::class,'created_by');
+    }
+    public function updatedBy():BelongsTo
+    {
+        return $this->belongsTo(User::class,'updated_by');
     }
 }

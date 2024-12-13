@@ -30,7 +30,7 @@ class EmployeeOnboardingRequest extends FormRequest
             'offered_at' => 'nullable|date',
             'offer_letter' => 'nullable|string',
             'offered_by' => 'nullable|integer|exists:employees,id',
-            'joined_at' => 'nullable|date',
+            'joined_at' => 'required|date',
             'employment_type' => 'required|string',
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\EmployeeAddress;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,7 +26,8 @@ class EmployeeResource extends JsonResource
             'date_of_birth' => $this->date_of_birth,
             'image_path' => $this->image_path,
             'marital_status' => $this->marital_status,
-            'religion' => $this->religion
+            'religion' => $this->religion,
+            'employee_address' => new EmployeeAddressResource($this->whenLoaded('employeeAddress')),
         ];
     }
 }

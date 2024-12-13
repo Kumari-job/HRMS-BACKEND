@@ -28,7 +28,7 @@ class EmployeeContractController extends Controller
             $employeeBenefit->created_by = Auth::id();
             $employeeBenefit->save();
 
-            return response()->json([['success'=>true ,'message'=>'Employee contract created successfully.']], 201);
+            return response()->json(['success'=>true ,'message'=>'Employee contract created successfully.'], 201);
         }catch (\Exception $exception){
             Log::error('Unable to store Employee Contract: '.$exception->getMessage());
             return response()->json(['error'=>true,'message'=>'Unable to create employee contract'],400);

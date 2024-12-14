@@ -86,7 +86,7 @@ class EmployeeController extends Controller
         if (Employee::where('name',$request['name'])->where('email',$request['email'])->where('id', '!=', $id)->exists()) {
             return response()->json(['error'=>true,"message"=>"Employee already exists"],400);
         }
-        $data = $request->except('image','citizenship_front_image','citizenship_back_image');
+        $data = $request->except('image');
         if ($request->hasFile('image')) {
             $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id);
             if ($employee->image) {
@@ -98,6 +98,25 @@ class EmployeeController extends Controller
 
         $employee->update($data);
         return response()->json(['success'=>true,"message"=>"Employee updated successfully",'id'=>$employee->id],200);
+    }
+
+    public function updateImage(Request $request, string $id)
+    {
+        $employee = Employee::find($id);
+        if(!$employee){
+            return response()->json(['error'=>true,"message"=>"Employee not found"],404);
+        }
+
+        if ($request->hasFile('image')) {
+            $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id);
+            if ($employee->image) {
+                $this->fileDelete($path, $employee->image);
+            }
+            $fileName = $this->fileUpload($request->file('image'), $path);
+        }
+
+        $employee->update(['image' => $fileName]);
+        return response()->json(['success'=>true,"message"=>"Image updated successfully",'id'=>$employee->id],200);
     }
 
     /**

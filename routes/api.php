@@ -70,6 +70,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('store',[EmployeeController::class, 'store']);
         Route::get('show/{id}',[EmployeeController::class, 'show']);
         Route::post('update/{id}',[EmployeeController::class, 'update']);
+        Route::post('update-image/{id}',[EmployeeController::class, 'updateImage']);
         Route::post('destroy',[EmployeeController::class, 'destroy']);
         Route::get('trashed',[EmployeeController::class, 'trashed']);
         Route::post('restore',[EmployeeController::class, 'restore']);

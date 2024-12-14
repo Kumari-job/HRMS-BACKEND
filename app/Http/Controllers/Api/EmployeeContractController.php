@@ -35,4 +35,20 @@ class EmployeeContractController extends Controller
         }
 
     }
+
+    public function update(EmployeeContractRequest $request, $id)
+    {
+        try{
+            $employeeContract = EmployeeContract::find($id);
+            if (!$employeeContract) {
+                return response()->json(['error'=>true ,'message'=>'Employee contract not found'], 404);
+            }
+            $data = $request->all();
+            $data['updated_by'] = Auth::id();
+            $employeeContract->update($data);
+        }catch (\Exception $exception){
+            Log::error('Unable to update Employee Contract: '.$exception->getMessage());
+            return response()->json(['error'=>true,'message'=>'Unable to update employee contract'],400);
+        }
+    }
 }

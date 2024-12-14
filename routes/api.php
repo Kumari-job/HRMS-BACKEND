@@ -85,10 +85,12 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::prefix('benefit')->group(function () {
             Route::post('store',[EmployeeBenefitController::class, 'store']);
+            Route::post('update/{id}',[EmployeeBenefitController::class, 'update']);
         });
 
         Route::prefix('address')->group(function () {
             Route::post('store',[EmployeeAddressController::class, 'store']);
+            Route::post('update/{id}',[EmployeeAddressController::class, 'update']);
         });
 
         Route::prefix('experience')->group(function () {

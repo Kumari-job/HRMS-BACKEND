@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('asset_categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('comapny_id');
+            $table->unsignedBigInteger('company_id');
             $table->string('title');
             $table->string('description')->nullable();
             $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
         });
     }

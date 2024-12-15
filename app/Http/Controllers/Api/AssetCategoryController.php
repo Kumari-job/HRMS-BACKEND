@@ -37,6 +37,9 @@ class AssetCategoryController extends Controller
     {
         try {
             $company_id = Auth::user()->selectedCompany->company_id;
+            if(AssetCategory::where('title',$request->title)->where('company_id',$company_id)->exists()){
+                return response()->json(['error'=>true, 'message'=>'Asset Category already exists.'],403);
+            }
             $assetCategory = new AssetCategory($request->all());
             $assetCategory->company_id = $company_id;
             $assetCategory->created_by = Auth::id();
@@ -51,10 +54,47 @@ class AssetCategoryController extends Controller
     public function show($id)
     {
         $company_id =  Auth::user()->selectedCompany->company_id;
-        $assetCategory = AssetCategory::where('company_id',$company_id)->find($id);
+        $assetCategory = AssetCategory::with('createdBy','updatedBy')->where('company_id',$company_id)->find($id);
         if(!$assetCategory){
             return response()->json(['error' => true, 'message' => 'Asset Category not found'], 404);
         }
+
         return new AssetCategoryResource($assetCategory);
+    }
+
+    public function update(AssetCategoryRequest $request, $id)
+    {
+        try {
+            $company_id = Auth::user()->selectedCompany->company_id;
+
+            $assetCategory = AssetCategory::find($id);
+            if (!$assetCategory) {
+                return response()->json(['error' => true, 'message' => 'Asset Category not found'], 404);
+            }
+            if(AssetCategory::where('title',$request->title)->where('company_id',$company_id)->where('id','!=',$id)->exists()){
+                return response()->json(['error'=>true, 'message'=>'Asset Category already exists.'],403);
+            }
+            $assetCategory->updated_by = Auth::id();
+            $assetCategory->update($request->all());
+            return response()->json(['success' => true, 'message' => 'Asset Category updated successfully'], 200);
+        }catch (\Exception $exception){
+            Log::error("Unable to update asset category " . $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to update asset category'], 400);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $assetCategory = AssetCategory::find($id);
+            if (!$assetCategory) {
+                return response()->json(['error' => true, 'message' => 'Asset Category not found'], 404);
+            }
+            $assetCategory->delete();
+            return response()->json(['success' => true, 'message' => 'Asset Category deleted successfully'], 200);
+        }catch (\Exception $exception){
+            Log::error("Unable to delete asset category " . $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to delete asset category'], 400);
+        }
     }
 }

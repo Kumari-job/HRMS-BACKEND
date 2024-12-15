@@ -38,6 +38,8 @@ class EmployeeResource extends JsonResource
             'employee_experiences' => EmployeeExperienceResource::collection($this->whenLoaded('employeeExperiences')),
             'employee_families' => EmployeeFamilyResource::collection($this->whenLoaded('employeeFamilies')),
             'employee_onboarding' => EmployeeOnboardingResource::collection($this->whenLoaded('employeeOnboardings')),
+            'employee_banks' => EmployeeBankResource::collection($this->whenLoaded('employeeBanks')),
+
         ];
     }
 }

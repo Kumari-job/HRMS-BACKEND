@@ -71,6 +71,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('show/{id}',[EmployeeController::class, 'show']);
         Route::post('update/{id}',[EmployeeController::class, 'update']);
         Route::post('update-image/{id}',[EmployeeController::class, 'updateImage']);
+        Route::post('remove-image/{id}',[EmployeeController::class, 'removeImage']);
         Route::post('destroy',[EmployeeController::class, 'destroy']);
         Route::get('trashed',[EmployeeController::class, 'trashed']);
         Route::post('restore',[EmployeeController::class, 'restore']);
@@ -97,18 +98,22 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::prefix('experience')->group(function () {
             Route::post('store',[EmployeeExperienceController::class, 'store']);
             Route::get('list/{employee_id}',[EmployeeExperienceController::class,'index']);
+            Route::post('update/{id}',[EmployeeExperienceController::class, 'update']);
             Route::post('destroy/{id}',[EmployeeExperienceController::class,'destroy']);
         });
 
         Route::prefix('education')->group(function () {
             Route::post('store',[EmployeeEducationController::class, 'store']);
             Route::get('list/{employee_id}',[EmployeeEducationController::class,'index']);
+            Route::post('update/{id}',[EmployeeEducationController::class,'update']);
             Route::post('destroy/{id}',[EmployeeEducationController::class,'destroy']);
+
         });
 
         Route::prefix('family')->group(function () {
             Route::post('store',[EmployeeFamilyController::class, 'store']);
             Route::get('list/{employee_id}',[EmployeeFamilyController::class,'index']);
+            Route::post('update/{id}',[EmployeeFamilyController::class,'update']);
             Route::post('destroy/{id}',[EmployeeFamilyController::class,'destroy']);
         });
         Route::prefix('document')->group(function () {

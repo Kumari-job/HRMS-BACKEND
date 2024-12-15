@@ -119,6 +119,17 @@ class EmployeeController extends Controller
         return response()->json(['success'=>true,"message"=>"Image updated successfully",'id'=>$employee->id],200);
     }
 
+    public function removeImage(Request $request, string $id)
+    {
+        $employee = Employee::find($id);
+        $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id);
+        if ($employee->image) {
+            $this->fileDelete($path, $employee->image);
+        }
+        $employee->update(['image' => null]);
+        return response()->json(['success'=>true,"message"=>"Image removed successfully",'id'=>$employee->id],200);
+    }
+
     /**
      * Remove the specified resource from storage.
      */

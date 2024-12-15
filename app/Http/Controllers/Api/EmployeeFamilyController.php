@@ -37,6 +37,22 @@ class EmployeeFamilyController extends Controller
         }
     }
 
+    public function update(EmployeeFamilyRequest $request, $id)
+    {
+        try{
+            $employeeFamily = EmployeeFamily::find($id);
+            if (!$employeeFamily) {
+                return response()->json(['error' => true,'message'=>'Employee Family not found'],404);
+            }
+            $employeeFamily->update($request->all());
+            return response()->json(['success' => true,'message'=>'Employee family updated successfully'],200);
+        } catch (\Exception $exception)
+        {
+            Log::error("Unable to update Employee family : {$exception->getMessage()}");
+            return response()->json(['error' => true,'message'=>'Unable to update employee family'],400);
+        }
+    }
+
     public function destroy($id)
     {
         $company_id = Auth::user()->selectedCompany->company_id;

@@ -46,6 +46,30 @@ class EmployeeEducationController extends Controller
         }
     }
 
+    public function update(EmployeeEducationRequest $request, $id)
+    {
+        try {
+            $company_id = Auth::user()->selectedCompany->company_id;
+            $employeeEducation = EmployeeEducation::find($id);
+            if (!$employeeEducation) {
+                return response()->json(['error' => true, 'message' => 'Education not found'], 404);
+            }
+            $data = $request->except(['certificate']);
+            if ($request->hasFile('certificate')) {
+                $path = DirectoryPathHelper::educationDirectoryPath($company_id);
+                if ($employeeEducation->certificate) {
+                    $this->fileDelete($path, $employeeEducation->certificate);
+                }
+                $fileName = $this->fileUpload($request->file('certificate'), $path);
+                $data['certificate'] = $fileName;
+            }
+            $employeeEducation->update($data);
+            return response()->json(['success' => true, 'message' => 'Education updated successfully'], 200);
+        }catch (\Exception $exception){
+            Log::error('Unable to update education '.$exception->getMessage());
+            return response()->json(['error' => true, 'message' => "Unable to update education"], 400);
+        }
+    }
     public function destroy($id)
     {
         $company_id = Auth::user()->selectedCompany->company_id;

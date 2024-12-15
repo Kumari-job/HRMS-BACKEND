@@ -37,6 +37,30 @@ class EmployeeExperienceController extends Controller
         $employeeExperience->save();
         return response()->json(['success' => true,'message'=>'Experience entered successfully'],201);
     }
+    public function update(EmployeeExperienceRequest $request, $id)
+    {
+        try {
+            $company_id = Auth::user()->selectedCompany->company_id;
+            $employeeExperience = EmployeeExperience::find($id);
+            if (!$employeeExperience) {
+                return response()->json(['error' => true, 'message' => 'Experience not found'], 404);
+            }
+            $data = $request->except(['experience_letter']);
+            if ($request->hasFile('experience_letter')) {
+                $path = DirectoryPathHelper::experienceDirectoryPath($company_id);
+                if ($employeeExperience->experience_letter) {
+                    $this->fileDelete($path, $employeeExperience->experience_letter);
+                }
+                $fileName = $this->fileUpload($request->file('experience_letter'), $path);
+                $data['experience_letter'] = $fileName;
+            }
+            $employeeExperience->update($data);
+            return response()->json(['success' => true, 'message' => 'Experience updated successfully'], 200);
+        }catch (\Exception $exception){
+            Log::error('Unable to update experience '.$exception->getMessage());
+            return response()->json(['error' => true, 'message' => "Unable to update experience"], 400);
+        }
+    }
 
     public function destroy($id)
     {

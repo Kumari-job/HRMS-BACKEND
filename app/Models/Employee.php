@@ -82,4 +82,9 @@ class Employee extends Model
     {
         return $this->hasMany(EmployeeOnboarding::class);
     }
+
+    public function employeeBanks(): HasMany
+    {
+        return $this->hasMany(EmployeeBank::class);
+    }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\EmployeeAddressController;
+use App\Http\Controllers\Api\EmployeeBankController;
 use App\Http\Controllers\Api\EmployeeBenefitController;
 use App\Http\Controllers\Api\EmployeeContractController;
 use App\Http\Controllers\Api\EmployeeController;
@@ -119,6 +120,12 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::prefix('document')->group(function () {
             Route::post('store',[EmployeeDocumentController::class, 'store']);
             Route::post('update/{employee_id}',[EmployeeDocumentController::class, 'update']);
+        });
+
+        Route::prefix('bank')->group(function () {
+            Route::post('store',[EmployeeBankController::class, 'store']);
+            Route::post('update/{id}',[EmployeeBankController::class, 'update']);
+            Route::post('destroy/{id}',[EmployeeBankController::class,'destroy']);
         });
     });
 });

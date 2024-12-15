@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\EmployeeExperienceController;
 use App\Http\Controllers\Api\EmployeeFamilyController;
 use App\Http\Controllers\Api\EmployeeOnboardingController;
 use App\Http\Controllers\Api\SelectedCompanyController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Middleware\VerifyCommonToken;
 use App\Models\Department;
 use Illuminate\Http\Request;
@@ -27,6 +28,8 @@ Route::post('users/generate-access-token', [AuthenticationController::class, 'ge
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [AuthenticationController::class, 'logout']);
+    Route::get('profile', [UserController::class, 'profile']);
+    Route::post('update-preferred-calendar',[UserController::class, 'updatePreferredCalendar']);
 
     Route::post('select-company', [SelectedCompanyController::class, 'selectCompany']);
     Route::get('selected-company', [SelectedCompanyController::class, 'selectedCompany']);

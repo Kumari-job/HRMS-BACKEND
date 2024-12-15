@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\EmployeeFamilyController;
 use App\Http\Controllers\Api\EmployeeOnboardingController;
 use App\Http\Controllers\Api\SelectedCompanyController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\VendorController;
 use App\Http\Middleware\VerifyCommonToken;
 use App\Models\Department;
 use Illuminate\Http\Request;
@@ -140,6 +141,14 @@ Route::group(['middleware' => 'auth:api'], function () {
            Route::post('update/{id}',[AssetCategoryController::class, 'update']);
            Route::get('show/{id}',[AssetCategoryController::class, 'show']);
            Route::post('destroy/{id}',[AssetCategoryController::class,'destroy']);
+       });
+
+       Route::prefix('vendor')->group(function () {
+          Route::get('list',[VendorController::class, 'index']);
+          Route::post('store',[VendorController::class, 'store']);
+          Route::get('show/{id}',[VendorController::class, 'show']);
+          Route::post('update/{id}',[VendorController::class, 'update']);
+          Route::post('destroy/{id}',[VendorController::class,'destroy']);
        });
     });
 });

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AssetCategoryController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\DataController;
@@ -130,5 +131,15 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post('update/{id}',[EmployeeBankController::class, 'update']);
             Route::post('destroy/{id}',[EmployeeBankController::class,'destroy']);
         });
+    });
+
+    Route::prefix('asset')->group(function () {
+       Route::prefix('category')->group(function () {
+           Route::get('list',[AssetCategoryController::class, 'index']);
+           Route::post('store',[AssetCategoryController::class, 'store']);
+           Route::post('update/{id}',[AssetCategoryController::class, 'update']);
+           Route::get('show/{id}',[AssetCategoryController::class, 'show']);
+           Route::post('destroy/{id}',[AssetCategoryController::class,'destroy']);
+       });
     });
 });

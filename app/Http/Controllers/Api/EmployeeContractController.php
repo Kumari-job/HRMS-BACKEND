@@ -46,9 +46,26 @@ class EmployeeContractController extends Controller
             $data = $request->all();
             $data['updated_by'] = Auth::id();
             $employeeContract->update($data);
+            return response()->json(['success'=>true ,'message'=>'Employee contract updated successfully.'], 200);
         }catch (\Exception $exception){
             Log::error('Unable to update Employee Contract: '.$exception->getMessage());
             return response()->json(['error'=>true,'message'=>'Unable to update employee contract'],400);
         }
+    }
+
+    public function destroy($id)
+    {
+        try{
+            $employeeContract = EmployeeContract::find($id);
+            if (!$employeeContract) {
+                return response()->json(['error'=>true ,'message'=>'Employee contract not found'], 404);
+            }
+            $employeeContract->delete();
+            return response()->json(['success'=>true ,'message'=>'Employee contract deleted successfully.'], 200);
+        }catch (\Exception $exception){
+            Log::error('Unable to delete Employee Contract: '.$exception->getMessage());
+            return response()->json(['error'=>true,'message'=>'Unable to delete employee contract'], 400);
+        }
+
     }
 }

@@ -85,10 +85,14 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::prefix('onboard')->group(function () {
             Route::post('store',[EmployeeOnboardingController::class, 'store']);
+            Route::post('update/{id}',[EmployeeOnboardingController::class, 'update']);
+            Route::post('destroy/{id}',[EmployeeOnboardingController::class, 'destroy']);
         });
 
         Route::prefix('contract')->group(function () {
             Route::post('store',[EmployeeContractController::class, 'store']);
+            Route::post('update/{id}',[EmployeeContractController::class, 'update']);
+            Route::post('destroy/{id}',[EmployeeContractController::class, 'destroy']);
         });
 
         Route::prefix('benefit')->group(function () {

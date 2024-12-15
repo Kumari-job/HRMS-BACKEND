@@ -18,7 +18,7 @@ class EmployeeOnboardingResource extends JsonResource
             'id' => $this->id,
             'employee_id' => $this->employee_id,
             'shortlisted_at' => $this->shortlisted_at,
-            'interview_at' => $this->interviewed_at,
+            'interviewed_at' => $this->interviewed_at,
             'offered_at' => $this->offered_at,
             'offer_letter' => $this->offer_letter,
             'offered_by' => new UserResource($this->offeredBy),

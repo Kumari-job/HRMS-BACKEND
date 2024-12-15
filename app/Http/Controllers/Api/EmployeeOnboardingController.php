@@ -28,4 +28,35 @@ class EmployeeOnboardingController extends Controller
             return response()->json(['error' => true, 'message' => 'Unable to create employee onboarding'], 400);
         }
     }
+
+    public function update(EmployeeOnboardingRequest $request, $id)
+    {
+        try{
+            $employeeOnboarding = EmployeeOnboarding::find($id);
+            if(!$employeeOnboarding){
+                return response()->json(['error' => true, 'message' => 'Employee Onboarding not found'], 404);
+            }
+            $employeeOnboarding->updated_by = Auth::id();
+            $employeeOnboarding->update($request->all());
+            return response()->json(['success' => true, 'message' => 'Employee Onboarding updated successfully.'], 200);
+        }catch (\Exception $exception){
+            Log::error("Unable to update Employee Onboarding: {$exception->getMessage()}");
+            return response()->json(['error' => true, 'message' => 'Unable to update employee onboarding'], 400);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $employeeOnboarding = EmployeeOnboarding::find($id);
+            if (!$employeeOnboarding) {
+                return response()->json(['error' => true, 'message' => 'Employee Onboarding not found'], 404);
+            }
+            $employeeOnboarding->delete();
+            return response()->json(['success' => true, 'message' => 'Employee Onboarding deleted successfully.'], 200);
+        }catch (\Exception $exception){
+            Log::error("Unable to delete Employee Onboarding: {$exception->getMessage()}");
+            return response()->json(['error' => true, 'message' => 'Unable to delete employee onboarding'], 400);
+        }
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\DirectoryPathHelper;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -86,5 +87,17 @@ class Employee extends Model
     public function employeeBanks(): HasMany
     {
         return $this->hasMany(EmployeeBank::class);
+    }
+
+    public function getTotalExperienceAttribute()
+    {
+        $totalMonths = $this->employeeExperiences->reduce(function ($carry, $experience) {
+            $fromDate = Carbon::parse($experience->from_date);
+            $toDate = $experience->to_date ? Carbon::parse($experience->to_date) : Carbon::now();
+
+            return $carry + $fromDate->diffInMonths($toDate);
+        }, 0);
+
+        return round($totalMonths / 12);
     }
 }

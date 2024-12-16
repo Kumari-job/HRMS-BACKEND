@@ -42,4 +42,13 @@ class DirectoryPathHelper
     {
         return "companies/company_" . $company_id . "/employees/images";
     }
+
+    public static function warrantyImageDirectoryPath(int $company_id): string
+    {
+        return "companies/company_" . $company_id . "/assets/warranty/image";
+    }
+    public static function guaranteeImageDirectoryPath(int $company_id): string
+    {
+        return "companies/company_" . $company_id . "/assets/guarantee/image";
+    }
 }

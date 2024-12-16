@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AssetCategoryController;
+use App\Http\Controllers\Api\AssetController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\DataController;
@@ -135,6 +136,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::prefix('asset')->group(function () {
+        Route::post('store',[AssetController::class,'store']);
        Route::prefix('category')->group(function () {
            Route::get('list',[AssetCategoryController::class, 'index']);
            Route::post('store',[AssetCategoryController::class, 'store']);

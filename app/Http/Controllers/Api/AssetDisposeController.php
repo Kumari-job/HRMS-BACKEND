@@ -29,7 +29,6 @@ class AssetDisposeController extends Controller
             $data = $request->validated();
             $assetDispose = new AssetDispose();
             $assetDispose->fill($data);
-            $assetDispose->disposed_by = Auth::id();
             $assetDispose->save();
             return response()->json(['success' => true, 'message' => 'Asset disposed Successfully'],201);
         } catch (\Exception $exception)

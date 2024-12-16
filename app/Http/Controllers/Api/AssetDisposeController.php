@@ -15,9 +15,7 @@ class AssetDisposeController extends Controller
     public function index(Request $request)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
-        $query = AssetDispose::with('disposedBy')->whereHas('asset.assetCategory', function ($query) use ($company_id) {
-            $query->where('company_id', $company_id);
-        });
+        $query = AssetDispose::with('disposedBy')->forCompany();
         $assetDisposes = $query->latest()->paginate($request->page_size ?? 10);
         return AssetDisposeResource::collection($assetDisposes);
     }
@@ -41,9 +39,7 @@ class AssetDisposeController extends Controller
     public function show($id)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
-        $asset = AssetDispose::with('disposedBy','asset')->whereHas('asset.assetCategory', function ($query) use ($company_id) {
-            $query->where('company_id', $company_id);
-        })->find($id);
+        $asset = AssetDispose::with('disposedBy','asset')->forCompany()->find($id);
         return new AssetDisposeResource($asset);
     }
 
@@ -51,7 +47,7 @@ class AssetDisposeController extends Controller
     {
         try {
             $data = $request->validated();
-            $assetDispose = AssetDispose::find($id);
+            $assetDispose = AssetDispose::forCompany()->find($id);
             if (!$assetDispose) {
                 return response()->json(['success' => false, 'message' => 'Asset disposed not found'],404);
             }
@@ -65,7 +61,7 @@ class AssetDisposeController extends Controller
     }
     public function destroy($id)
     {
-        $assetDispose = AssetDispose::find($id);
+        $assetDispose = AssetDispose::forCompany()->find($id);
         if(!$assetDispose){
             return response()->json(['error' => true, 'message' => 'Asset disposed not found'],404);
         }

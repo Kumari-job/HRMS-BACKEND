@@ -22,9 +22,7 @@ class AssetController extends Controller
     public function index(Request $request)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
-        $query = Asset::whereHas('assetCategory', function ($query) use ($company_id) {
-            $query->where('company_id', $company_id);
-        });
+        $query = Asset::forCompany();
 
         if (!empty($request->except('page', 'page_size'))) {
             foreach ($request->except('page', 'page_size') as $key => $value) {
@@ -75,11 +73,8 @@ class AssetController extends Controller
 
     public function show($id)
     {
-        $company_id = Auth::user()->selectedCompany->company_id;
 
-        $asset = Asset::with('assetCategory','vendor')->whereHas('assetCategory',function ($q) use ($company_id){
-            $q->where('company_id',$company_id);
-        })->find($id);
+        $asset = Asset::with('assetCategory','vendor')->forCompany()->find($id);
         if(!$asset)
         {
             return response()->json(['error'=>true,'message'=>'Asset not found'],404);
@@ -97,9 +92,7 @@ class AssetController extends Controller
             })->where('id','!=',$id)->exists()){
                 return response()->json(['error'=>true, 'message'=>'Code has already been taken.'],403);
             }
-            $asset = Asset::with('assetCategory', 'vendor')->whereHas('assetCategory', function ($q) use ($company_id) {
-                $q->where('company_id', $company_id);
-            })->find($id);
+            $asset = Asset::with('assetCategory', 'vendor')->forCompany()->find($id);
 
             if (!$asset) {
                 return response()->json(['error' => true, 'message' => 'Asset not found'], 404);
@@ -139,9 +132,7 @@ class AssetController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
         }
-        $assets = Asset::whereIn('id', $ids)->whereHas('assetCategory', function ($q) use ($company_id) {
-            $q->where('company_id', $company_id);
-        });
+        $assets = Asset::whereIn('id', $ids)->forCompany();
         $count = $assets->count();
         if ($count > 0) {
             foreach ($assets as $asset) {

@@ -173,8 +173,11 @@ Route::group(['middleware' => 'auth:api'], function () {
        });
 
        Route::prefix('sale')->group(function () {
+           Route::get('list',[AssetSaleController::class, 'index']);
            Route::post('store',[AssetSaleController::class, 'store']);
+           Route::get('show/{id}',[AssetSaleController::class, 'show']);
            Route::post('update/{id}',[AssetSaleController::class, 'update']);
+           Route::post('destroy/{id}',[AssetSaleController::class,'destroy']);
        });
     });
 });

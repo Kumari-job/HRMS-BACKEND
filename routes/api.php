@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AssetCategoryController;
 use App\Http\Controllers\Api\AssetController;
 use App\Http\Controllers\Api\AssetDisposeController;
+use App\Http\Controllers\Api\AssetSaleController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\DataController;
@@ -169,6 +170,11 @@ Route::group(['middleware' => 'auth:api'], function () {
            Route::get('show/{id}',[AssetDisposeController::class, 'show']);
            Route::post('update/{id}',[AssetDisposeController::class, 'update']);
            Route::post('destroy/{id}',[AssetDisposeController::class,'destroy']);
+       });
+
+       Route::prefix('sale')->group(function () {
+           Route::post('store',[AssetSaleController::class, 'store']);
+           Route::post('update/{id}',[AssetSaleController::class, 'update']);
        });
     });
 });

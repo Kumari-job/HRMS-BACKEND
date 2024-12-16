@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class AssetDisposeRequest extends FormRequest
+class AssetSaleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,22 +24,23 @@ class AssetDisposeRequest extends FormRequest
      */
     public function rules(): array
     {
-        $disposeId = $this->route('id');
+        $saleId = $this->route('id');
         return [
             'asset_id' => [
                 'required',
                 'string',
-                Rule::unique('asset_dispose', 'asset_id')->ignore($disposeId)
+                Rule::unique('asset_sales', 'asset_id')->ignore($saleId)
             ],
-            'details' => 'required|string',
-            'disposed_at' => 'required|date',
-            'disposed_by' => 'required|string|exists:users,id',
+            'price' => 'required|numeric|min:0',
+            'details' => 'nullable|string',
+            'sold_to' => 'required|string',
+            'sold_by' => 'required|integer|exists:users,id',
         ];
     }
     public function messages(): array
     {
         return [
-            'asset_id.unique' => 'Asset has already been disposed.',
+            'asset_id.unique' => 'Asset has already been sold.',
         ];
     }
     protected function failedValidation(Validator $validator)

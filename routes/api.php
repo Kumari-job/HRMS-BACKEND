@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AssetCategoryController;
 use App\Http\Controllers\Api\AssetController;
+use App\Http\Controllers\Api\AssetDisposeController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\DataController;
@@ -145,6 +146,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('show/{id}',[AssetController::class,'show']);
         Route::post('update/{id}',[AssetController::class,'update']);
         Route::post('destroy',[AssetController::class,'destroy']);
+
        Route::prefix('category')->group(function () {
            Route::get('list',[AssetCategoryController::class, 'index']);
            Route::post('store',[AssetCategoryController::class, 'store']);
@@ -159,6 +161,14 @@ Route::group(['middleware' => 'auth:api'], function () {
           Route::get('show/{id}',[VendorController::class, 'show']);
           Route::post('update/{id}',[VendorController::class, 'update']);
           Route::post('destroy/{id}',[VendorController::class,'destroy']);
+       });
+
+       Route::prefix('dispose')->group(function () {
+           Route::get('list',[AssetDisposeController::class, 'index']);
+           Route::post('store',[AssetDisposeController::class, 'store']);
+           Route::get('show/{id}',[AssetDisposeController::class, 'show']);
+           Route::post('update/{id}',[AssetDisposeController::class, 'update']);
+           Route::post('destroy/{id}',[AssetDisposeController::class,'destroy']);
        });
     });
 });

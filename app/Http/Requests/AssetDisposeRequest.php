@@ -5,9 +5,8 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\Rule;
 
-class AssetRequest extends FormRequest
+class AssetDisposeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,27 +24,11 @@ class AssetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'asset_category_id' => 'required|exists:asset_categories,id',
-            'vendor_id' => 'required|exists:vendors,id',
-            'code' => [
-                'required',
-                'string',
-            ],
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'brand' => 'nullable|string|max:255',
-            'cost' => 'required|numeric',
-            'model' => 'nullable|string|max:255',
-            'serial_number' => 'nullable|string',
-            'purchased_at' => 'required|date',
-            'warranty_end_at' => 'nullable|date',
-            'warranty_image' => 'nullable|mimes:jpg,jpeg,png|max:2048',
-            'guarantee_end_at' => 'nullable|date',
-            'guarantee_image' => 'nullable|mimes:jpg,jpeg,png|max:2048',
-            'status' => 'required|in:new,used,disposed,damaged,maintenance',
+            'asset_id' => 'required|exists:assets,id',
+            'details' => 'required|string',
+            'disposed_at' => 'required|date',
         ];
     }
-
     protected function failedValidation(Validator $validator)
     {
         if ($this->expectsJson()) {

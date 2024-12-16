@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('asset_category_id');
             $table->unsignedBigInteger('vendor_id');
-            $table->string('code')->unique();
+            $table->string('code');
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('brand')->nullable();

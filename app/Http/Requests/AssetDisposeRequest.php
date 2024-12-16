@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class AssetDisposeRequest extends FormRequest
 {
@@ -23,10 +24,21 @@ class AssetDisposeRequest extends FormRequest
      */
     public function rules(): array
     {
+        $disposeId = $this->route('id');
         return [
-            'asset_id' => 'required|exists:assets,id',
+            'asset_id' => [
+                'required',
+                'string',
+                Rule::unique('asset_dispose', 'asset_id')->ignore($disposeId)
+            ],
             'details' => 'required|string',
             'disposed_at' => 'required|date',
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'asset_id.unique' => 'Asset has already been disposed.',
         ];
     }
     protected function failedValidation(Validator $validator)

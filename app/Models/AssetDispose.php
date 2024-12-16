@@ -20,4 +20,9 @@ class AssetDispose extends Model
     {
         return $this->belongsTo(Asset::class ,'asset_id');
     }
+
+    public function disposedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'disposed_by');
+    }
 }

@@ -46,6 +46,11 @@ class AssetController extends Controller
         try{
 
             $company_id = Auth::user()->selectedCompany->company_id;
+            if(Asset::where('code',$request->code)->whereHas('assetCategory', function ($query) use ($company_id) {
+                $query->where('company_id', $company_id);
+            })->exists()){
+                return response()->json(['error'=>true, 'message'=>'Code has already been taken.'],403);
+            }
             $asset = new Asset($request->all());
 
             if ($request->hasFile('warranty_image')) {
@@ -87,6 +92,11 @@ class AssetController extends Controller
         try {
             $company_id = Auth::user()->selectedCompany->company_id;
 
+            if(Asset::where('code',$request->code)->whereHas('assetCategory', function ($query) use ($company_id) {
+                $query->where('company_id', $company_id);
+            })->where('id','!=',$id)->exists()){
+                return response()->json(['error'=>true, 'message'=>'Code has already been taken.'],403);
+            }
             $asset = Asset::with('assetCategory', 'vendor')->whereHas('assetCategory', function ($q) use ($company_id) {
                 $q->where('company_id', $company_id);
             })->find($id);

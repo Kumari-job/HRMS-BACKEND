@@ -185,6 +185,7 @@ class EmployeeController extends Controller
 
     public function forceDelete(Request $request)
     {
+        $company_id = Auth::user()->selectedCompany->company_id;
         $validator = Validator::make($request->all(), [
             'ids' => 'array'
         ]);
@@ -195,7 +196,13 @@ class EmployeeController extends Controller
         $employees = Employee::withTrashed()->whereIn('id', $ids);
         $count = $employees->count();
         if ($count > 0) {
-
+            foreach ($employees as $employee) {
+                if ($employee->image)
+                {
+                    $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id);
+                    $this->fileDelete($path, $employee->image);
+                }
+            }
             $employees->forceDelete();
             return response()->json(['success' => true, 'message' => 'Employees deleted successfully.'], 200);
         }

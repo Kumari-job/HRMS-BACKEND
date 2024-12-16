@@ -136,7 +136,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::prefix('asset')->group(function () {
+        Route::get('list',[AssetController::class, 'index']);
         Route::post('store',[AssetController::class,'store']);
+        Route::get('show/{id}',[AssetController::class,'show']);
+        Route::post('update/{id}',[AssetController::class,'update']);
+        Route::post('destroy',[AssetController::class,'destroy']);
        Route::prefix('category')->group(function () {
            Route::get('list',[AssetCategoryController::class, 'index']);
            Route::post('store',[AssetCategoryController::class, 'store']);

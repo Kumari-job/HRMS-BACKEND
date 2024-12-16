@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class AssetRequest extends FormRequest
 {
@@ -23,17 +24,22 @@ class AssetRequest extends FormRequest
      */
     public function rules(): array
     {
+        $assetId = $this->route('id');
         return [
             'asset_category_id' => 'required|exists:asset_categories,id',
             'vendor_id' => 'required|exists:vendors,id',
-            'code' => 'required|string|unique:assets,code',
+            'code' => [
+                'required',
+                'string',
+                Rule::unique('assets', 'code')->ignore($assetId)
+            ],
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'brand' => 'nullable|string|max:255',
             'cost' => 'required|numeric',
             'model' => 'nullable|string|max:255',
             'serial_number' => 'nullable|string',
-            'published_at' => 'required|date',
+            'purchased_at' => 'required|date',
             'warranty_end_at' => 'nullable|date',
             'warranty_image' => 'nullable|mimes:jpg,jpeg,png|max:2048',
             'guarantee_end_at' => 'nullable|date',

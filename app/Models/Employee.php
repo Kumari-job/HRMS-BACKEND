@@ -3,14 +3,18 @@
 namespace App\Models;
 
 use App\Helpers\DirectoryPathHelper;
+use App\Models\Scopes\CompanyScope;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
+#[ScopedBy([CompanyScope::class])]
 class Employee extends Model
 {
     use SoftDeletes;
@@ -87,6 +91,11 @@ class Employee extends Model
     public function employeeBanks(): HasMany
     {
         return $this->hasMany(EmployeeBank::class);
+    }
+
+    public function departments(): BelongsToMany
+    {
+        return $this->belongsToMany(Department::class,'department_employees','employee_id','department_id');
     }
 
     public function getTotalExperienceAttribute()

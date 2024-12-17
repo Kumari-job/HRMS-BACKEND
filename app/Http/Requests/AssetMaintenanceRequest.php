@@ -27,7 +27,9 @@ class AssetMaintenanceRequest extends FormRequest
             'asset_id' => 'required|exists:assets,id',
             'problem' => 'required|string',
             'start_date' => 'required|date',
+            'start_date_nepali' => 'required_if:start_date,null|date',
             'end_date' => 'nullable|date|after:start_date',
+            'end_date_nepali' => 'required_if:end_date,null|date',
             'cost' => 'required|numeric',
             'details' => 'nullable|string',
         ];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\DateHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssetMaintenanceRequest;
 use App\Http\Resources\AssetMaintenanceResource;
@@ -28,7 +29,12 @@ class AssetMaintenanceController extends Controller
     public function store(AssetMaintenanceRequest $request)
     {
         try {
-            $data = $request->validated();
+            $data = $request->except('start_date','end_date','start_date_nepali','end_date_nepali');
+            $start_date = $request->filled('start_date_nepali') ? DateHelper::nepaliToEnglish($request->start_date_nepali) : $request->start_date;
+            $end_date = $request->filled('end_date_nepali') ? DateHelper::nepaliToEnglish($request->end_date_nepali) : $request->end_date;
+
+            $data['start_date'] = $start_date;
+            $data['end_date'] = $end_date;
             $assetMaintenance = new AssetMaintenance();
             $assetMaintenance->fill($data);
             $assetMaintenance->created_by = Auth::id();
@@ -65,7 +71,12 @@ class AssetMaintenanceController extends Controller
             {
                 return response()->json(['error' => true, 'message' => 'Asset Maintenance not found'],404);
             }
-            $data = $request->validated();
+            $data = $request->except('start_date','end_date','start_date_nepali','end_date_nepali');
+            $start_date = $request->filled('start_date_nepali') ? DateHelper::nepaliToEnglish($request->start_date_nepali) : $request->start_date;
+            $end_date = $request->filled('end_date_nepali') ? DateHelper::nepaliToEnglish($request->end_date_nepali) : $request->end_date;
+
+            $data['start_date'] = $start_date;
+            $data['end_date'] = $end_date;
             $assetMaintenance->updated_by = Auth::id();
             $assetMaintenance->update($data);
             return response()->json(['success' => true, 'message' => 'Asset Maintenance updated successfully'],200);

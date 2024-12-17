@@ -30,8 +30,10 @@ class EmployeeEducationRequest extends FormRequest
             'institution' => 'required|string',
             'university_board' => 'required|string',
             'certificate' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:2048',
-            'from_date' => 'required|date|before:to_date',
-            'to_date' => 'required|date',
+            'from_date' => 'required_if:from_date_nepali,null|date|before:to_date',
+            'from_date_nepali' => 'required_if:from_date,null|date|before:to_date_nepali',
+            'to_date' => 'required_if:to_date_nepali,null|date',
+            'to_date_nepali' => 'required_if:to_date,null|date',
         ];
     }
 

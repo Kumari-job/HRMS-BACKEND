@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DepartmentController;
+use App\Http\Controllers\Api\DepartmentEmployeeController;
 use App\Http\Controllers\Api\EmployeeAddressController;
 use App\Http\Controllers\Api\EmployeeBankController;
 use App\Http\Controllers\Api\EmployeeBenefitController;
@@ -74,6 +75,13 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('trashed',[DepartmentController::class, 'trashed']);
         Route::post('restore',[DepartmentController::class, 'restore']);
         Route::post('force-delete',[DepartmentController::class, 'forceDelete']);
+    });
+
+    Route::prefix('department-employee')->group(function () {
+       Route::get('list/{department_id}',[DepartmentEmployeeController::class, 'getEmployeesByDepartment']);
+       Route::post('store',[DepartmentEmployeeController::class, 'store']);
+       Route::post('update/{id}',[DepartmentEmployeeController::class, 'update']);
+       Route::post('destroy',[DepartmentEmployeeController::class, 'destroy']);
     });
 
     Route::prefix('employee')->group(function () {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\DateHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssetDisposeRequest;
 use App\Http\Resources\AssetDisposeResource;
@@ -23,8 +24,9 @@ class AssetDisposeController extends Controller
     public function store(AssetDisposeRequest $request)
     {
         try {
-
-            $data = $request->validated();
+            $data = $request->except('disposed_at_nepali','disposed_at');
+            $disposed_at = $request->filled('disposed_at_nepali') ? DateHelper::nepaliToEnglish($request->disposed_at_nepali) : $request->disposed_at;
+            $data['disposed_at'] = $disposed_at;
             $assetDispose = new AssetDispose();
             $assetDispose->fill($data);
             $assetDispose->save();
@@ -40,13 +42,18 @@ class AssetDisposeController extends Controller
     {
         $company_id = Auth::user()->selectedCompany->company_id;
         $asset = AssetDispose::with('disposedBy','asset')->forCompany()->find($id);
+        if (!$asset) {
+            return response()->json(['error' => true, 'message' => 'Asset Dispose not found'],404);
+        }
         return new AssetDisposeResource($asset);
     }
 
     public function update(AssetDisposeRequest $request, $id)
     {
         try {
-            $data = $request->validated();
+            $data = $request->except('disposed_at_nepali','disposed_at');
+            $disposed_at = $request->filled('disposed_at_nepali') ? DateHelper::nepaliToEnglish($request->disposed_at_nepali) : $request->disposed_at;
+            $data['disposed_at'] = $disposed_at;
             $assetDispose = AssetDispose::forCompany()->find($id);
             if (!$assetDispose) {
                 return response()->json(['success' => false, 'message' => 'Asset disposed not found'],404);

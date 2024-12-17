@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\DateHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssetUsageRequest;
 use App\Http\Resources\AssetUsageResource;
@@ -28,6 +29,10 @@ class AssetUsageController extends Controller
     {
         try {
             $data = $request->validated();
+            $assigned_at = $request->filled('assigned_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_at_nepali) : $request->assigned_at;
+            $assigned_end_at = $request->filled('assigned_end_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_end_at_nepali) : $request->assigned_end_at_nepali;
+            $data['assigned_end_at'] = $assigned_end_at;
+            $data['assigned_at'] = $assigned_at;
             $assetUsage = new AssetUsage();
             $assetUsage->fill($data);
             $assetUsage->save();
@@ -57,6 +62,10 @@ class AssetUsageController extends Controller
     {
         try {
             $data = $request->validated();
+            $assigned_at = $request->filled('assigned_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_at_nepali) : $request->assigned_at;
+            $assigned_end_at = $request->filled('assigned_end_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_end_at_nepali) : $request->assigned_end_at_nepali;
+            $data['assigned_end_at'] = $assigned_end_at;
+            $data['assigned_at'] = $assigned_at;
             $assetUsage = AssetUsage::forCompany()->find($id);
             if(!$assetUsage){
                 return response()->json(['error' => true, 'message' => 'Asset usage not found'],404);

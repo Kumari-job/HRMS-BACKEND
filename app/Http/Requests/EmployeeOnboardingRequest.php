@@ -26,11 +26,15 @@ class EmployeeOnboardingRequest extends FormRequest
         return [
             'employee_id' => 'required|integer|exists:employees,id',
             'shortlisted_at' => 'nullable|date',
+            'shortlisted_at_nepali' => 'nullable|date',
             'interviewed_at' => 'nullable|date',
+            'interviewed_at_nepali' => 'nullable|date',
             'offered_at' => 'nullable|date',
+            'offered_at_nepali' => 'nullable|date',
             'offer_letter' => 'nullable|string',
             'offered_by' => 'nullable|integer|exists:employees,id',
             'joined_at' => 'required|date',
+            'joined_at_nepali' => 'nullable|date',
             'employment_type' => 'required|string',
         ];
     }

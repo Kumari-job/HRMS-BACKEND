@@ -26,8 +26,10 @@ class AssetUsageRequest extends FormRequest
         return [
             'asset_id' => 'required|exists:assets,id',
             'employee_id' => 'required|exists:employees,id',
-            'assigned_at' => 'required|date',
+            'assigned_at' => 'required_if:assigned_at_nepali,null|date',
+            'assigned_at_nepali' => 'required_if:assigned_at,null|date',
             'assigned_end_at' => 'nullable|date|after_or_equal:assigned_at',
+            'assigned_end_at_nepali' => 'nullable|date|after_or_equal:assigned_at_nepali',
             'assigned_by' => 'required|integer|exists:users,id',
         ];
     }

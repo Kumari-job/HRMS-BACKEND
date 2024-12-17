@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\DateHelper;
 use App\Helpers\DirectoryPathHelper;
 use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
@@ -44,12 +45,19 @@ class AssetController extends Controller
         try{
 
             $company_id = Auth::user()->selectedCompany->company_id;
-            if(Asset::where('code',$request->code)->whereHas('assetCategory', function ($query) use ($company_id) {
-                $query->where('company_id', $company_id);
-            })->exists()){
+            if(Asset::where('code',$request->code)->forCompany()->exists()){
                 return response()->json(['error'=>true, 'message'=>'Code has already been taken.'],403);
             }
-            $asset = new Asset($request->all());
+            $data = $request->validated();
+            $purchased_at = $request->filled('purchased_at_nepali') ? DateHelper::nepaliToEnglish($request->purchased_at_nepali) : $request->purchased_at;
+            $data['purchased_at'] = $purchased_at;
+
+            $warranty_end_at = $request->filled('warranty_end_at_nepali') ? DateHelper::nepaliToEnglish($request->warranty_end_at_nepali) : $request->warranty_end_at;
+            $data['warranty_end_at'] = $warranty_end_at;
+
+            $guarantee_end_at = $request->filled('guarantee_end_at_nepali') ? DateHelper::nepaliToEnglish($request->guarantee_end_at_nepali) : $request->guarantee_end_at;
+            $data['guarantee_end_at'] = $guarantee_end_at;
+            $asset = new Asset($data);
 
             if ($request->hasFile('warranty_image')) {
                 $path = DirectoryPathHelper::warrantyImageDirectoryPath($company_id);
@@ -87,9 +95,7 @@ class AssetController extends Controller
         try {
             $company_id = Auth::user()->selectedCompany->company_id;
 
-            if(Asset::where('code',$request->code)->whereHas('assetCategory', function ($query) use ($company_id) {
-                $query->where('company_id', $company_id);
-            })->where('id','!=',$id)->exists()){
+            if(Asset::where('code',$request->code)->forCompany()->where('id','!=',$id)->exists()){
                 return response()->json(['error'=>true, 'message'=>'Code has already been taken.'],403);
             }
             $asset = Asset::with('assetCategory', 'vendor')->forCompany()->find($id);
@@ -97,7 +103,17 @@ class AssetController extends Controller
             if (!$asset) {
                 return response()->json(['error' => true, 'message' => 'Asset not found'], 404);
             }
-            $data = $request->except('warranty_image', 'guarantee_image');
+            $data = $request->except('warranty_image', 'guarantee_image','purchased_at','warranty_end_at','guarantee_end_at');
+
+            $purchased_at = $request->filled('purchased_at_nepali') ? DateHelper::nepaliToEnglish($request->purchased_at_nepali) : $request->purchased_at;
+            $data['purchased_at'] = $purchased_at;
+
+            $warranty_end_at = $request->filled('warranty_end_at_nepali') ? DateHelper::nepaliToEnglish($request->warranty_end_at_nepali) : $request->warranty_end_at;
+            $data['warranty_end_at'] = $warranty_end_at;
+
+            $guarantee_end_at = $request->filled('guarantee_end_at_nepali') ? DateHelper::nepaliToEnglish($request->guarantee_end_at_nepali) : $request->guarantee_end_at;
+            $data['guarantee_end_at'] = $guarantee_end_at;
+
             if ($request->hasFile('warranty_image')) {
                 $path = DirectoryPathHelper::warrantyImageDirectoryPath($company_id);
                 if ($asset->warranty_image) {

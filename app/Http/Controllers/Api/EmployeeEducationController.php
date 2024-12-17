@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\DateHelper;
 use App\Helpers\DirectoryPathHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeEducationRequest;
@@ -30,8 +31,13 @@ class EmployeeEducationController extends Controller
         try {
 
             $company_id = Auth::user()->selectedCompany->company_id;
-            $employeeEducation = new EmployeeEducation($request->except('certificate'));
+            $employeeEducation = new EmployeeEducation($request->except('certificate','from_date','to_date'));
 
+            $from_date = $request->filled('from_date_nepali') ? DateHelper::nepaliToEnglish($request->from_date_nepali) : $request->from_date;
+            $to_date = $request->filled('to_date_nepali') ? DateHelper::nepaliToEnglish($request->to_date_nepali) : $request->to_date;
+
+            $employeeEducation->from_date = $from_date;
+            $employeeEducation->to_date = $to_date;
             if ($request->hasFile('certificate')) {
                 $path = DirectoryPathHelper::educationDirectoryPath($company_id);
                 $fileName = $this->fileUpload($request->file('certificate'), $path);
@@ -54,7 +60,12 @@ class EmployeeEducationController extends Controller
             if (!$employeeEducation) {
                 return response()->json(['error' => true, 'message' => 'Education not found'], 404);
             }
-            $data = $request->except(['certificate']);
+            $data = $request->except(['certificate','from_date','to_date']);
+            $from_date = $request->filled('from_date_nepali') ? DateHelper::nepaliToEnglish($request->from_date_nepali) : $request->from_date;
+            $to_date = $request->filled('to_date_nepali') ? DateHelper::nepaliToEnglish($request->to_date_nepali) : $request->to_date;
+
+            $data['from_date'] = $from_date;
+            $data['to_date'] = $to_date;
             if ($request->hasFile('certificate')) {
                 $path = DirectoryPathHelper::educationDirectoryPath($company_id);
                 if ($employeeEducation->certificate) {

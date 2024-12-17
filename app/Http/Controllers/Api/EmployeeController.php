@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\DateHelper;
 use App\Helpers\DirectoryPathHelper;
 use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
@@ -48,14 +49,18 @@ class EmployeeController extends Controller
         if (Employee::where('company_id', $company_id)->where('name',$request['name'])->where('email',$request['email'])->exists()) {
             return response()->json(['error'=>true,"message"=>"Employee already exists"],400);
         }
-        $employee = new Employee($request->except('image'));
+        $data = $request->except('date_of_birth','image');
+        $date_of_birth = $request->filled('date_of_birth_nepali') ? DateHelper::nepaliToEnglish($request->date_of_birth_nepali) : $request->date_of_birth;
+
+        $data['date_of_birth'] = $date_of_birth;
+        $employee = new Employee();
 
         if ($request->hasFile('image')) {
             $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id);
             $fileName = $this->fileUpload($request->file('image'), $path);
             $employee->image = $fileName;
         }
-
+        $employee->fill($data);
         $employee->company_id = $company_id;
         $employee->save();
         return response()->json(['success'=>true,"message"=>"Employee added successfully",'id'=>$employee->id],201);
@@ -86,7 +91,10 @@ class EmployeeController extends Controller
         if (Employee::where('name',$request['name'])->where('email',$request['email'])->where('id', '!=', $id)->exists()) {
             return response()->json(['error'=>true,"message"=>"Employee already exists"],400);
         }
-        $data = $request->except('image');
+        $data = $request->except('image','date_of_birth');
+        $date_of_birth = $request->filled('date_of_birth_nepali') ? DateHelper::nepaliToEnglish($request->date_of_birth_nepali) : $request->date_of_birth;
+
+        $data['date_of_birth'] = $date_of_birth;
         if ($request->hasFile('image')) {
             $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id);
             if ($employee->image) {

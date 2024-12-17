@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\DateHelper;
 use App\Helpers\DirectoryPathHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeExperienceRequest;
@@ -27,13 +28,20 @@ class EmployeeExperienceController extends Controller
     {
         $company_id = Auth::user()->selectedCompany->company_id;
         $employeeExperience = new EmployeeExperience($request->except('experience_letter'));
+        $data = $request->except(['experience_letter','from_date','to_date']);
+        $from_date = $request->filled('from_date_nepali') ? DateHelper::nepaliToEnglish($request->from_date_nepali) : $request->from_date;
+        $to_date = $request->filled('to_date_nepali') ? DateHelper::nepaliToEnglish($request->to_date_nepali) : $request->to_date;
 
+        $data['from_date'] = $from_date;
+        $data['to_date'] = $to_date;
+        $employeeExperience->fill($data);
         if ($request->hasFile('experience_letter')) {
             $path = DirectoryPathHelper::experienceDirectoryPath($company_id);
             $fileName = $this->fileUpload($request->file('experience_letter'), $path);
             $employeeExperience->experience_letter = $fileName;
         }
         $employeeExperience->created_by = Auth::id();
+
         $employeeExperience->save();
         return response()->json(['success' => true,'message'=>'Experience entered successfully'],201);
     }
@@ -45,7 +53,13 @@ class EmployeeExperienceController extends Controller
             if (!$employeeExperience) {
                 return response()->json(['error' => true, 'message' => 'Experience not found'], 404);
             }
-            $data = $request->except(['experience_letter']);
+            $data = $request->except(['experience_letter','from_date','to_date']);
+            $from_date = $request->filled('from_date_nepali') ? DateHelper::nepaliToEnglish($request->from_date_nepali) : $request->from_date;
+            $to_date = $request->filled('to_date_nepali') ? DateHelper::nepaliToEnglish($request->to_date_nepali) : $request->to_date;
+
+            $data['from_date'] = $from_date;
+            $data['to_date'] = $to_date;
+
             if ($request->hasFile('experience_letter')) {
                 $path = DirectoryPathHelper::experienceDirectoryPath($company_id);
                 if ($employeeExperience->experience_letter) {
@@ -54,6 +68,7 @@ class EmployeeExperienceController extends Controller
                 $fileName = $this->fileUpload($request->file('experience_letter'), $path);
                 $data['experience_letter'] = $fileName;
             }
+            $employeeExperience->updated_by = Auth::id();
             $employeeExperience->update($data);
             return response()->json(['success' => true, 'message' => 'Experience updated successfully'], 200);
         }catch (\Exception $exception){

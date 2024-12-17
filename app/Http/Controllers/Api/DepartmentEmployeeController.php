@@ -21,7 +21,7 @@ class DepartmentEmployeeController extends Controller
      */
     public function getEmployeesByDepartment(Request $request,$id)
     {
-        $query = DepartmentEmployee::with('employee','department')->where('department_id', $id);
+        $query = DepartmentEmployee::with('employee','department','createdBy','updatedBy')->where('department_id', $id);
 
         $departmentEmployees = $query->latest()->paginate($request->page_size ?? 10);
         return DepartmentEmployeeResource::collection($departmentEmployees);
@@ -61,6 +61,7 @@ class DepartmentEmployeeController extends Controller
             $data = $request->except('joined_at');
             $joined_at = $request->filled('joined_at_nepali') ? DateHelper::nepaliToEnglish($request->joined_at_nepali) : $request->joined_at;
             $data['joined_at'] = $joined_at;
+            $data['updated_by'] = Auth::id();
             $departmentEmployee->update($data);
             return response()->json(['success' => true, 'message' => 'Department employee updated successfully.'],200);
         } catch (\Exception $exception){

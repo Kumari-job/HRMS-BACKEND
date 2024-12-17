@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AssetController;
 use App\Http\Controllers\Api\AssetDisposeController;
 use App\Http\Controllers\Api\AssetMaintenanceController;
 use App\Http\Controllers\Api\AssetSaleController;
+use App\Http\Controllers\Api\AssetUsageController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\DataController;
@@ -187,6 +188,14 @@ Route::group(['middleware' => 'auth:api'], function () {
            Route::get('show/{id}',[AssetMaintenanceController::class, 'show']);
            Route::post('update/{id}',[AssetMaintenanceController::class, 'update']);
            Route::post('destroy/{id}',[AssetMaintenanceController::class,'destroy']);
+       });
+
+       Route::prefix('usage')->group(function () {
+           Route::get('list',[AssetUsageController::class, 'index']);
+           Route::post('store',[AssetUsageController::class, 'store']);
+           Route::get('show/{id}',[AssetUsageController::class, 'show']);
+           Route::post('update/{id}',[AssetUsageController::class, 'update']);
+           Route::post('destroy/{id}',[AssetUsageController::class,'destroy']);
        });
     });
 });

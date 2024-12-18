@@ -10,8 +10,10 @@ use App\Http\Requests\EmployeeRequest;
 use App\Http\Resources\EmployeeResource;
 use App\Models\Employee;
 use App\Traits\FileHelper;
+use App\Imports\EmployeeImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
@@ -215,5 +217,31 @@ class EmployeeController extends Controller
             return response()->json(['success' => true, 'message' => 'Employees deleted successfully.'], 200);
         }
         return response()->json(['error' => true, 'message' => 'Employees not found.'], 404);
+    }
+
+    public function employeeImport(Request $request)
+    {
+        try {
+            $company_id = Auth::user()->selectedCompany->company_id;
+            $validator = Validator::make($request->all(), [
+                'file' => 'required|mimes:xls,xlsx,csv'
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
+            }
+
+            $path = DirectoryPathHelper::employeeImportDirectoryPath($company_id);
+
+            $fileName = $this->fileUpload($request->file('file'), $path);
+
+            $employeeImport = new EmployeeImport();
+            $fullFilePath = storage_path('app/public/'.$path . '/' . $fileName);
+
+            $employeeImport->import($fullFilePath);
+            return response()->json(['success' => true, 'message' => 'Employee imported successfully.'], 200);
+        } catch (\Exception $exception) {
+            Log::error("Unable to import employee import: " . $exception->getMessage());
+            return response()->json(['error' => true, 'message' => "Unable to import employee"], 422);
+        }
     }
 }

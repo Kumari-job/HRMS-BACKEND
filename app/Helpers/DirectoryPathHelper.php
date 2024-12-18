@@ -51,4 +51,9 @@ class DirectoryPathHelper
     {
         return "companies/company_" . $company_id . "/assets/guarantee/image";
     }
+
+    public static function employeeImportDirectoryPath(int $company_id): string
+    {
+        return "companies/company_" . $company_id . "/employees/import";
+    }
 }

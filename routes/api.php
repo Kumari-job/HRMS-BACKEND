@@ -95,6 +95,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('trashed',[EmployeeController::class, 'trashed']);
         Route::post('restore',[EmployeeController::class, 'restore']);
         Route::post('force-delete',[EmployeeController::class, 'forceDelete']);
+        Route::post('import',[EmployeeController::class, 'employeeImport']);
 
         Route::prefix('onboard')->group(function () {
             Route::post('store',[EmployeeOnboardingController::class, 'store']);

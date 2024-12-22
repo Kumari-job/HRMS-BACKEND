@@ -56,4 +56,9 @@ class DirectoryPathHelper
     {
         return "companies/company_" . $company_id . "/employees/import";
     }
+
+    public static function assetImageDirectoryPath(int $company_id): string
+    {
+        return "companies/company_" . $company_id . "/assets/image";
+    }
 }

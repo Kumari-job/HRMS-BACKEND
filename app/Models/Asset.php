@@ -31,6 +31,7 @@ class Asset extends Model
         'guarantee_end_at',
         'guarantee_image',
         'status',
+      'image'
     ];
 
     public function assetCategory():BelongsTo
@@ -67,6 +68,22 @@ class Asset extends Model
 
         if ($this->warranty_image && Storage::disk('public')->exists($imgPath . '/' . $this->warranty_image)) {
             $path = asset('storage/' . $imgPath . '/' . $this->warranty_image);
+        } else {
+            $path = $defaultPath;
+        }
+
+        return Attribute::make(
+            get: fn () => $path
+        );
+    }
+    protected function imagePath(): Attribute
+    {
+        $defaultPath = asset('assets/images/image.jpg');
+        $imgPath = DirectoryPathHelper::assetImageDirectoryPath($this->assetCategory->company_id);
+
+
+        if ($this->image && Storage::disk('public')->exists($imgPath . '/' . $this->image)) {
+            $path = asset('storage/' . $imgPath . '/' . $this->image);
         } else {
             $path = $defaultPath;
         }

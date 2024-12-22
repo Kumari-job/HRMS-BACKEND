@@ -69,6 +69,12 @@ class AssetController extends Controller
                 $fileName = $this->fileUpload($request->file('guarantee_image'), $path);
                 $asset->guarantee_image = $fileName;
             }
+            if ($request->hasFile('image'))
+            {
+                $path = DirectoryPathHelper::assetImageDirectoryPath($company_id);
+                $fileName = $this->fileUpload($request->file('image'), $path);
+                $asset->image = $fileName;
+            }
             $asset->created_by = Auth::id();
             $asset->save();
             return response()->json(['success'=>true,'message'=>'Asset created successfully'],201);
@@ -130,6 +136,14 @@ class AssetController extends Controller
                 $fileName = $this->fileUpload($request->file('guarantee_image'), $path);
                 $data['guarantee_image'] = $fileName;
             }
+            if ($request->hasFile('image')) {
+                $path = DirectoryPathHelper::assetImageDirectoryPath($company_id);
+                if ($asset->image) {
+                    $this->fileDelete($path, $asset->image);
+                }
+                $fileName = $this->fileUpload($request->file('image'), $path);
+                $data['image'] = $fileName;
+            }
             $asset->updated_by = Auth::id();
             $asset->update($data);
             return response()->json(['success' => true, 'message' => 'Asset updated successfully'], 200);
@@ -161,6 +175,11 @@ class AssetController extends Controller
                 {
                     $path = DirectoryPathHelper::guaranteeImageDirectoryPath($company_id);
                     $this->fileDelete($path, $asset->guarantee_image);
+                }
+                if ($asset->image)
+                {
+                    $path = DirectoryPathHelper::assetImageDirectoryPath($company_id);
+                    $this->fileDelete($path, $asset->image);
                 }
 
             }

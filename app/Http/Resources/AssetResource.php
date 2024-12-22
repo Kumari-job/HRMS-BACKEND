@@ -22,6 +22,8 @@ class AssetResource extends JsonResource
             'vendor_id' => $this->vendor_id,
             'code' => $this->code,
             'title' => $this->title,
+            'image_path' => $this->image_path,
+            'image' => $this->image,
             'description' => $this->description,
             'brand' => $this->brand,
             'cost' => $this->cost,

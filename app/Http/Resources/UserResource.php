@@ -20,7 +20,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'mobile' => $this->mobile,
-            'preferred_calendar' => $this->preferred_calendar
+            'preferred_calendar' => $this->preferred_calendar,
+            'image_path' => $this->image_path
         ];
     }
 }

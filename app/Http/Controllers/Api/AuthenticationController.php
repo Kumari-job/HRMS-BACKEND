@@ -18,7 +18,8 @@ class AuthenticationController extends Controller
             'client_app' => 'required|in:hrms,HRMS',
             'name' => 'required',
             'email' => 'required|email',
-            'mobile' => 'required'
+            'mobile' => 'required',
+            'image_path' => 'nullable'
         ]);
 
         $user = new User;
@@ -26,6 +27,7 @@ class AuthenticationController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->mobile = $request->mobile;
+        $user->image_path = $request->image_path;
         $user->save();
 
         return response()->json(['success' => true, 'message' => 'User added in TMS application'], 201);

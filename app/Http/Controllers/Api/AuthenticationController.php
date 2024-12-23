@@ -39,13 +39,15 @@ class AuthenticationController extends Controller
                 'client_app' => 'required|in:hrms,HRMS',
                 'name' => 'nullable',
                 'email' => 'nullable|email',
-                'mobile' => 'nullable'
+                'mobile' => 'nullable',
+                'image_path' => 'nullable',
             ]);
             $user = User::where('idp_user_id', $request->idp_user_id)->first();
             $user->update([
                 'name' => $request['name'],
                 'email' => $request['email'],
                 'mobile' => $request['mobile'],
+                'image_path' => $request['image_path'],
             ]);
             // access token -> laravel passport
 

@@ -48,7 +48,7 @@ class EmployeeController extends Controller
     public function store(EmployeeRequest $request)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
-        if (Employee::where('company_id', $company_id)->where('name',$request['name'])->where('email',$request['email'])->exists()) {
+        if (Employee::where('company_id', $company_id)->where('email',$request['email'])->exists()) {
             return response()->json(['error'=>true,"message"=>"Employee already exists"],400);
         }
         $data = $request->except('date_of_birth','image');

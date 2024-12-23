@@ -13,7 +13,7 @@ class AssetSaleController extends Controller
 {
     public function index(Request $request)
     {
-        $query = AssetSale::with('soldBy')->forCompany();
+        $query = AssetSale::with('soldBy','asset')->forCompany();
         $assetDisposes = $query->latest()->paginate($request->page_size ?? 10);
         return AssetSaleResource::collection($assetDisposes);
     }

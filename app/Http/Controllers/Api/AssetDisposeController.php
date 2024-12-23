@@ -16,7 +16,7 @@ class AssetDisposeController extends Controller
     public function index(Request $request)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
-        $query = AssetDispose::with('disposedBy')->forCompany();
+        $query = AssetDispose::with('disposedBy','asset')->forCompany();
         $assetDisposes = $query->latest()->paginate($request->page_size ?? 10);
         return AssetDisposeResource::collection($assetDisposes);
     }

@@ -88,7 +88,7 @@ class AssetController extends Controller
     public function show($id)
     {
 
-        $asset = Asset::with('assetCategory','vendor','assetMaintenances','assetUsages')->forCompany()->find($id);
+        $asset = Asset::with('assetCategory','vendor','assetMaintenances','assetUsages.employee')->forCompany()->find($id);
         if(!$asset)
         {
             return response()->json(['error'=>true,'message'=>'Asset not found'],404);

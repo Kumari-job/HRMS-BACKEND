@@ -27,7 +27,7 @@ class EmployeeRequest extends FormRequest
             'name' => 'required',
             'email' => 'required|email',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'mobile' => 'required',
+            'mobile' => 'required|min:10|max:10',
             'address' => 'required',
             'gender' => 'required',
             'date_of_birth' => 'required_without:date_of_birth_nepali|date',

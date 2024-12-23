@@ -46,6 +46,8 @@ class AssetResource extends JsonResource
             'status' => $this->status,
             'asset_category' => new AssetCategoryResource($this->whenLoaded('assetCategory')),
             'vendor' => new VendorResource($this->whenLoaded('vendor')),
+            'asset_usages' => AssetUsageResource::collection($this->whenLoaded('assetUsages')),
+            'asset_maintenances' => AssetMaintenanceResource::collection($this->whenLoaded('assetMaintenances')),
         ];
     }
 }

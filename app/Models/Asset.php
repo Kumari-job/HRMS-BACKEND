@@ -60,6 +60,11 @@ class Asset extends Model
     {
         return $this->hasMany(AssetMaintenance::class,'asset_id');
     }
+
+    public function assetUsages():HasMany
+    {
+        return $this->hasMany(AssetUsage::class,'asset_id');
+    }
     protected function warrantyImagePath(): Attribute
     {
         $defaultPath = asset('assets/images/image.jpg');

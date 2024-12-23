@@ -30,7 +30,7 @@ class AssetUsageController extends Controller
         try {
             $data = $request->validated();
             $assigned_at = $request->filled('assigned_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_at_nepali) : $request->assigned_at;
-            $assigned_end_at = $request->filled('assigned_end_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_end_at_nepali) : $request->assigned_end_at_nepali;
+            $assigned_end_at = $request->filled('assigned_end_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_end_at_nepali) : $request->assigned_end_at;
             $data['assigned_end_at'] = $assigned_end_at;
             $data['assigned_at'] = $assigned_at;
             $assetUsage = new AssetUsage();

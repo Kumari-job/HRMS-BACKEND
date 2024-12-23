@@ -22,6 +22,7 @@ class AssetMaintenanceResource extends JsonResource
             'asset_id' => $this->asset_id,
             'problem' => $this->problem,
             'details' => $this->details,
+            'cost' => $this->cost,
             'start_date' => Carbon::parse($this->start_date)->format('Y-m-d'),
             'start_date_formatted' => Carbon::parse($this->start_date)->format('d M Y'),
             'start_date_nepali_formatted' => DateHelper::englishToNepali($this->start_date,),

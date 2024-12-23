@@ -18,7 +18,7 @@ class AssetMaintenanceController extends Controller
      */
     public function index(Request $request)
     {
-        $query = AssetMaintenance::with('createdBy','updatedBy')->forCompany();
+        $query = AssetMaintenance::with('createdBy','updatedBy','asset')->forCompany();
         $assetDisposes = $query->latest()->paginate($request->page_size ?? 10);
         return AssetMaintenanceResource::collection($assetDisposes);
     }

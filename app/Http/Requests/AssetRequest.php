@@ -32,6 +32,7 @@ class AssetRequest extends FormRequest
                 'string',
             ],
             'title' => 'required|string|max:255',
+            'image' => 'nullable|mimes:jpg,jpeg,png|max:2048',
             'description' => 'nullable|string',
             'brand' => 'nullable|string|max:255',
             'cost' => 'required|numeric',

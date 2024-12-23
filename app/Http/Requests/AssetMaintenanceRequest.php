@@ -29,7 +29,7 @@ class AssetMaintenanceRequest extends FormRequest
             'start_date' => 'required|date',
             'start_date_nepali' => 'required_if:start_date,null|date',
             'end_date' => 'nullable|date|after:start_date',
-            'end_date_nepali' => 'required_if:end_date,null|date',
+            'end_date_nepali' => 'nullable|date',
             'cost' => 'required|numeric',
             'details' => 'nullable|string',
         ];

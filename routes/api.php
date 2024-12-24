@@ -158,6 +158,12 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('show/{id}',[AssetController::class,'show']);
         Route::post('update/{id}',[AssetController::class,'update']);
         Route::post('destroy',[AssetController::class,'destroy']);
+        Route::post('update-image/{id}',[AssetController::class,'updateImage']);
+        Route::post('remove-image/{id}',[AssetController::class,'removeImage']);
+        Route::post('update-warranty-image/{id}',[AssetController::class,'updateWarrantyImage']);
+        Route::post('remove-warranty-image/{id}',[AssetController::class,'removeWarrantyImage']);
+        Route::post('update-guarantee-image/{id}',[AssetController::class,'updateGuaranteeImage']);
+        Route::post('remove-guarantee-image/{id}',[AssetController::class,'removeGuaranteeImage']);
 
        Route::prefix('category')->group(function () {
            Route::get('list',[AssetCategoryController::class, 'index']);

@@ -150,7 +150,105 @@ class AssetController extends Controller
         } catch (Exception $e)
         {
             Log::error('Unable to update asset: '. $e->getMessage());
+            return response()->json(['error'=>true, 'message'=>'Unable to update asset'], 400);
         }
+    }
+    public function updateImage(Request $request, string $id)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+        $asset = Asset::find($id);
+        if(!$asset){
+            return response()->json(['error'=>true,"message"=>"Asset not found"],404);
+        }
+
+        if ($request->hasFile('image')) {
+            $path = DirectoryPathHelper::assetImageDirectoryPath($company_id);
+            if ($asset->image) {
+                $this->fileDelete($path, $asset->image);
+            }
+            $fileName = $this->fileUpload($request->file('image'), $path);
+        }
+
+        $asset->update(['image' => $fileName,'updated_by' => Auth::id()]);
+        return response()->json(['success'=>true,"message"=>"Image updated successfully",'id'=>$asset->id],200);
+    }
+
+    public function removeImage(Request $request, string $id)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+
+        $asset = Asset::find($id);
+        $path = DirectoryPathHelper::assetImageDirectoryPath($company_id);
+        if ($asset->image) {
+            $this->fileDelete($path, $asset->image);
+        }
+        $asset->update(['image' => null,'updated_by' => Auth::id()]);
+        return response()->json(['success'=>true,"message"=>"Image removed successfully",'id'=>$asset->id],200);
+    }
+
+    public function updateWarrantyImage(Request $request, string $id)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+        $asset = Asset::find($id);
+        if(!$asset){
+            return response()->json(['error'=>true,"message"=>"Asset not found"],404);
+        }
+
+        if ($request->hasFile('warranty_image')) {
+            $path = DirectoryPathHelper::warrantyImageDirectoryPath($company_id);
+            if ($asset->warranty_image) {
+                $this->fileDelete($path, $asset->warranty_image);
+            }
+            $fileName = $this->fileUpload($request->file('warranty_image'), $path);
+        }
+
+        $asset->update(['warranty_image' => $fileName,'updated_by' => Auth::id()]);
+        return response()->json(['success'=>true,"message"=>"Warranty image updated successfully",'id'=>$asset->id],200);
+    }
+
+    public function removeWarrantyImage(Request $request, string $id)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+
+        $asset = Asset::find($id);
+        $path = DirectoryPathHelper::warrantyImageDirectoryPath($company_id);
+        if ($asset->warranty_image) {
+            $this->fileDelete($path, $asset->warranty_image);
+        }
+        $asset->update(['warranty_image' => null,'updated_by' => Auth::id()]);
+        return response()->json(['success'=>true,"message"=>"Warranty image removed successfully",'id'=>$asset->id],200);
+    }
+    public function updateGuaranteeImage(Request $request, string $id)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+        $asset = Asset::find($id);
+        if(!$asset){
+            return response()->json(['error'=>true,"message"=>"Asset not found"],404);
+        }
+
+        if ($request->hasFile('guarantee_image')) {
+            $path = DirectoryPathHelper::guaranteeImageDirectoryPath($company_id);
+            if ($asset->guarantee_image) {
+                $this->fileDelete($path, $asset->guarantee_image);
+            }
+            $fileName = $this->fileUpload($request->file('guarantee_image'), $path);
+        }
+
+        $asset->update(['guarantee_image' => $fileName,'updated_by' => Auth::id()]);
+        return response()->json(['success'=>true,"message"=>"Image updated successfully",'id'=>$asset->id],200);
+    }
+
+    public function removeGuaranteeImage(Request $request, string $id)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+
+        $asset = Asset::find($id);
+        $path = DirectoryPathHelper::guaranteeImageDirectoryPath($company_id);
+        if ($asset->guarantee_image) {
+            $this->fileDelete($path, $asset->guarantee_image);
+        }
+        $asset->update(['guarantee_image' => null,'updated_by' => Auth::id()]);
+        return response()->json(['success'=>true,"message"=>"Image removed successfully",'id'=>$asset->id],200);
     }
     public function destroy(Request $request)
     {

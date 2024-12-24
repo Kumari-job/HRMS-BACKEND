@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AssetResource;
 use App\Models\Asset;
 use App\Models\Branch;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\EmployeeContract;
 use App\Models\Vendor;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -90,5 +92,15 @@ class StatisticsController extends Controller
         return response()->json([
             'asset_counts' => $asset_counts
         ], 200);
+    }
+
+    public function getAssetList()
+    {
+
+        $startOfMonth = Carbon::now()->startOfMonth()->toDateString();
+        $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
+        $assets = Asset::forCompany()->whereBetween('purchased_at', [$startOfMonth, $endOfMonth])->latest()->take(5)->get();
+
+        return AssetResource::collection($assets);
     }
 }

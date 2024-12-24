@@ -222,5 +222,6 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('contract-count',[StatisticsController::class, 'getContractCounts']);
         Route::get('employee-count-by-branch',[StatisticsController::class, 'getEmployeeCountsByBranch']);
         Route::get('asset-count',[StatisticsController::class, 'getAssetCounts']);
+        Route::get('asset-list',[StatisticsController::class, 'getAssetList']);
     });
 });

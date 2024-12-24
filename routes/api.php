@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\EmployeeExperienceController;
 use App\Http\Controllers\Api\EmployeeFamilyController;
 use App\Http\Controllers\Api\EmployeeOnboardingController;
 use App\Http\Controllers\Api\SelectedCompanyController;
+use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VendorController;
 use App\Http\Middleware\VerifyCommonToken;
@@ -212,5 +213,14 @@ Route::group(['middleware' => 'auth:api'], function () {
            Route::post('update/{id}',[AssetUsageController::class, 'update']);
            Route::post('destroy/{id}',[AssetUsageController::class,'destroy']);
        });
+
+
+    });
+
+    Route::prefix('statistics')->group(function () {
+        Route::get('company-count',[StatisticsController::class, 'getCompanyCounts']);
+        Route::get('contract-count',[StatisticsController::class, 'getContractCounts']);
+        Route::get('employee-count-by-branch',[StatisticsController::class, 'getEmployeeCountsByBranch']);
+        Route::get('asset-count',[StatisticsController::class, 'getAssetCounts']);
     });
 });

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Department extends Model
 {
@@ -22,5 +23,16 @@ class Department extends Model
     public function employees(): BelongsToMany
     {
         return $this->belongsToMany(Employee::class, 'department_employees', 'department_id', 'employee_id');
+    }
+
+    public function scopeForCompany($query)
+    {
+        if (Auth::check()) {
+            $company_id = Auth::user()->selectedCompany->company_id;
+            $query->whereHas('branch', function ($query) use ($company_id) {
+                $query->where('company_id', $company_id);
+            });
+        }
+        return $query;
     }
 }

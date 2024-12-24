@@ -67,8 +67,9 @@ class Asset extends Model
     }
     protected function warrantyImagePath(): Attribute
     {
+        $company_id = Auth::user()->selectedCompany->company_id;
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($this->assetCategory->company_id);
+        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($company_id);
 
 
         if ($this->warranty_image && Storage::disk('public')->exists($imgPath . '/' . $this->warranty_image)) {
@@ -83,8 +84,9 @@ class Asset extends Model
     }
     protected function imagePath(): Attribute
     {
+        $company_id = Auth::user()->selectedCompany->company_id;
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::assetImageDirectoryPath($this->assetCategory->company_id);
+        $imgPath = DirectoryPathHelper::assetImageDirectoryPath($company_id);
 
 
         if ($this->image && Storage::disk('public')->exists($imgPath . '/' . $this->image)) {
@@ -99,8 +101,9 @@ class Asset extends Model
     }
     protected function guaranteeImagePath(): Attribute
     {
+        $company_id = Auth::user()->selectedCompany->company_id;
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($this->assetCategory->company_id);
+        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($company_id);
 
 
         if ($this->guarantee_image && Storage::disk('public')->exists($imgPath . '/' . $this->guarantee_image)) {

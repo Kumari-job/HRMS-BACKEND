@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\AssetStatusEnum;
 use App\Enums\BloodGroupEnum;
 use App\Enums\ContractTypeEnum;
 use App\Enums\EmploymentTypeEnum;
@@ -18,6 +19,12 @@ class DataController extends Controller
     {
         $gender = collect(GenderEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
         return response()->json(['success' => true, 'data' => $gender], 200);
+    }
+
+    public function assetStatus(): JsonResponse
+    {
+        $assetStatus = collect(AssetStatusEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
+        return response()->json(['success' => true, 'data' => $assetStatus], 200);
     }
     public function employmentType(): JsonResponse
     {

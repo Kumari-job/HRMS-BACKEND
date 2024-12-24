@@ -54,6 +54,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('religion',[DataController::class, 'religion']);
         Route::get('employment-type',[DataController::class, 'employmentType']);
         Route::get('contract-type',[DataController::class, 'contractType']);
+        Route::get('asset-status',[DataController::class, 'assetStatus']);
     });
 
     Route::prefix('branch')->group(function () {

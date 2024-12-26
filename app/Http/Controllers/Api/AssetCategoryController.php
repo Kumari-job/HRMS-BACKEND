@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssetCategoryRequest;
 use App\Http\Resources\AssetCategoryResource;
@@ -9,6 +10,7 @@ use App\Models\AssetCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AssetCategoryController extends Controller
 {
@@ -83,15 +85,24 @@ class AssetCategoryController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try {
-            $assetCategory = AssetCategory::find($id);
-            if (!$assetCategory) {
-                return response()->json(['error' => true, 'message' => 'Asset Category not found'], 404);
+            $validator = Validator::make($request->all(), [
+                'ids' => 'array'
+            ]);
+            $ids = $request->ids;
+            if ($validator->fails()) {
+                return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
             }
-            $assetCategory->delete();
-            return response()->json(['success' => true, 'message' => 'Asset Category deleted successfully'], 200);
+            $assetCategories = AssetCategory::whereIn('id', $ids);
+            $count = $assetCategories->count();
+            if ($count > 0) {
+                $deleteStatus = $assetCategories->delete();
+
+                return response()->json(['success' => true, 'message' => 'Asset Categories deleted successfully.'], 200);
+            }
+            return response()->json(['error' => true, 'message' => 'Asset Categories not found.'], 400);
         }catch (\Exception $exception){
             Log::error("Unable to delete asset category " . $exception->getMessage());
             return response()->json(['error' => true, 'message' => 'Unable to delete asset category'], 400);

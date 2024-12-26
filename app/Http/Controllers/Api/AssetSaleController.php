@@ -8,6 +8,7 @@ use App\Http\Resources\AssetSaleResource;
 use App\Models\AssetSale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AssetSaleController extends Controller
 {
@@ -56,19 +57,27 @@ class AssetSaleController extends Controller
             return response()->json(['error' => true, 'message' => "Unable to update asset sale."],400);
         }
     }
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try {
-            $assetSale = AssetSale::forCompany()->find($id);
-            if (!$assetSale) {
-                return response()->json(['error' => true, 'message' => 'Asset sale not found.'], 404);
+            $validator = Validator::make($request->all(), [
+                'ids' => 'array'
+            ]);
+            $ids = $request->ids;
+            if ($validator->fails()) {
+                return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
             }
-            $assetSale->delete();
-            return response()->json(['success' => true, 'message' => 'Asset sale deleted successfully.'], 200);
-        }catch (\Exception $exception)
-        {
+            $assetSales = AssetSale::forCompany()->whereIn('id', $ids);
+            $count = $assetSales->count();
+            if ($count > 0) {
+                $deleteStatus = $assetSales->delete();
+
+                return response()->json(['success' => true, 'message' => 'Asset Sales deleted successfully.'], 200);
+            }
+            return response()->json(['error' => true, 'message' => 'Asset Sales not found.'], 400);
+        }catch (\Exception $exception){
             Log::error("Unable to delete asset sale " . $exception->getMessage());
-            return response()->json(['error' => true, 'message' => "Unable to delete asset sale."],400);
+            return response()->json(['error' => true, 'message' => 'Unable to delete asset sale'], 400);
         }
     }
 }

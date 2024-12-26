@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\DateHelper;
+use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssetDisposeRequest;
 use App\Http\Resources\AssetDisposeResource;
@@ -10,6 +11,7 @@ use App\Models\AssetDispose;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AssetDisposeController extends Controller
 {
@@ -66,14 +68,28 @@ class AssetDisposeController extends Controller
             return response()->json(['error' => true, 'message' => "Unable to dispose asset"],500);
         }
     }
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $assetDispose = AssetDispose::forCompany()->find($id);
-        if(!$assetDispose){
-            return response()->json(['error' => true, 'message' => 'Asset disposed not found'],404);
+        try {
+            $validator = Validator::make($request->all(), [
+                'ids' => 'array'
+            ]);
+            $ids = $request->ids;
+            if ($validator->fails()) {
+                return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
+            }
+            $assetDisposes = AssetDispose::forCompany()->whereIn('id', $ids);
+            $count = $assetDisposes->count();
+            if ($count > 0) {
+                $deleteStatus = $assetDisposes->delete();
+
+                return response()->json(['success' => true, 'message' => 'Asset Disposes deleted successfully.'], 200);
+            }
+            return response()->json(['error' => true, 'message' => 'Asset Disposes not found.'], 400);
+        }catch (\Exception $exception){
+            Log::error("Unable to delete asset dispose " . $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to delete asset dispose'], 400);
         }
-        $assetDispose->delete();
-        return response()->json(['success' => true, 'message' => 'Asset disposed deleted successfully'],200);
     }
 
 }

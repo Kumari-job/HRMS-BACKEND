@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VendorRequest;
 use App\Http\Resources\VendorResource;
@@ -9,6 +10,7 @@ use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class VendorController extends Controller
 {
@@ -70,19 +72,27 @@ class VendorController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try {
-            $company_id = Auth::user()->selectedCompany->company_id;
-            $vendor = Vendor::where('company_id', $company_id)->find($id);
-            if (!$vendor) {
-                return response()->json(['error' => true, 'message' => 'Vendor not found'], 404);
+            $validator = Validator::make($request->all(), [
+                'ids' => 'array'
+            ]);
+            $ids = $request->ids;
+            if ($validator->fails()) {
+                return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
             }
-            $vendor->delete();
-            return response()->json(['success' => true, 'message' => 'Vendor deleted successfully'], 200);
+            $vendors = Vendor::whereIn('id', $ids);
+            $count = $vendors->count();
+            if ($count > 0) {
+                $deleteStatus = $vendors->delete();
+
+                return response()->json(['success' => true, 'message' => 'Vendors deleted successfully.'], 200);
+            }
+            return response()->json(['error' => true, 'message' => 'Vendors not found.'], 400);
         }catch (\Exception $exception){
-            Log::error("Unable to delete vendor: ".$exception->getMessage());
-            return response()->json(['error' => true, 'message' => "Unable to delete vendor"], 400);
+            Log::error("Unable to delete vendor " . $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to delete vendors'], 400);
         }
     }
 }

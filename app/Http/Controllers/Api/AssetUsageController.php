@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\DateHelper;
+use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssetUsageRequest;
 use App\Http\Resources\AssetUsageResource;
 use App\Models\AssetUsage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AssetUsageController extends Controller
 {
@@ -81,18 +83,27 @@ class AssetUsageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
         try {
-            $assetUsage = AssetUsage::forCompany()->findOrFail($id);
-            if (!$assetUsage) {
-                return response()->json(['error' => true, 'message' => 'Asset usage not found'], 404);
+            $validator = Validator::make($request->all(), [
+                'ids' => 'array'
+            ]);
+            $ids = $request->ids;
+            if ($validator->fails()) {
+                return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
             }
-            $assetUsage->delete();
-            return response()->json(['success' => true, 'message' => 'Asset usage deleted successfully'], 200);
+            $assetUsages = AssetUsage::forCompany()->whereIn('id', $ids);
+            $count = $assetUsages->count();
+            if ($count > 0) {
+                $deleteStatus = $assetUsages->delete();
+
+                return response()->json(['success' => true, 'message' => 'Asset usages deleted successfully.'], 200);
+            }
+            return response()->json(['error' => true, 'message' => 'Asset usages not found.'], 400);
         }catch (\Exception $exception){
-            Log::error("Unable to delete asset usage: {$exception->getMessage()}");
-            return response()->json(['error' => true, 'message' => "Unable to delete asset usage"],500);
+            Log::error("Unable to delete asset usages " . $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to delete asset usages'], 400);
         }
     }
 }

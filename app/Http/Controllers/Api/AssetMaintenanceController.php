@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\DateHelper;
+use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssetMaintenanceRequest;
 use App\Http\Resources\AssetMaintenanceResource;
@@ -10,6 +11,7 @@ use App\Models\AssetMaintenance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AssetMaintenanceController extends Controller
 {
@@ -91,14 +93,27 @@ class AssetMaintenanceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        $assetMaintenance = AssetMaintenance::forCompany()->find($id);
-        if(!$assetMaintenance)
-        {
-            return response()->json(['error' => true, 'message' => 'Asset Maintenance not found'],404);
+        try {
+            $validator = Validator::make($request->all(), [
+                'ids' => 'array'
+            ]);
+            $ids = $request->ids;
+            if ($validator->fails()) {
+                return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
+            }
+            $assetMaintenances = AssetMaintenance::forCompany()->whereIn('id', $ids);
+            $count = $assetMaintenances->count();
+            if ($count > 0) {
+                $deleteStatus = $assetMaintenances->delete();
+
+                return response()->json(['success' => true, 'message' => 'Asset maintenances deleted successfully.'], 200);
+            }
+            return response()->json(['error' => true, 'message' => 'Asset maintenances not found.'], 400);
+        }catch (\Exception $exception){
+            Log::error("Unable to delete asset maintenance " . $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to delete asset maintenance'], 400);
         }
-        $assetMaintenance->delete();
-        return response()->json(['success' => true, 'message' => 'Asset Maintenance deleted successfully'],200);
     }
 }

@@ -172,7 +172,7 @@ Route::group(['middleware' => 'auth:api'], function () {
            Route::post('store',[AssetCategoryController::class, 'store']);
            Route::post('update/{id}',[AssetCategoryController::class, 'update']);
            Route::get('show/{id}',[AssetCategoryController::class, 'show']);
-           Route::post('destroy/{id}',[AssetCategoryController::class,'destroy']);
+           Route::post('destroy',[AssetCategoryController::class,'destroy']);
        });
 
        Route::prefix('vendor')->group(function () {
@@ -180,7 +180,7 @@ Route::group(['middleware' => 'auth:api'], function () {
           Route::post('store',[VendorController::class, 'store']);
           Route::get('show/{id}',[VendorController::class, 'show']);
           Route::post('update/{id}',[VendorController::class, 'update']);
-          Route::post('destroy/{id}',[VendorController::class,'destroy']);
+          Route::post('destroy',[VendorController::class,'destroy']);
        });
 
        Route::prefix('dispose')->group(function () {
@@ -188,7 +188,7 @@ Route::group(['middleware' => 'auth:api'], function () {
            Route::post('store',[AssetDisposeController::class, 'store']);
            Route::get('show/{id}',[AssetDisposeController::class, 'show']);
            Route::post('update/{id}',[AssetDisposeController::class, 'update']);
-           Route::post('destroy/{id}',[AssetDisposeController::class,'destroy']);
+           Route::post('destroy',[AssetDisposeController::class,'destroy']);
        });
 
        Route::prefix('sale')->group(function () {
@@ -196,7 +196,7 @@ Route::group(['middleware' => 'auth:api'], function () {
            Route::post('store',[AssetSaleController::class, 'store']);
            Route::get('show/{id}',[AssetSaleController::class, 'show']);
            Route::post('update/{id}',[AssetSaleController::class, 'update']);
-           Route::post('destroy/{id}',[AssetSaleController::class,'destroy']);
+           Route::post('destroy',[AssetSaleController::class,'destroy']);
        });
 
        Route::prefix('maintenance')->group(function () {
@@ -204,7 +204,7 @@ Route::group(['middleware' => 'auth:api'], function () {
            Route::post('store',[AssetMaintenanceController::class, 'store']);
            Route::get('show/{id}',[AssetMaintenanceController::class, 'show']);
            Route::post('update/{id}',[AssetMaintenanceController::class, 'update']);
-           Route::post('destroy/{id}',[AssetMaintenanceController::class,'destroy']);
+           Route::post('destroy',[AssetMaintenanceController::class,'destroy']);
        });
 
        Route::prefix('usage')->group(function () {
@@ -212,7 +212,7 @@ Route::group(['middleware' => 'auth:api'], function () {
            Route::post('store',[AssetUsageController::class, 'store']);
            Route::get('show/{id}',[AssetUsageController::class, 'show']);
            Route::post('update/{id}',[AssetUsageController::class, 'update']);
-           Route::post('destroy/{id}',[AssetUsageController::class,'destroy']);
+           Route::post('destroy',[AssetUsageController::class,'destroy']);
        });
 
 

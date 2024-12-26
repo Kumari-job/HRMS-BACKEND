@@ -22,7 +22,8 @@ class Department extends Model
 
     public function employees(): BelongsToMany
     {
-        return $this->belongsToMany(Employee::class, 'department_employees', 'department_id', 'employee_id');
+        return $this->belongsToMany(Employee::class, 'department_employees', 'department_id', 'employee_id')
+            ->withPivot(['designation', 'joined_at', 'created_at']);
     }
 
     public function scopeForCompany($query)

@@ -9,6 +9,7 @@ use App\Models\EmployeeDocument;
 use App\Traits\FileHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeDocumentController extends Controller
 {
@@ -70,32 +71,37 @@ class EmployeeDocumentController extends Controller
      */
     public function update(EmployeeDocumentRequest $request, string $employee_id)
     {
-        $employeeDocument = EmployeeDocument::where('employee_id', $employee_id)->firstOrFail();
-        $company_id = Auth::user()->selectedCompany->company_id;
-        $documentsToUpdate = [
-            'citizenship_back' => DirectoryPathHelper::citizenshipBackDirectoryPath($company_id),
-            'citizenship_front' => DirectoryPathHelper::citizenshipFrontDirectoryPath($company_id),
-            'driving_license' => DirectoryPathHelper::drivingLicenseDirectoryPath($company_id),
-            'passport' => DirectoryPathHelper::passportDirectoryPath($company_id),
-            'pan_card' => DirectoryPathHelper::panCardDirectoryPath($company_id)
-        ];
+        try {
+            $employeeDocument = EmployeeDocument::where('employee_id', $employee_id)->firstOrFail();
+            $company_id = Auth::user()->selectedCompany->company_id;
+            $documentsToUpdate = [
+                'citizenship_back' => DirectoryPathHelper::citizenshipBackDirectoryPath($company_id),
+                'citizenship_front' => DirectoryPathHelper::citizenshipFrontDirectoryPath($company_id),
+                'driving_license' => DirectoryPathHelper::drivingLicenseDirectoryPath($company_id),
+                'passport' => DirectoryPathHelper::passportDirectoryPath($company_id),
+                'pan_card' => DirectoryPathHelper::panCardDirectoryPath($company_id)
+            ];
 
-        $data = [];
-        foreach ($documentsToUpdate as $documentField => $path) {
-            if ($request->hasFile($documentField)) {
-                if ($employeeDocument->$documentField) {
-                    $this->fileDelete($path, $employeeDocument->$documentField);
+            $data = [];
+            foreach ($documentsToUpdate as $documentField => $path) {
+                if ($request->hasFile($documentField)) {
+                    if ($employeeDocument->$documentField) {
+                        $this->fileDelete($path, $employeeDocument->$documentField);
+                    }
+
+                    $fileName = $this->fileUpload($request->file($documentField), $path);
+                    $data[$documentField] = $fileName;
                 }
-
-                $fileName = $this->fileUpload($request->file($documentField), $path);
-                $data[$documentField] = $fileName;
             }
-        }
 
-        if (!empty($data)) {
-            $employeeDocument->update($data);
+            if (!empty($data)) {
+                $employeeDocument->update($data);
+            }
+            return response()->json(['success' => true, 'message' => 'Employee document updated successfully'], 200);
+        }catch (\Exception $exception){
+            Log::error("Unable to update Employee document: " . $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to update the document'], 500);
         }
-        return response()->json(['success' => true, 'message' => 'Employee document updated successfully'], 200);
     }
 
     /**

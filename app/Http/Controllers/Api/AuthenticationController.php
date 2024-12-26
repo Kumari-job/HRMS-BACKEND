@@ -45,11 +45,13 @@ class AuthenticationController extends Controller
                 'image_path' => 'nullable',
             ]);
             $user = User::where('idp_user_id', $request->idp_user_id)->first();
+            $last_login = Carbon::now()->toDateTimeString();
             $user->update([
                 'name' => $request['name'],
                 'email' => $request['email'],
                 'mobile' => $request['mobile'],
                 'image_path' => $request['image_path'],
+                'last_login' => $last_login,
             ]);
             // access token -> laravel passport
 

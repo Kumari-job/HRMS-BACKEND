@@ -22,7 +22,6 @@ class User extends Authenticatable
         'mobile',
         'preferred_calender',
         'image_path',
-        'last_login',
     ];
     public function selectedCompany(): HasOne
     {

@@ -23,7 +23,7 @@ class AssetController extends Controller
     public function index(Request $request)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
-        $query = Asset::forCompany()->with('assetCategory');
+        $query = Asset::forCompany()->with('assetCategory','vendor');
 
         if (!empty($request->except('page', 'page_size'))) {
             foreach ($request->except('page', 'page_size') as $key => $value) {

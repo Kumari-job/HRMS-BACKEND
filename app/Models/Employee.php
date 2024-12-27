@@ -35,7 +35,7 @@ class Employee extends Model
     protected function imagePath(): Attribute
     {
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::employeeImageDirectoryPath($this->company_id);
+        $imgPath = DirectoryPathHelper::employeeImageDirectoryPath($this->company_id, $this->id);
 
 
         if ($this->image && Storage::disk('public')->exists($imgPath . '/' . $this->image)) {

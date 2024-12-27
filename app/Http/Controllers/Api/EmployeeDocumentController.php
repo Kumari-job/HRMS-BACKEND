@@ -28,29 +28,33 @@ class EmployeeDocumentController extends Controller
     public function store(EmployeeDocumentRequest $request)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
+        $employee_id = $request->input('employee_id');
+        if(EmployeeDocument::where('employee_id',$employee_id)->exists()){
+            return response()->json(['error'=>true,'message'=>'Employee Document Already Exist'],403);
+        }
         $employeeDocument = new EmployeeDocument($request->only(['employee_id']));
         if ($request->hasFile('citizenship_back')) {
-            $path = DirectoryPathHelper::citizenshipBackDirectoryPath($company_id);
+            $path = DirectoryPathHelper::citizenshipBackDirectoryPath($company_id, $employee_id);
             $fileName = $this->fileUpload($request->file('citizenship_back'), $path);
             $employeeDocument->citizenship_back = $fileName;
         }
         if ($request->hasFile('citizenship_front')) {
-            $path = DirectoryPathHelper::citizenshipFrontDirectoryPath($company_id);
+            $path = DirectoryPathHelper::citizenshipFrontDirectoryPath($company_id, $employee_id);
             $fileName = $this->fileUpload($request->file('citizenship_front'), $path);
             $employeeDocument->citizenship_front = $fileName;
         }
         if ($request->hasFile('driving_license')) {
-            $path = DirectoryPathHelper::drivingLicenseDirectoryPath($company_id);
+            $path = DirectoryPathHelper::drivingLicenseDirectoryPath($company_id, $employee_id);
             $fileName = $this->fileUpload($request->file('driving_license'), $path);
             $employeeDocument->driving_license = $fileName;
         }
         if ($request->hasFile('passport')) {
-            $path = DirectoryPathHelper::passportDirectoryPath($company_id);
+            $path = DirectoryPathHelper::passportDirectoryPath($company_id, $employee_id);
             $fileName = $this->fileUpload($request->file('passport'), $path);
             $employeeDocument->passport = $fileName;
         }
         if ($request->hasFile('pan_card')) {
-            $path = DirectoryPathHelper::panCardDirectoryPath($company_id);
+            $path = DirectoryPathHelper::panCardDirectoryPath($company_id, $employee_id);
             $fileName = $this->fileUpload($request->file('pan_card'), $path);
             $employeeDocument->pan_card = $fileName;
         }
@@ -75,11 +79,11 @@ class EmployeeDocumentController extends Controller
             $employeeDocument = EmployeeDocument::where('employee_id', $employee_id)->firstOrFail();
             $company_id = Auth::user()->selectedCompany->company_id;
             $documentsToUpdate = [
-                'citizenship_back' => DirectoryPathHelper::citizenshipBackDirectoryPath($company_id),
-                'citizenship_front' => DirectoryPathHelper::citizenshipFrontDirectoryPath($company_id),
-                'driving_license' => DirectoryPathHelper::drivingLicenseDirectoryPath($company_id),
-                'passport' => DirectoryPathHelper::passportDirectoryPath($company_id),
-                'pan_card' => DirectoryPathHelper::panCardDirectoryPath($company_id)
+                'citizenship_back' => DirectoryPathHelper::citizenshipBackDirectoryPath($company_id, $employee_id),
+                'citizenship_front' => DirectoryPathHelper::citizenshipFrontDirectoryPath($company_id, $employee_id),
+                'driving_license' => DirectoryPathHelper::drivingLicenseDirectoryPath($company_id, $employee_id),
+                'passport' => DirectoryPathHelper::passportDirectoryPath($company_id, $employee_id),
+                'pan_card' => DirectoryPathHelper::panCardDirectoryPath($company_id, $employee_id),
             ];
 
             $data = [];

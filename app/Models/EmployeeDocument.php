@@ -25,7 +25,7 @@ class EmployeeDocument extends Model
     protected function citizenshipFrontPath(): Attribute
     {
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::citizenshipFrontDirectoryPath($this->employee->company_id);
+        $imgPath = DirectoryPathHelper::citizenshipFrontDirectoryPath($this->employee->company_id, $this->employee->id);
 
         if ($this->citizenship_front && Storage::disk('public')->exists($imgPath . '/' . $this->citizenship_front)) {
             $path = asset('storage/' . $imgPath . '/' . $this->citizenship_front);
@@ -41,7 +41,7 @@ class EmployeeDocument extends Model
     protected function citizenshipBackPath(): Attribute
     {
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::citizenshipBackDirectoryPath($this->employee->company_id);
+        $imgPath = DirectoryPathHelper::citizenshipBackDirectoryPath($this->employee->company_id,$this->employee->id);
 
 
         if ($this->citizenship_back && Storage::disk('public')->exists($imgPath . '/' . $this->citizenship_back)) {
@@ -58,7 +58,7 @@ class EmployeeDocument extends Model
     protected function drivingLicensePath(): Attribute
     {
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::drivingLicenseDirectoryPath($this->employee->company_id);
+        $imgPath = DirectoryPathHelper::drivingLicenseDirectoryPath($this->employee->company_id, $this->employee->id);
 
 
         if ($this->driving_license && Storage::disk('public')->exists($imgPath . '/' . $this->driving_license)) {
@@ -75,7 +75,7 @@ class EmployeeDocument extends Model
     protected function passportPath(): Attribute
     {
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::passportDirectoryPath($this->employee->company_id);
+        $imgPath = DirectoryPathHelper::passportDirectoryPath($this->employee->company_id, $this->employee->id);
 
 
         if ($this->passport && Storage::disk('public')->exists($imgPath . '/' . $this->passport)) {
@@ -92,7 +92,7 @@ class EmployeeDocument extends Model
     protected function panCardPath(): Attribute
     {
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::panCardDirectoryPath($this->employee->company_id);
+        $imgPath = DirectoryPathHelper::panCardDirectoryPath($this->employee->company_id ,$this->employee->id);
 
 
         if ($this->pan_card && Storage::disk('public')->exists($imgPath . '/' . $this->pan_card)) {

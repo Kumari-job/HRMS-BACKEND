@@ -57,14 +57,16 @@ class EmployeeController extends Controller
         $data['date_of_birth'] = $date_of_birth;
         $employee = new Employee();
 
-        if ($request->hasFile('image')) {
-            $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id);
-            $fileName = $this->fileUpload($request->file('image'), $path);
-            $employee->image = $fileName;
-        }
         $employee->fill($data);
         $employee->company_id = $company_id;
         $employee->save();
+
+        if ($request->hasFile('image')) {
+            $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id,$employee->id);
+            $fileName = $this->fileUpload($request->file('image'), $path);
+            $employee->image = $fileName;
+        }
+        $employee->update();
         return response()->json(['success'=>true,"message"=>"Employee added successfully",'id'=>$employee->id],201);
     }
 
@@ -98,7 +100,7 @@ class EmployeeController extends Controller
 
         $data['date_of_birth'] = $date_of_birth;
         if ($request->hasFile('image')) {
-            $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id);
+            $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id, $employee->id);
             if ($employee->image) {
                 $this->fileDelete($path, $employee->image);
             }
@@ -118,7 +120,7 @@ class EmployeeController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id);
+            $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id, $employee->id);
             if ($employee->image) {
                 $this->fileDelete($path, $employee->image);
             }
@@ -132,7 +134,7 @@ class EmployeeController extends Controller
     public function removeImage(Request $request, string $id)
     {
         $employee = Employee::find($id);
-        $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id);
+        $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id, $employee->id);
         if ($employee->image) {
             $this->fileDelete($path, $employee->image);
         }
@@ -209,7 +211,7 @@ class EmployeeController extends Controller
             foreach ($employees as $employee) {
                 if ($employee->image)
                 {
-                    $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id);
+                    $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id, $employee->id);
                     $this->fileDelete($path, $employee->image);
                 }
             }

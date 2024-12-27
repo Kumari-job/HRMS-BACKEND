@@ -26,7 +26,7 @@ class EmployeeController extends Controller
     {
         $company_id = Auth::user()->selectedCompany->company_id;
 
-        $query = Employee::query();
+        $query = Employee::with('departments');
 
         if (!empty($request->except('page', 'page_size'))) {
             foreach ($request->except('page', 'page_size') as $key => $value) {
@@ -73,7 +73,7 @@ class EmployeeController extends Controller
      */
     public function show(string $id)
     {
-        $employee = Employee::with(['employeeAddress','employeeBenefit','employeeContracts','employeeDocument','employeeEducations','employeeExperiences','employeeFamilies','employeeOnboardings','employeeBanks'])->find($id);
+        $employee = Employee::with(['employeeAddress','employeeBenefit','employeeContracts','employeeDocument','employeeEducations','employeeExperiences','employeeFamilies','employeeOnboardings','employeeBanks','departments'])->find($id);
 
         if(!$employee){
             return response()->json(['error'=>true,"message"=>"Employee not found"],404);

@@ -45,7 +45,7 @@ class EmployeeResource extends JsonResource
             'employee_families' => EmployeeFamilyResource::collection($this->whenLoaded('employeeFamilies')),
             'employee_onboarding' => EmployeeOnboardingResource::collection($this->whenLoaded('employeeOnboardings')),
             'employee_banks' => EmployeeBankResource::collection($this->whenLoaded('employeeBanks')),
-
+            'department_employee' => DepartmentEmployeeResource::collection($this->whenLoaded('departments')),
         ];
     }
 }

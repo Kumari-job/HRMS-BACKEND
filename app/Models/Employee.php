@@ -96,7 +96,9 @@ class Employee extends Model
 
     public function departments(): BelongsToMany
     {
-        return $this->belongsToMany(Department::class,'department_employees','employee_id','department_id');
+        return $this->belongsToMany(Department::class,'department_employees','employee_id','department_id')
+                    ->withPivot(['id','designation', 'joined_at', 'created_at'])
+                    ->select(['departments.*']);
     }
 
     public function getTotalExperienceAttribute()

@@ -19,18 +19,4 @@ class UserController extends Controller
 
         return new UserResource($user);
     }
-
-    public function updatePreferredCalendar(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'preferred_calendar' => 'required|in:english,nepali',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
-        }
-        $user = Auth::user();
-        $user->preferred_calendar = $request->input('preferred_calendar');
-        $user->update();
-        return response()->json(['success' => true, 'message' => 'Profile updated successfully!'],200);
-    }
 }

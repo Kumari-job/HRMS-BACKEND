@@ -20,7 +20,6 @@ class User extends Authenticatable
         'name',
         'email',
         'mobile',
-        'preferred_calender',
         'image_path',
     ];
     public function selectedCompany(): HasOne

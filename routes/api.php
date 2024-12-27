@@ -38,7 +38,7 @@ Route::post('users/generate-access-token', [AuthenticationController::class, 'ge
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [AuthenticationController::class, 'logout']);
     Route::get('profile', [UserController::class, 'profile']);
-    Route::post('update-preferred-calendar',[UserController::class, 'updatePreferredCalendar']);
+
 
     Route::post('select-company', [SelectedCompanyController::class, 'selectCompany']);
     Route::get('selected-company', [SelectedCompanyController::class, 'selectedCompany']);

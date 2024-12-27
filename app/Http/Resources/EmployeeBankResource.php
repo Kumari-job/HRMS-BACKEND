@@ -19,6 +19,7 @@ class EmployeeBankResource extends JsonResource
             'account_number' => $this->account_number,
             'account_name' => $this->account_name,
             'bank_branch' => $this->bank_branch,
+            'bank_name' => $this->bank_name,
             'is_primary' => $this->is_primary,
             'created_by'=> new UserResource($this->createdBy),
             'updated_by' => new UserResource($this->updatedBy),

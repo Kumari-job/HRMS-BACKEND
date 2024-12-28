@@ -20,12 +20,12 @@ use Illuminate\Support\Facades\Validator;
 
 class StatisticsController extends Controller
 {
-    public function getCompanyCounts()
+    public function getCompanyCounts(Request $request)
     {
         $branch_count = Branch::count();
-        $department_count = Department::forCompany()->count();
+        $department_count = Department::forCompany($request)->count();
         $employees_count = Employee::count();
-        $asset_count = Asset::forCompany()->count();
+        $asset_count = Asset::forCompany($request)->count();
         $vendor_count = Vendor::count();
         return response()->json([
             'branch_count' => $branch_count,
@@ -41,7 +41,7 @@ class StatisticsController extends Controller
         $start_date =  $request->filled('start_date_nepali') ? DateHelper::nepaliToEnglish($request->start_date_nepali) : $request->start_date ?? null;
         $end_date = $request->filled('end_date_nepali') ? DateHelper::nepaliToEnglish($request->end_date_nepali) : $request->end_date ?? null;
 
-        $contract_counts = EmployeeContract::forCompany()
+        $contract_counts = EmployeeContract::forCompany($request)
             ->where(function ($query) use ($start_date, $end_date) {
                 if ($start_date) {
                     $query->whereDate('created_at', '>=', $start_date);
@@ -66,7 +66,7 @@ class StatisticsController extends Controller
 
         $branch_count = Branch::count();
         if($branch_count <= 1){
-            $employee_counts = Department::forCompany()
+            $employee_counts = Department::forCompany($request)
                 ->with(['employees' => function ($query) use ($start_date, $end_date) {
                     if ($start_date) {
                         $query->where('department_employees.joined_at', '>=', $start_date);
@@ -127,7 +127,7 @@ class StatisticsController extends Controller
         $start_date =  $request->filled('start_date_nepali') ? DateHelper::nepaliToEnglish($request->start_date_nepali) : $request->start_date ?? null;
         $end_date = $request->filled('end_date_nepali') ? DateHelper::nepaliToEnglish($request->end_date_nepali) : $request->end_date ?? null;
 
-        $asset_counts = Asset::forCompany()
+        $asset_counts = Asset::forCompany($request)
             ->where(function ($query) use ($start_date, $end_date) {
                 if ($start_date) {
                     $query->where('purchased_at', '>=', $start_date);
@@ -145,12 +145,12 @@ class StatisticsController extends Controller
         ], 200);
     }
 
-    public function getAssetList()
+    public function getAssetList($request)
     {
 
         $startOfMonth = Carbon::now()->startOfMonth()->toDateString();
         $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
-        $assets = Asset::forCompany()->whereBetween('purchased_at', [$startOfMonth, $endOfMonth])->latest()->take(5)->get();
+        $assets = Asset::forCompany($request)->whereBetween('purchased_at', [$startOfMonth, $endOfMonth])->latest()->take(5)->get();
 
         return AssetResource::collection($assets);
     }

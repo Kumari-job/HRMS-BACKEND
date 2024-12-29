@@ -39,7 +39,7 @@ class EmployeeEducationController extends Controller
             $employeeEducation->from_date = $from_date;
             $employeeEducation->to_date = $to_date;
             if ($request->hasFile('certificate')) {
-                $path = DirectoryPathHelper::educationDirectoryPath($company_id);
+                $path = DirectoryPathHelper::educationDirectoryPath($company_id, $request->employee_id);
                 $fileName = $this->fileUpload($request->file('certificate'), $path);
                 $employeeEducation->certificate = $fileName;
             }
@@ -67,7 +67,7 @@ class EmployeeEducationController extends Controller
             $data['from_date'] = $from_date;
             $data['to_date'] = $to_date;
             if ($request->hasFile('certificate')) {
-                $path = DirectoryPathHelper::educationDirectoryPath($company_id);
+                $path = DirectoryPathHelper::educationDirectoryPath($company_id, $employeeEducation->employee_id);
                 if ($employeeEducation->certificate) {
                     $this->fileDelete($path, $employeeEducation->certificate);
                 }
@@ -89,7 +89,7 @@ class EmployeeEducationController extends Controller
             return response()->json(['error' => true,'message'=>'Education not found'],404);
         }
         if ($employeeEducation->certificate) {
-            $path = DirectoryPathHelper::educationDirectoryPath($company_id);
+            $path = DirectoryPathHelper::educationDirectoryPath($company_id, $employeeEducation->employee_id);
             $this->fileDelete($path, $employeeEducation->certificate);
         }
         $employeeEducation->delete();

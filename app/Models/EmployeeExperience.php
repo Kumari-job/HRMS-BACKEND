@@ -28,7 +28,7 @@ class EmployeeExperience extends Model
     protected function experienceLetterPath(): Attribute
     {
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::experienceDirectoryPath($this->employee->company_id);
+        $imgPath = DirectoryPathHelper::experienceDirectoryPath($this->employee->company_id, $this->employee_id);
 
         if ($this->experience_letter && Storage::disk('public')->exists($imgPath . '/' . $this->experience_letter)) {
             $path = asset('storage/' . $imgPath . '/' . $this->experience_letter);

@@ -22,8 +22,9 @@ class EmployeeOnboardingController extends Controller
         try {
             $data = $request->except('shortlisted_at','offered_at','interviewed_at','joined_at');
             $shortlisted_at = $request->filled('shortlisted_at_nepali') ? DateHelper::nepaliToEnglish($request->shortlisted_at_nepali) : $request->shortlisted_at;
-            $offered_at = $request->filled('offered_at_nepali') ? DateHelper::nepaliToEnglish($request->offered_at_nepali) : $request->offered_at_nepali;
-            $interviewed_at = $request->filled('interviewed_at_nepali') ? DateHelper::nepaliToEnglish($request->interviewed_at_nepali) : $request->interviewed_at_nepali;
+            $offered_at = $request->filled('offered_at_nepali') ? DateHelper::nepaliToEnglish($request->offered_at_nepali) : $request->offered_at;
+            $interviewed_at = $request->filled('interviewed_at_nepali') ? DateHelper::nepaliToEnglish($request->interviewed_at_nepali) : $request->interviewed_at;
+            $joined_at = $request->filled('joined_at_nepali') ? DateHelper::nepaliToEnglish($request->joined_at_nepali) : $request->joined_at;
 
             $data['shortlisted_at'] = $shortlisted_at;
             $data['offered_at'] = $offered_at;

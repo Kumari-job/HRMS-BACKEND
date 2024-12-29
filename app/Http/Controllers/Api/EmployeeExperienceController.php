@@ -36,7 +36,7 @@ class EmployeeExperienceController extends Controller
         $data['to_date'] = $to_date;
         $employeeExperience->fill($data);
         if ($request->hasFile('experience_letter')) {
-            $path = DirectoryPathHelper::experienceDirectoryPath($company_id);
+            $path = DirectoryPathHelper::experienceDirectoryPath($company_id, $request->employee_id);
             $fileName = $this->fileUpload($request->file('experience_letter'), $path);
             $employeeExperience->experience_letter = $fileName;
         }
@@ -61,7 +61,7 @@ class EmployeeExperienceController extends Controller
             $data['to_date'] = $to_date;
 
             if ($request->hasFile('experience_letter')) {
-                $path = DirectoryPathHelper::experienceDirectoryPath($company_id);
+                $path = DirectoryPathHelper::experienceDirectoryPath($company_id, $employeeExperience->employee_id);
                 if ($employeeExperience->experience_letter) {
                     $this->fileDelete($path, $employeeExperience->experience_letter);
                 }
@@ -85,7 +85,7 @@ class EmployeeExperienceController extends Controller
             return response()->json(['error' => true,'message'=>'Experience not found'],404);
         }
         if ($employeeExperience->experience_letter) {
-            $path = DirectoryPathHelper::experienceDirectoryPath($company_id);
+            $path = DirectoryPathHelper::experienceDirectoryPath($company_id, $employeeExperience->employee_id);
             $this->fileDelete($path, $employeeExperience->experience_letter);
         }
         $employeeExperience->delete();

@@ -22,17 +22,15 @@ class EmployeeDocumentController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
+    // store and update 
     public function store(EmployeeDocumentRequest $request)
     {
         $company_id = Auth::user()->selectedCompany->company_id;
         $employee_id = $request->input('employee_id');
-        if(EmployeeDocument::where('employee_id',$employee_id)->exists()){
-            return response()->json(['error'=>true,'message'=>'Employee Document Already Exist'],403);
-        }
-        $employeeDocument = new EmployeeDocument($request->only(['employee_id']));
+
+        $employeeDocument = EmployeeDocument::updateOrCreate(['employee_id' => $employee_id], ['employee_id' => $employee_id]);
+
         if ($request->hasFile('citizenship_back')) {
             $path = DirectoryPathHelper::citizenshipBackDirectoryPath($company_id, $employee_id);
             $fileName = $this->fileUpload($request->file('citizenship_back'), $path);
@@ -60,7 +58,7 @@ class EmployeeDocumentController extends Controller
         }
         $employeeDocument->created_by = Auth::id();
         $employeeDocument->save();
-        return response()->json(['success' => true,'message'=>'Document added successfully.'],201);
+        return response()->json(['success' => true, 'message' => 'Document updated successfully.'], 201);
     }
 
     /**
@@ -76,7 +74,10 @@ class EmployeeDocumentController extends Controller
     public function update(EmployeeDocumentRequest $request, string $employee_id)
     {
         try {
-            $employeeDocument = EmployeeDocument::where('employee_id', $employee_id)->firstOrFail();
+            $employeeDocument = EmployeeDocument::where('employee_id', $employee_id)->first();
+            if (!$employeeDocument) {
+                return response()->json();
+            }
             $company_id = Auth::user()->selectedCompany->company_id;
             $documentsToUpdate = [
                 'citizenship_back' => DirectoryPathHelper::citizenshipBackDirectoryPath($company_id, $employee_id),
@@ -102,7 +103,7 @@ class EmployeeDocumentController extends Controller
                 $employeeDocument->update($data);
             }
             return response()->json(['success' => true, 'message' => 'Employee document updated successfully'], 200);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             Log::error("Unable to update Employee document: " . $e);
             return response()->json(['error' => true, 'message' => 'Unable to update the document'], 500);
         }

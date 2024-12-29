@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +34,7 @@ class AssetMaintenance extends Model
         return $this->belongsTo(User::class,'updated_by');
     }
 
-    public function scopeForCompany($query)
+    public function scopeForCompany(Builder $query)
     {
         if (Auth::check()) {
             $company_id = Auth::user()->selectedCompany->company_id;

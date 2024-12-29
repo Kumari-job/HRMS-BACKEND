@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
@@ -28,22 +29,22 @@ class EmployeeContract extends Model
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class,'employee_id');
+        return $this->belongsTo(Employee::class, 'employee_id');
     }
 
-    public function createdBy():BelongsTo
+    public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class,'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
-    public function updatedBy():BelongsTo
+    public function updatedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class,'updated_by');
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
-    public function scopeForCompany($query, Request $request)
+    public function scopeForCompany(Builder $query)
     {
         if (Auth::check()) {
-            $company_id = $request->input('company_id') ?? Auth::user()->selectedCompany->company_id;
+            $company_id = request('company_id') ?? Auth::user()->selectedCompany->company_id;
             $query->whereHas('employee', function ($query) use ($company_id) {
                 $query->where('company_id', $company_id);
             });

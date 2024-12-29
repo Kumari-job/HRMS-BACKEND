@@ -19,7 +19,7 @@ class AssetUsageController extends Controller
      */
     public function index(Request $request)
     {
-        $query = AssetUsage::with('assignedBy','asset')->forCompany();
+        $query = AssetUsage::with('assignedBy', 'employee:id,name', 'asset')->forCompany();
         $assetUsages = $query->latest()->paginate($request->page_size ?? 10);
         return AssetUsageResource::collection($assetUsages);
     }
@@ -38,10 +38,10 @@ class AssetUsageController extends Controller
             $assetUsage = new AssetUsage();
             $assetUsage->fill($data);
             $assetUsage->save();
-            return response()->json(['success' => true, 'message' => 'Asset usage created successfully'],201);
-        }catch (\Exception $exception){
+            return response()->json(['success' => true, 'message' => 'Asset usage created successfully'], 201);
+        } catch (\Exception $exception) {
             Log::error("Unable to store asset usage: {$exception->getMessage()}");
-            return response()->json(['error' => true, 'message' => "Unable to enter asset usage"],500);
+            return response()->json(['error' => true, 'message' => "Unable to enter asset usage"], 500);
         }
     }
 
@@ -50,9 +50,9 @@ class AssetUsageController extends Controller
      */
     public function show(string $id)
     {
-        $assetUsage = AssetUsage::with('assignedBy','employee','asset')->forCompany()->findOrFail($id);
-        if(!$assetUsage){
-            return response()->json(['error' => true, 'message' => 'Asset usage not found'],404);
+        $assetUsage = AssetUsage::with('assignedBy', 'employee', 'asset')->forCompany()->findOrFail($id);
+        if (!$assetUsage) {
+            return response()->json(['error' => true, 'message' => 'Asset usage not found'], 404);
         }
         return new AssetUsageResource($assetUsage);
     }
@@ -69,14 +69,14 @@ class AssetUsageController extends Controller
             $data['assigned_end_at'] = $assigned_end_at;
             $data['assigned_at'] = $assigned_at;
             $assetUsage = AssetUsage::forCompany()->find($id);
-            if(!$assetUsage){
-                return response()->json(['error' => true, 'message' => 'Asset usage not found'],404);
+            if (!$assetUsage) {
+                return response()->json(['error' => true, 'message' => 'Asset usage not found'], 404);
             }
             $assetUsage->update($data);
-            return response()->json(['success' => true, 'message' => 'Asset usage updated successfully'],200);
-        }catch (\Exception $exception){
+            return response()->json(['success' => true, 'message' => 'Asset usage updated successfully'], 200);
+        } catch (\Exception $exception) {
             Log::error("Unable to update asset usage: {$exception->getMessage()}");
-            return response()->json(['error' => true, 'message' => "Unable to update asset usage"],500);
+            return response()->json(['error' => true, 'message' => "Unable to update asset usage"], 500);
         }
     }
 
@@ -101,7 +101,7 @@ class AssetUsageController extends Controller
                 return response()->json(['success' => true, 'message' => 'Asset usages deleted successfully.'], 200);
             }
             return response()->json(['error' => true, 'message' => 'Asset usages not found.'], 400);
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             Log::error("Unable to delete asset usages " . $exception->getMessage());
             return response()->json(['error' => true, 'message' => 'Unable to delete asset usages'], 400);
         }

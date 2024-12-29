@@ -19,6 +19,7 @@ class EmployeeOnboardingResource extends JsonResource
         return [
             'id' => $this->id,
             'employee_id' => $this->employee_id,
+            'employment_type' => $this->employment_type,
             'shortlisted_at' => $this->shortlisted_at,
             'shortlisted_at_formatted' => $this->shortlisted_at ? Carbon::parse($this->shortlisted_at)->format('d M Y') : null,
             'shortlisted_at_nepali' => $this->shortlisted_at ? DateHelper::englishToNepali($this->shortlisted_at,'Y-m-d') : null,

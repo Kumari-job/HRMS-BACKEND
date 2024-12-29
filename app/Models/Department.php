@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -27,10 +28,10 @@ class Department extends Model
             ->withPivot(['designation', 'joined_at', 'created_at']);
     }
 
-    public function scopeForCompany($query, Request $request)
+    public function scopeForCompany(Builder $query)
     {
         if (Auth::check()) {
-            $company_id = $request->input('company_id') ??  Auth::user()->selectedCompany->company_id;
+            $company_id = request('company_id') ??  Auth::user()->selectedCompany->company_id;
             $query->whereHas('branch', function ($query) use ($company_id) {
                 $query->where('company_id', $company_id);
             });

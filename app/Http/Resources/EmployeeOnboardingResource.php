@@ -28,15 +28,15 @@ class EmployeeOnboardingResource extends JsonResource
             'interviewed_at_nepali' => $this->interviewed_at ? DateHelper::englishToNepali($this->interviewed_at,'Y-m-d') : null,
             'interviewed_at_nepali_formatted' => $this->interviewed_at ? DateHelper::englishToNepali($this->interviewed_at): null,
             'offered_at' => $this->offered_at,
-            'offered_at_formatted' => $this->interviewed_at ? Carbon::parse($this->offered_at)->format('d M Y') : null,
-            'offered_at_nepali' => $this->interviewed_at ? DateHelper::englishToNepali($this->offered_at,'Y-m-d') : null,
-            'offered_at_nepali_formatted' => $this->interviewed_at ? DateHelper::englishToNepali($this->offered_at): null,
+            'offered_at_formatted' => $this->offered_at ? Carbon::parse($this->offered_at)->format('d M Y') : null,
+            'offered_at_nepali' => $this->offered_at ? DateHelper::englishToNepali($this->offered_at,'Y-m-d') : null,
+            'offered_at_nepali_formatted' => $this->offered_at ? DateHelper::englishToNepali($this->offered_at): null,
             'offer_letter' => $this->offer_letter,
             'offered_by' => new UserResource($this->offeredBy),
             'joined_at' => $this->joined_at,
-            'joined_at_formatted' => $this->interviewed_at ? Carbon::parse($this->joined_at)->format('d M Y') : null,
-            'joined_at_nepali' => $this->interviewed_at ? DateHelper::englishToNepali($this->joined_at,'Y-m-d') : null,
-            'joined_at_nepali_formatted' => $this->interviewed_at ? DateHelper::englishToNepali($this->joined_at): null,
+            'joined_at_formatted' => $this->joined_at ? Carbon::parse($this->joined_at)->format(format: 'd M Y') : null,
+            'joined_at_nepali' => $this->joined_at ? DateHelper::englishToNepali($this->joined_at,'Y-m-d') : null,
+            'joined_at_nepali_formatted' => $this->joined_at ? DateHelper::englishToNepali($this->joined_at): null,
             'employee_type' => $this->employee_type
         ];
     }

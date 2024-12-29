@@ -19,7 +19,7 @@ class AssetUsageController extends Controller
      */
     public function index(Request $request)
     {
-        $query = AssetUsage::with('assignedBy', 'employee:id,name', 'asset')->forCompany();
+        $query = AssetUsage::with('assignedBy', 'employee:id,name,image', 'asset')->forCompany();
         $assetUsages = $query->latest()->paginate($request->page_size ?? 10);
         return AssetUsageResource::collection($assetUsages);
     }

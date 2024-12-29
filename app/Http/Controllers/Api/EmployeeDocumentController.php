@@ -102,8 +102,8 @@ class EmployeeDocumentController extends Controller
                 $employeeDocument->update($data);
             }
             return response()->json(['success' => true, 'message' => 'Employee document updated successfully'], 200);
-        }catch (\Exception $exception){
-            Log::error("Unable to update Employee document: " . $exception->getMessage());
+        }catch (\Exception $e){
+            Log::error("Unable to update Employee document: " . $e);
             return response()->json(['error' => true, 'message' => 'Unable to update the document'], 500);
         }
     }

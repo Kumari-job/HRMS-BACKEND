@@ -8,9 +8,12 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AuthenticationController extends Controller
 {
+
+    // temp 
     public function storeIdpUserID(Request $request): JsonResponse
     {
         $request->validate([
@@ -31,6 +34,30 @@ class AuthenticationController extends Controller
         $user->save();
 
         return response()->json(['success' => true, 'message' => 'User added in TMS application'], 201);
+    }
+
+
+    public function syncIdpUser(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'idp_user_id' => 'required',
+            'name' => 'required',
+            'email' => 'required|email',
+            'mobile' => 'nullable',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => 'Unprocessable content.'], 422);
+        }
+
+        User::updateOrCreate(['idp_user_id' => $request->idp_user_id], [
+            'idp_user_id' => $request->idp_user_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'mobile' => $request->mobile,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'User synced successfully.'], 201);
     }
 
     public function generateAccessToken(Request $request)
@@ -71,7 +98,7 @@ class AuthenticationController extends Controller
                     )->toDateTimeString()
                 ]
             ], 200);
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             Log::error('Unable to generate access token: ' . $exception->getMessage());
         }
     }

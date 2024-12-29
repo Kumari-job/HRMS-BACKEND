@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\DirectoryPathHelper;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -118,10 +119,10 @@ class Asset extends Model
         );
     }
 
-    public function scopeForCompany($query, Request $request)
+    public function scopeForCompany(Builder $query)
     {
         if (Auth::check()) {
-            $company_id = $request->input('company_id') ?? Auth::user()->selectedCompany->company_id;
+            $company_id = request('company_id') ?? Auth::user()->selectedCompany->company_id;
             $query->whereHas('assetCategory', function ($query) use ($company_id) {
                 $query->where('company_id', $company_id);
             });

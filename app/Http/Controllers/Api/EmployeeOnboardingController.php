@@ -29,6 +29,7 @@ class EmployeeOnboardingController extends Controller
             $data['shortlisted_at'] = $shortlisted_at;
             $data['offered_at'] = $offered_at;
             $data['interviewed_at'] = $interviewed_at;
+            $data['joined_at'] = $joined_at;
 
             $employeeOnboarding = new EmployeeOnboarding();
             $employeeOnboarding->fill($data);
@@ -52,10 +53,12 @@ class EmployeeOnboardingController extends Controller
             $shortlisted_at = $request->filled('shortlisted_at_nepali') ? DateHelper::nepaliToEnglish($request->shortlisted_at_nepali) : $request->shortlisted_at;
             $offered_at = $request->filled('offered_at_nepali') ? DateHelper::nepaliToEnglish($request->offered_at_nepali) : $request->offered_at;
             $interviewed_at = $request->filled('interviewed_at_nepali') ? DateHelper::nepaliToEnglish($request->interviewed_at_nepali) : $request->interviewed_at;
+            $joined_at = $request->filled('joined_at_nepali') ? DateHelper::nepaliToEnglish($request->joined_at_nepali) : $request->joined_at;
 
             $data['shortlisted_at'] = $shortlisted_at;
             $data['offered_at'] = $offered_at;
             $data['interviewed_at'] = $interviewed_at;
+            $data['joined_at'] = $joined_at;
             $data['updated_by'] = Auth::id();
             $employeeOnboarding->update($data);
             return response()->json(['success' => true, 'message' => 'Employee Onboarding updated successfully.'], 200);

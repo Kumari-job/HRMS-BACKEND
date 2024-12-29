@@ -26,7 +26,7 @@ class EmployeeEducation extends Model
     protected function certificatePath(): Attribute
     {
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::educationDirectoryPath($this->employee->company_id);
+        $imgPath = DirectoryPathHelper::educationDirectoryPath($this->employee->company_id, $this->employee_id);
 
         if ($this->certificate && Storage::disk('public')->exists($imgPath . '/' . $this->certificate)) {
             $path = asset('storage/' . $imgPath . '/' . $this->certificate);

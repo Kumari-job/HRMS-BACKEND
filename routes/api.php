@@ -30,11 +30,15 @@ use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
+// temp 
 Route::post('users/store-idp-user-id', [AuthenticationController::class, 'storeIdpUserID'])->middleware('verify_common_token');
-;
 Route::post('users/generate-access-token', [AuthenticationController::class, 'generateAccessToken'])->middleware('verify_common_token');
-;
+
+// client sync and access token 
+Route::group(['middleware' => 'client'], function () {
+    Route::post('sync-user', [AuthenticationController::class, 'syncIdpUser']);
+    Route::post('access-token', [AuthenticationController::class, 'generateAccessToken']);
+});
 
 
 Route::group(['middleware' => 'auth:api'], function () {
@@ -135,7 +139,6 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::get('list/{employee_id}', [EmployeeEducationController::class, 'index']);
             Route::post('update/{id}', [EmployeeEducationController::class, 'update']);
             Route::post('destroy/{id}', [EmployeeEducationController::class, 'destroy']);
-
         });
 
         Route::prefix('family')->group(function () {
@@ -215,8 +218,6 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post('update/{id}', [AssetUsageController::class, 'update']);
             Route::post('destroy', [AssetUsageController::class, 'destroy']);
         });
-
-
     });
 
     Route::prefix('statistics')->group(function () {

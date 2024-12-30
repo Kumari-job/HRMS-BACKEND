@@ -30,14 +30,13 @@ class AssetUsageController extends Controller
     public function store(AssetUsageRequest $request)
     {
         try {
-            $data = $request->validated();
+            $data = $request->all();
             $assigned_at = $request->filled('assigned_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_at_nepali) : $request->assigned_at;
             $assigned_end_at = $request->filled('assigned_end_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_end_at_nepali) : $request->assigned_end_at;
             $data['assigned_end_at'] = $assigned_end_at;
             $data['assigned_at'] = $assigned_at;
-            $assetUsage = new AssetUsage();
-            $assetUsage->fill($data);
-            $assetUsage->save();
+            
+            AssetUsage::create($data);
             return response()->json(['success' => true, 'message' => 'Asset usage created successfully'], 201);
         } catch (\Exception $exception) {
             Log::error("Unable to store asset usage: {$exception->getMessage()}");
@@ -65,9 +64,10 @@ class AssetUsageController extends Controller
         try {
             $data = $request->validated();
             $assigned_at = $request->filled('assigned_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_at_nepali) : $request->assigned_at;
-            $assigned_end_at = $request->filled('assigned_end_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_end_at_nepali) : $request->assigned_end_at_nepali;
+            $assigned_end_at = $request->filled('assigned_end_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_end_at_nepali) : $request->assigned_end_at;
             $data['assigned_end_at'] = $assigned_end_at;
             $data['assigned_at'] = $assigned_at;
+            
             $assetUsage = AssetUsage::forCompany()->find($id);
             if (!$assetUsage) {
                 return response()->json(['error' => true, 'message' => 'Asset usage not found'], 404);

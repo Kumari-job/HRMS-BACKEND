@@ -41,7 +41,7 @@ class AuthenticationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'idp_user_id' => 'required',
-            'name' => 'required',
+            'name' => 'nullable',
             'email' => 'required|email',
             'mobile' => 'nullable',
         ]);

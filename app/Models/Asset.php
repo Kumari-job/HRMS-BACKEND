@@ -71,7 +71,7 @@ class Asset extends Model
     {
         $company_id = Auth::user()->selectedCompany->company_id;
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($company_id);
+        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($company_id, $this->id);
 
 
         if ($this->warranty_image && Storage::disk('public')->exists($imgPath . '/' . $this->warranty_image)) {
@@ -105,7 +105,7 @@ class Asset extends Model
     {
         $company_id = Auth::user()->selectedCompany->company_id;
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($company_id);
+        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($company_id, $this->id);
 
 
         if ($this->guarantee_image && Storage::disk('public')->exists($imgPath . '/' . $this->guarantee_image)) {

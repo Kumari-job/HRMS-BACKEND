@@ -12,6 +12,27 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+
+    public function index(Request $request)
+    {
+        $query = User::query();
+
+        if (!empty($request->except('page', 'page_size'))) {
+            foreach ($request->except('page', 'page_size') as $key => $value) {
+                if (isset($value) && !empty($value)) {
+                    if (in_array($key, ['id', 'idp_user_id'])) {
+                        $query->where($key, $value);
+                    } else {
+                        $query->where($key, 'LIKE', '%' . $value . '%');
+                    }
+                }
+            }
+        }
+
+        $users = $query->latest()->paginate($request->page_size ?? 10);
+        return UserResource::collection($users);
+    }
+
     public function profile()
     {
         $id = Auth::id();

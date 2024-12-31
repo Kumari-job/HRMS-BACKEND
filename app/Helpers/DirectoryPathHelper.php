@@ -43,22 +43,24 @@ class DirectoryPathHelper
         return "companies/company_" . $company_id . "/employee_" . $employee_id . "/images";
     }
 
-    public static function warrantyImageDirectoryPath(int $company_id): string
-    {
-        return "companies/company_" . $company_id . "/assets/warranty/image";
-    }
-    public static function guaranteeImageDirectoryPath(int $company_id): string
-    {
-        return "companies/company_" . $company_id . "/assets/guarantee/image";
-    }
-
     public static function employeeImportDirectoryPath(int $company_id): string
     {
         return "companies/company_" . $company_id . "/employee_import";
     }
 
-    public static function assetImageDirectoryPath(int $company_id): string
+
+
+    public static function assetImageDirectoryPath(int $company_id, int $asset_id): string
     {
-        return "companies/company_" . $company_id . "/assets/image";
+        return "companies/company_" . $company_id . "/asset_$asset_id/image";
+    }
+
+    public static function warrantyImageDirectoryPath(int $company_id, int $asset_id): string
+    {
+        return "companies/company_" . $company_id . "/asset_$asset_id/warranty";
+    }
+    public static function guaranteeImageDirectoryPath(int $company_id, int $asset_id): string
+    {
+        return "companies/company_" . $company_id . "/asset_$asset_id/guarantee";
     }
 }

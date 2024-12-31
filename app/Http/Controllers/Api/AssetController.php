@@ -76,6 +76,7 @@ class AssetController extends Controller
                 $fileName = $this->fileUpload($request->file('image'), $path);
                 $asset->image = $fileName;
             }
+            $asset->save();
 
             return response()->json(['success' => true, 'message' => 'Asset created successfully'], 201);
         } catch (Exception $e) {

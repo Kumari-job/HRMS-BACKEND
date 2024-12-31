@@ -43,7 +43,11 @@ Route::group(['middleware' => 'client'], function () {
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [AuthenticationController::class, 'logout']);
-    Route::get('profile', [UserController::class, 'profile']);
+
+    Route::prefix('user')->group(function () {
+        Route::get('list', [UserController::class, 'index']);
+        Route::get('profile', [UserController::class, 'profile']);
+    });
 
 
     Route::post('select-company', [SelectedCompanyController::class, 'selectCompany']);

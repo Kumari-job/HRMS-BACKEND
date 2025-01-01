@@ -14,6 +14,7 @@ class EmployeeContract extends Model
     public $fillable = [
         'employee_id',
         'contract_type',
+        'probation_end_at',
         'job_description',
         'gross_salary',
         'basic_salary',

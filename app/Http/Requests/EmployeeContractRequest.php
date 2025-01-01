@@ -26,6 +26,7 @@ class EmployeeContractRequest extends FormRequest
         return [
             'employee_id' => 'required|integer|exists:employees,id',
             'contract_type' => 'required|string',
+            'probation_end_at' => 'nullable|date',
             'job_description' => 'required|string',
             'gross_salary' => 'nullable|numeric',
             'basic_salary' => 'nullable|numeric',

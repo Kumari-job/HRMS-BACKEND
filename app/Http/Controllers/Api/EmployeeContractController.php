@@ -7,6 +7,7 @@ use App\Http\Requests\EmployeeBenefitRequest;
 use App\Http\Requests\EmployeeContractRequest;
 use App\Models\EmployeeBenefit;
 use App\Models\EmployeeContract;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +30,7 @@ class EmployeeContractController extends Controller
             $employeeBenefit->save();
 
             return response()->json(['success'=>true ,'message'=>'Employee contract created successfully.'], 201);
-        }catch (\Exception $exception){
+        }catch (Exception $exception){
             Log::error('Unable to store Employee Contract: '.$exception->getMessage());
             return response()->json(['error'=>true,'message'=>'Unable to create employee contract'],400);
         }
@@ -47,7 +48,7 @@ class EmployeeContractController extends Controller
             $data['updated_by'] = Auth::id();
             $employeeContract->update($data);
             return response()->json(['success'=>true ,'message'=>'Employee contract updated successfully.'], 200);
-        }catch (\Exception $exception){
+        }catch (Exception $exception){
             Log::error('Unable to update Employee Contract: '.$exception->getMessage());
             return response()->json(['error'=>true,'message'=>'Unable to update employee contract'],400);
         }
@@ -62,7 +63,7 @@ class EmployeeContractController extends Controller
             }
             $employeeContract->delete();
             return response()->json(['success'=>true ,'message'=>'Employee contract deleted successfully.'], 200);
-        }catch (\Exception $exception){
+        }catch (Exception $exception){
             Log::error('Unable to delete Employee Contract: '.$exception->getMessage());
             return response()->json(['error'=>true,'message'=>'Unable to delete employee contract'], 400);
         }

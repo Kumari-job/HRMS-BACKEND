@@ -18,60 +18,60 @@ class Asset extends Model
     public $table = 'assets';
 
     public $fillable = [
-      'asset_category_id',
-      'vendor_id',
-      'code',
-      'title',
-      'description',
-      'brand',
-      'cost',
-      'model',
-      'serial_number',
-      'purchased_at',
-      'warranty_end_at',
+        'asset_category_id',
+        'vendor_id',
+        'code',
+        'title',
+        'description',
+        'brand',
+        'cost',
+        'model',
+        'serial_number',
+        'purchased_at',
+        'warranty_end_at',
         'warranty_image',
         'guarantee_end_at',
         'guarantee_image',
         'status',
-      'image'
+        'image'
     ];
 
-    public function assetCategory():BelongsTo
+    public function assetCategory(): BelongsTo
     {
-        return $this->belongsTo(AssetCategory::class,'asset_category_id');
+        return $this->belongsTo(AssetCategory::class, 'asset_category_id');
     }
-    public function vendor():BelongsTo
+    public function vendor(): BelongsTo
     {
-        return $this->belongsTo(Vendor::class,'vendor_id');
-    }
-
-    public function assetDispose():HasOne
-    {
-        return $this->hasOne(AssetDispose::class,'asset_id');
-    }
-    public function createdBy():BelongsTo
-    {
-        return $this->belongsTo(User::class,'created_by');
-    }
-    public function updatedBy():BelongsTo
-    {
-        return $this->belongsTo(User::class,'updated_by');
+        return $this->belongsTo(Vendor::class, 'vendor_id');
     }
 
-    public function assetMaintenances():HasMany
+    public function assetDispose(): HasOne
     {
-        return $this->hasMany(AssetMaintenance::class,'asset_id');
+        return $this->hasOne(AssetDispose::class, 'asset_id');
+    }
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
-    public function assetUsages():HasMany
+    public function assetMaintenances(): HasMany
     {
-        return $this->hasMany(AssetUsage::class,'asset_id');
+        return $this->hasMany(AssetMaintenance::class, 'asset_id');
+    }
+
+    public function assetUsages(): HasMany
+    {
+        return $this->hasMany(AssetUsage::class, 'asset_id');
     }
     protected function warrantyImagePath(): Attribute
     {
         $company_id = Auth::user()->selectedCompany->company_id;
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($company_id);
+        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($company_id, $this->id);
 
 
         if ($this->warranty_image && Storage::disk('public')->exists($imgPath . '/' . $this->warranty_image)) {
@@ -81,14 +81,14 @@ class Asset extends Model
         }
 
         return Attribute::make(
-            get: fn () => $path
+            get: fn() => $path
         );
     }
     protected function imagePath(): Attribute
     {
         $company_id = Auth::user()->selectedCompany->company_id;
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::assetImageDirectoryPath($company_id);
+        $imgPath = DirectoryPathHelper::assetImageDirectoryPath($company_id, $this->id);
 
 
         if ($this->image && Storage::disk('public')->exists($imgPath . '/' . $this->image)) {
@@ -98,14 +98,14 @@ class Asset extends Model
         }
 
         return Attribute::make(
-            get: fn () => $path
+            get: fn() => $path
         );
     }
     protected function guaranteeImagePath(): Attribute
     {
         $company_id = Auth::user()->selectedCompany->company_id;
         $defaultPath = asset('assets/images/image.jpg');
-        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($company_id);
+        $imgPath = DirectoryPathHelper::warrantyImageDirectoryPath($company_id, $this->id);
 
 
         if ($this->guarantee_image && Storage::disk('public')->exists($imgPath . '/' . $this->guarantee_image)) {
@@ -115,7 +115,7 @@ class Asset extends Model
         }
 
         return Attribute::make(
-            get: fn () => $path
+            get: fn() => $path
         );
     }
 

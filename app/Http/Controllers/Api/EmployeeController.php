@@ -14,6 +14,7 @@ use App\Imports\EmployeeImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
@@ -244,5 +245,16 @@ class EmployeeController extends Controller
             Log::error("Unable to import employee import: " . $exception->getMessage());
             return response()->json(['error' => true, 'message' => "Unable to import employee"], 422);
         }
+    }
+
+    public function downloadSample()
+    {
+        $filePath = 'samples/EmployeeSample.xlsx';
+
+        if (!Storage::disk('public')->exists($filePath)) {
+            return response()->json(['message' => 'File not found.'], 404);
+        }
+
+        return Storage::disk('public')->download($filePath, 'EmployeeSample.xlsx');
     }
 }

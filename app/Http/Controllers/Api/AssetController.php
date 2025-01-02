@@ -22,19 +22,62 @@ class AssetController extends Controller
 
     public function index(Request $request)
     {
-        $company_id = Auth::user()->selectedCompany->company_id;
         $query = Asset::forCompany()->with('assetCategory', 'vendor');
 
-        if (!empty($request->except('page', 'page_size'))) {
-            foreach ($request->except('page', 'page_size') as $key => $value) {
+        if (!empty($request->except('page', 'page_size','under_maintenance','not_under_maintenance','asset_assigned','no_asset_assigned','sold','not_sold','not_disposed'))) {
+            foreach ($request->except('page', 'page_size','under_maintenance','not_under_maintenance','asset_assigned','no_asset_assigned','sold','not_sold','disposed','not_disposed') as $key => $value) {
                 if (isset($value) && !empty($value)) {
                     if (in_array($key, ['id'])) {
                         $query->where($key, $value);
-                    } else {
+                    }
+                    else {
                         $query->where($key, 'LIKE', '%' . $value . '%');
                     }
                 }
             }
+        }
+        $maintenanceQuery = function ($query) {
+            $query->where(function ($q) {
+                $q->whereNull('end_date')
+                    ->orWhere(function ($q) {
+                        $q->whereDate('start_date', '<=', now())
+                            ->whereDate('end_date', '>=', now());
+                    });
+            });
+        };
+
+        if ($request->has('under_maintenance')) {
+            $query->whereHas('assetMaintenances', $maintenanceQuery);
+        }
+        if ($request->has('not_under_maintenance')) {
+            $query->whereDoesntHave('assetMaintenances', $maintenanceQuery);
+        }
+        $usageQuery = function ($query) {
+            $query->where(function ($q) {
+                $q->whereNull('assigned_end_at')
+                    ->orWhere(function ($q) {
+                        $q->whereDate('assigned_at', '<=', now())
+                            ->whereDate('assigned_end_at', '>=', now());
+                    });
+            });
+        };
+        if ($request->has('asset_assigned')) {
+            $query->whereHas('assetUsages', $usageQuery);
+        }
+        if ($request->has('no_asset_assigned')) {
+            $query->whereDoesntHave('assetUsages', $usageQuery);
+        }
+        if ($request->has('sold')) {
+            $query->whereHas('assetSale');
+        }
+        if ($request->has('not_sold')) {
+            $query->whereDoesntHave('assetSale');
+        }
+        if ($request->has('disposed')) {
+            $query->whereHas('assetDispose');
+        }
+        if ($request->has('not_disposed')) {
+            $query->whereDoesntHave('assetDispose');
         }
         $assets = $query->latest()->paginate($request->page_size ?? 10);
         return AssetResource::collection($assets);

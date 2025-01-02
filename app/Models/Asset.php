@@ -49,6 +49,10 @@ class Asset extends Model
     {
         return $this->hasOne(AssetDispose::class, 'asset_id');
     }
+    public function assetSale(): HasOne
+    {
+        return $this->hasOne(AssetSale::class, 'asset_id');
+    }
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

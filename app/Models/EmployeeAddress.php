@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class EmployeeAddress extends Model
 {
+    use LogsActivity;
     protected $table = 'employee_addresses';
 
     protected $fillable = [
@@ -29,6 +32,12 @@ class EmployeeAddress extends Model
         't_zip_code',
     ];
 
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An employee address has been {$eventName}")
+            ->logOnly(['employee.name','employee_id']);
+    }
     public function employee():BelongsTo
     {
         return $this->belongsTo(Employee::class,'employee_id');

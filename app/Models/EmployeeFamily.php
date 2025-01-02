@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class EmployeeFamily extends Model
 {
+    use LogsActivity;
     protected $table = 'employee_families';
     protected $fillable = [
       'employee_id',
@@ -15,7 +18,12 @@ class EmployeeFamily extends Model
       'mobile',
       'email',
     ];
-
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An employee family has been {$eventName}")
+            ->logOnly(['employee.name','employee_id']);
+    }
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class,'employee_id');

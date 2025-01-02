@@ -23,10 +23,10 @@ class SelectedCompanyController extends Controller
             return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
         }
         $user_id = Auth::id();
-        $selectCompany = SelectedCompany::where('user_id', $user_id)->where('company_id',$request->company_id)->first();
+        $selectCompany = SelectedCompany::where('user_id', $user_id)->first();
         if ($selectCompany) {
             $selectCompany->company_id = $request->company_id;
-            $selectCompany->save();
+            $selectCompany->update();
             return response()->json(['success' => true, 'message' => 'Company changed successfully!'], 200);
         }
 

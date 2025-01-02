@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use function Laravel\Prompts\select;
 
 #[ScopedBy([CompanyScope::class])]
 class Employee extends Model
@@ -100,6 +101,11 @@ class Employee extends Model
         return $this->belongsToMany(Department::class,'department_employees','employee_id','department_id')
                     ->withPivot(['id','designation', 'joined_at', 'created_at'])
                     ->select(['departments.*']);
+    }
+
+    public function assetUsages(): HasMany
+    {
+        return $this->hasMany(AssetUsage::class,'employee_id',);
     }
 
     public function getTotalExperienceAttribute()

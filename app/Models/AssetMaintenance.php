@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class AssetMaintenance extends Model
 {
+    use LogsActivity;
     protected $table = 'asset_maintenances';
 
     protected $fillable = [
@@ -19,6 +22,12 @@ class AssetMaintenance extends Model
         'cost',
         'details',
     ];
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An asset maintenance has been {$eventName}")
+            ->logOnly(['asset.title','asset.code','problem','cost','start_date','end_date']);
+    }
     public function asset(): BelongsTo
     {
         return $this->belongsTo(Asset::class,'asset_id');

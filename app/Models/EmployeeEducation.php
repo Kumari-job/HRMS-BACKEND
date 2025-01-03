@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class EmployeeEducation extends Model
 {
+    use LogsActivity;
     protected $table = 'employee_education';
 
     protected $fillable = [
@@ -22,7 +25,12 @@ class EmployeeEducation extends Model
         'from_date',
         'to_date',
     ];
-
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An employee education has been {$eventName}")
+            ->logOnly(['employee.name','employee_id']);
+    }
     protected function certificatePath(): Attribute
     {
         $defaultPath = asset('assets/images/image.jpg');

@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class AssetSale extends Model
 {
+    use LogsActivity;
     protected $table = 'asset_sales';
 
     protected $fillable = [
@@ -18,7 +21,12 @@ class AssetSale extends Model
         'sold_to',
         'sold_by'
     ];
-
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An asset sale has been {$eventName}")
+            ->logOnly(['asset.title','asset.code','price']);
+    }
     public function asset(): BelongsTo
     {
         return $this->belongsTo(Asset::class,'asset_id');

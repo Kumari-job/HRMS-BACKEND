@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class EmployeeContract extends Model
 {
+    use LogsActivity;
     public $table = 'employee_contracts';
     public $fillable = [
         'employee_id',
@@ -27,7 +30,12 @@ class EmployeeContract extends Model
         'created_by',
         'updated_by',
     ];
-
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An employee contract has been {$eventName}")
+            ->logOnly(['employee.name','employee_id']);
+    }
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');

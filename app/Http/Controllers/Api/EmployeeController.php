@@ -14,6 +14,7 @@ use App\Imports\EmployeeImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
@@ -59,14 +60,13 @@ class EmployeeController extends Controller
 
         $employee->fill($data);
         $employee->company_id = $company_id;
-        $employee->save();
 
         if ($request->hasFile('image')) {
             $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id,$employee->id);
             $fileName = $this->fileUpload($request->file('image'), $path);
             $employee->image = $fileName;
         }
-        $employee->update();
+        $employee->save();
         return response()->json(['success'=>true,"message"=>"Employee added successfully",'id'=>$employee->id],201);
     }
 
@@ -75,8 +75,7 @@ class EmployeeController extends Controller
      */
     public function show(string $id)
     {
-        $employee = Employee::with(['employeeAddress','employeeBenefit','employeeContracts','employeeDocument','employeeEducations','employeeExperiences','employeeFamilies','employeeOnboardings','employeeBanks','departments'])->find($id);
-
+        $employee = Employee::with(['employeeAddress','employeeBenefit','employeeContracts','employeeDocument','employeeEducations','employeeExperiences','employeeFamilies','employeeOnboardings','employeeBanks','departments','assetUsages.asset:id,title,image,code,description,brand,model,serial_number,status'])->find($id);
         if(!$employee){
             return response()->json(['error'=>true,"message"=>"Employee not found"],404);
         }
@@ -245,5 +244,16 @@ class EmployeeController extends Controller
             Log::error("Unable to import employee import: " . $exception->getMessage());
             return response()->json(['error' => true, 'message' => "Unable to import employee"], 422);
         }
+    }
+
+    public function downloadSample()
+    {
+        $filePath = 'samples/EmployeeSample.xlsx';
+
+        if (!Storage::disk('public')->exists($filePath)) {
+            return response()->json(['message' => 'File not found.'], 404);
+        }
+
+        return Storage::disk('public')->download($filePath, 'EmployeeSample.xlsx');
     }
 }

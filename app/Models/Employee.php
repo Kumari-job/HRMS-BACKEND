@@ -14,11 +14,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
+use function Laravel\Prompts\select;
 
 #[ScopedBy([CompanyScope::class])]
 class Employee extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, LogsActivity;
     protected $fillable = [
         'company_id',
         'name',
@@ -32,6 +35,13 @@ class Employee extends Model
         'blood_group',
         'religion',
     ];
+
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An employee has been {$eventName}")
+            ->logOnly(['name','id','email','mobile','address']);
+    }
 
     protected function imagePath(): Attribute
     {
@@ -100,6 +110,11 @@ class Employee extends Model
         return $this->belongsToMany(Department::class,'department_employees','employee_id','department_id')
                     ->withPivot(['id','designation', 'joined_at', 'created_at'])
                     ->select(['departments.*']);
+    }
+
+    public function assetUsages(): HasMany
+    {
+        return $this->hasMany(AssetUsage::class,'employee_id',);
     }
 
     public function getTotalExperienceAttribute()

@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class EmployeeBenefit extends Model
 {
+    use LogsActivity;
     protected $table = 'employee_benefits';
 
     protected $fillable = [
@@ -19,6 +22,12 @@ class EmployeeBenefit extends Model
       'updated_by',
     ];
 
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An employee benefit has been {$eventName}")
+            ->logOnly(['employee.name','employee_id']);
+    }
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);

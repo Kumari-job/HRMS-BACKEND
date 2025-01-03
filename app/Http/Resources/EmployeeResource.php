@@ -18,6 +18,7 @@ class EmployeeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'general_information' => [
                 'id' => $this->id,
                 'name' => $this->name,
@@ -46,6 +47,7 @@ class EmployeeResource extends JsonResource
             'employee_onboarding' => EmployeeOnboardingResource::collection($this->whenLoaded('employeeOnboardings')),
             'employee_banks' => EmployeeBankResource::collection($this->whenLoaded('employeeBanks')),
             'department_employee' => DepartmentEmployeeResource::collection($this->whenLoaded('departments')),
+            'asset_usage' => AssetUsageResource::collection($this->whenLoaded('assetUsages')),
         ];
     }
 }

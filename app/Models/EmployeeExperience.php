@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class EmployeeExperience extends Model
 {
+    use LogsActivity;
     protected $table = 'employee_experiences';
 
     protected $fillable = [
@@ -25,6 +28,12 @@ class EmployeeExperience extends Model
         'updated_by',
     ];
 
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An employee experience has been {$eventName}")
+            ->logOnly(['employee.name','employee_id']);
+    }
     protected function experienceLetterPath(): Attribute
     {
         $defaultPath = asset('assets/images/image.jpg');

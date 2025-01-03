@@ -60,14 +60,13 @@ class EmployeeController extends Controller
 
         $employee->fill($data);
         $employee->company_id = $company_id;
-        $employee->save();
 
         if ($request->hasFile('image')) {
             $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id,$employee->id);
             $fileName = $this->fileUpload($request->file('image'), $path);
             $employee->image = $fileName;
         }
-        $employee->update();
+        $employee->save();
         return response()->json(['success'=>true,"message"=>"Employee added successfully",'id'=>$employee->id],201);
     }
 

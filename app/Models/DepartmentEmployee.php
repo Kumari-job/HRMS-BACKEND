@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class DepartmentEmployee extends Model
 {
+    use LogsActivity;
     protected $table = 'department_employees';
 
     protected $fillable = [
@@ -20,6 +23,12 @@ class DepartmentEmployee extends Model
       'created_by'
     ];
 
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "A department employee has been {$eventName}")
+            ->logOnly(['department.name','employee.name','designation']);
+    }
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class,'department_id');

@@ -10,13 +10,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Department extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, LogsActivity;
     protected $guarded = [];
 
-
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "A department has been {$eventName}")
+            ->logOnly(['branch.name','name']);
+    }
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');

@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Asset extends Model
 {
+    use LogsActivity;
     public $table = 'assets';
 
     public $fillable = [
@@ -35,7 +38,12 @@ class Asset extends Model
         'status',
         'image'
     ];
-
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An asset has been {$eventName}")
+            ->logOnly(['code','title','description','brand']);
+    }
     public function assetCategory(): BelongsTo
     {
         return $this->belongsTo(AssetCategory::class, 'asset_category_id');

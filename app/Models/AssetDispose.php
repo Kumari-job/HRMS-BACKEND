@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class AssetDispose extends Model
 {
+    use LogsActivity;
     protected $table = 'asset_dispose';
 
     protected $fillable = [
@@ -18,6 +21,12 @@ class AssetDispose extends Model
         'disposed_by',
     ];
 
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An asset dispose has been {$eventName}")
+            ->logOnly(['details','asset.title','asset.code','disposed_at']);
+    }
     public function scopeForCompany(Builder $query)
     {
         if (Auth::check()) {

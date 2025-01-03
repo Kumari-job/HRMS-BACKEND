@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class EmployeeOnboarding extends Model
 {
+    use LogsActivity;
     protected $table = 'employee_onboardings';
 
     protected $fillable = [
@@ -21,6 +24,12 @@ class EmployeeOnboarding extends Model
         'created_by',
         'updated_by',
     ];
+    public function getActivitylogOptions():LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "An employee address has been {$eventName}")
+            ->logOnly(['employee.name','employee_id']);
+    }
 
     public function offeredBy(): BelongsTo
     {

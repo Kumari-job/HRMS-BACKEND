@@ -30,15 +30,15 @@ class StatisticsController extends Controller
         return response()->json([
             'branch_count' => $branch_count,
             'employees_count' => $employees_count,
-            'department_count'=> $department_count,
+            'department_count' => $department_count,
             'asset_count' => $asset_count,
             'vendor_count' => $vendor_count,
-        ],200);
+        ], 200);
     }
 
     public function getContractCounts(DateRequest $request)
     {
-        $start_date =  $request->filled('start_date_nepali') ? DateHelper::nepaliToEnglish($request->start_date_nepali) : $request->start_date ?? null;
+        $start_date = $request->filled('start_date_nepali') ? DateHelper::nepaliToEnglish($request->start_date_nepali) : $request->start_date ?? null;
         $end_date = $request->filled('end_date_nepali') ? DateHelper::nepaliToEnglish($request->end_date_nepali) : $request->end_date ?? null;
 
         $contract_counts = EmployeeContract::forCompany()
@@ -61,20 +61,22 @@ class StatisticsController extends Controller
 
     public function getEmployeeCountsByBranch(DateRequest $request)
     {
-        $start_date =  $request->filled('start_date_nepali') ? DateHelper::nepaliToEnglish($request->start_date_nepali) : $request->start_date ?? null;
+        $start_date = $request->filled('start_date_nepali') ? DateHelper::nepaliToEnglish($request->start_date_nepali) : $request->start_date ?? null;
         $end_date = $request->filled('end_date_nepali') ? DateHelper::nepaliToEnglish($request->end_date_nepali) : $request->end_date ?? null;
 
         $branch_count = Branch::count();
-        if($branch_count <= 1){
+        if ($branch_count <= 1) {
             $employee_counts = Department::forCompany()
-                ->with(['employees' => function ($query) use ($start_date, $end_date) {
-                    if ($start_date) {
-                        $query->where('department_employees.joined_at', '>=', $start_date);
+                ->with([
+                    'employees' => function ($query) use ($start_date, $end_date) {
+                        if ($start_date) {
+                            $query->where('department_employees.joined_at', '>=', $start_date);
+                        }
+                        if ($end_date) {
+                            $query->where('department_employees.joined_at', '<=', $end_date);
+                        }
                     }
-                    if ($end_date) {
-                        $query->where('department_employees.joined_at', '<=', $end_date);
-                    }
-                }])
+                ])
                 ->get()
                 ->map(function ($department) {
                     $employee_count = $department->employees->count();
@@ -92,18 +94,22 @@ class StatisticsController extends Controller
             ]);
         }
         $employee_counts = Branch::query()
-            ->with(['departments' => function ($query) use ($start_date, $end_date) {
-                $query->with(['employees' => function ($employeeQuery) use ($start_date, $end_date) {
-                    $employeeQuery->where(function ($subQuery) use ($start_date, $end_date) {
-                        if ($start_date) {
-                            $subQuery->where('department_employees.joined_at', '>=', $start_date);
+            ->with([
+                'departments' => function ($query) use ($start_date, $end_date) {
+                    $query->with([
+                        'employees' => function ($employeeQuery) use ($start_date, $end_date) {
+                            $employeeQuery->where(function ($subQuery) use ($start_date, $end_date) {
+                                if ($start_date) {
+                                    $subQuery->where('department_employees.joined_at', '>=', $start_date);
+                                }
+                                if ($end_date) {
+                                    $subQuery->where('department_employees.joined_at', '<=', $end_date);
+                                }
+                            });
                         }
-                        if ($end_date) {
-                            $subQuery->where('department_employees.joined_at', '<=', $end_date);
-                        }
-                    });
-                }]);
-            }])
+                    ]);
+                }
+            ])
             ->get()
             ->map(function ($branch) {
                 $total_employees = $branch->departments->reduce(function ($carry, $department) {
@@ -124,7 +130,7 @@ class StatisticsController extends Controller
     public function getAssetCounts(DateRequest $request)
     {
 
-        $start_date =  $request->filled('start_date_nepali') ? DateHelper::nepaliToEnglish($request->start_date_nepali) : $request->start_date ?? null;
+        $start_date = $request->filled('start_date_nepali') ? DateHelper::nepaliToEnglish($request->start_date_nepali) : $request->start_date ?? null;
         $end_date = $request->filled('end_date_nepali') ? DateHelper::nepaliToEnglish($request->end_date_nepali) : $request->end_date ?? null;
 
         $asset_counts = Asset::forCompany()
@@ -139,6 +145,7 @@ class StatisticsController extends Controller
             ->select('status', DB::raw('COUNT(*) as count'))
             ->groupBy('status')
             ->get();
+
 
         return response()->json([
             'asset_counts' => $asset_counts

@@ -8,6 +8,7 @@ use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeRequest;
 use App\Http\Resources\EmployeeResource;
+use App\Jobs\ProcessEmployeeExport;
 use App\Models\Employee;
 use App\Traits\FileHelper;
 use App\Imports\EmployeeImport;
@@ -29,8 +30,8 @@ class EmployeeController extends Controller
 
         $query = Employee::with('departments');
 
-        if (!empty($request->except('page', 'page_size'))) {
-            foreach ($request->except('page', 'page_size') as $key => $value) {
+        if (!empty($request->except('page', 'page_size','export'))) {
+            foreach ($request->except('page', 'page_size','export') as $key => $value) {
                 if (isset($value) && !empty($value)) {
                     if (in_array($key, ['id', 'company_id'])) {
                         $query->where($key, $value);
@@ -40,7 +41,10 @@ class EmployeeController extends Controller
                 }
             }
         }
-
+        if ($request->has('export')) {
+            $employees = $query->get();
+            ProcessEmployeeExport::dispatch($employees, $company_id,Auth::user());
+        }
         $employees = $query->where('company_id', $company_id)->latest()->paginate($request->page_size ?? 10);
         return EmployeeResource::collection($employees);
     }

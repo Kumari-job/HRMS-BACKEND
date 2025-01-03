@@ -15,6 +15,7 @@ use App\Models\EmployeeContract;
 use App\Models\Vendor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -129,11 +130,15 @@ class StatisticsController extends Controller
     }
     public function getAssetCounts(DateRequest $request)
     {
+        $company_id = Auth::user()->selectedCompany->company_id;
 
         $start_date = $request->filled('start_date_nepali') ? DateHelper::nepaliToEnglish($request->start_date_nepali) : $request->start_date ?? null;
         $end_date = $request->filled('end_date_nepali') ? DateHelper::nepaliToEnglish($request->end_date_nepali) : $request->end_date ?? null;
 
-        $asset_counts = Asset::forCompany()
+        $asset_counts = DB::table('assets')
+            ->select('status', DB::raw('COUNT(*) as count'))
+            ->join("asset_categories", "assets.asset_category_id", "=", "asset_categories.id")
+            ->where('asset_categories.company_id', $company_id)
             ->where(function ($query) use ($start_date, $end_date) {
                 if ($start_date) {
                     $query->where('purchased_at', '>=', $start_date);
@@ -142,7 +147,6 @@ class StatisticsController extends Controller
                     $query->where('purchased_at', '<=', $end_date);
                 }
             })
-            ->select('status', DB::raw('COUNT(*) as count'))
             ->groupBy('status')
             ->get();
 

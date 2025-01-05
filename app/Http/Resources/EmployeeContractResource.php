@@ -23,11 +23,13 @@ class EmployeeContractResource extends JsonResource
             'gross_salary' => $this->gross_salary,
             'basic_salary' => $this->basic_salary,
             'pf_from_employee' => $this->pf_from_employee,
+            'extra_pf_from_employee' => $this->extra_pf_from_employee,
             'pf_from_company' => $this->pf_from_company,
+            'ssf_from_employee' => $this->ssf_from_employee,
+            'extra_ssf_from_employee' => $this->extra_ssf_from_employee,
+            'ssf_from_company' => $this->ssf_from_company,
             'gratuity' => $this->gratuity,
-            'cit_percent' => $this->cit_percentage,
             'cit_amount' => $this->cit_amount,
-            'ssf_amount' => $this->ssf_amount,
             'created_by' => new UserResource($this->createdBy),
             'updated_by' => new UserResource($this->updatedBy)
         ];

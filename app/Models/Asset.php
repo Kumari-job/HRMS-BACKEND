@@ -38,47 +38,15 @@ class Asset extends Model
         'status',
         'image'
     ];
-    public function getActivitylogOptions():LogOptions
+    public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(fn(string $eventName) => "An asset has been {$eventName}")
-            ->logOnly(['code','title','description','brand']);
-    }
-    public function assetCategory(): BelongsTo
-    {
-        return $this->belongsTo(AssetCategory::class, 'asset_category_id');
-    }
-    public function vendor(): BelongsTo
-    {
-        return $this->belongsTo(Vendor::class, 'vendor_id');
+            ->logOnly(['code', 'title', 'description', 'brand']);
     }
 
-    public function assetDispose(): HasOne
-    {
-        return $this->hasOne(AssetDispose::class, 'asset_id');
-    }
-    public function assetSale(): HasOne
-    {
-        return $this->hasOne(AssetSale::class, 'asset_id');
-    }
-    public function createdBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-    public function updatedBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
 
-    public function assetMaintenances(): HasMany
-    {
-        return $this->hasMany(AssetMaintenance::class, 'asset_id');
-    }
-
-    public function assetUsages(): HasMany
-    {
-        return $this->hasMany(AssetUsage::class, 'asset_id');
-    }
+    // attributes 
     protected function warrantyImagePath(): Attribute
     {
         $company_id = Auth::user()->selectedCompany->company_id;
@@ -131,6 +99,8 @@ class Asset extends Model
         );
     }
 
+    // local scope 
+
     public function scopeForCompany(Builder $query)
     {
         if (Auth::check()) {
@@ -140,5 +110,51 @@ class Asset extends Model
             });
         }
         return $query;
+    }
+
+
+    // relations
+    public function assetCategory(): BelongsTo
+    {
+        return $this->belongsTo(AssetCategory::class, 'asset_category_id');
+    }
+    public function vendor(): BelongsTo
+    {
+        return $this->belongsTo(Vendor::class, 'vendor_id');
+    }
+
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function assetMaintenances(): HasMany
+    {
+        return $this->hasMany(AssetMaintenance::class, 'asset_id');
+    }
+
+    // if asset is under maintenance currently or not 
+    public function assetUnderMaintenance(): HasOne
+    {
+        return $this->hasOne(AssetMaintenance::class, 'asset_id')->where('start_date', '<=', now())->whereNull('end_date')->latest();
+    }
+
+    public function assetUsages(): HasMany
+    {
+        return $this->hasMany(AssetUsage::class, 'asset_id');
+    }
+
+    public function assetDispose(): HasOne
+    {
+        return $this->hasOne(AssetDispose::class, 'asset_id');
+    }
+    public function assetSale(): HasOne
+    {
+        return $this->hasOne(AssetSale::class, 'asset_id');
     }
 }

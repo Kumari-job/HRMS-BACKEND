@@ -19,6 +19,7 @@ class EmployeeContractResource extends JsonResource
             'employee_id' => $this->employee_id,
             'contract_type' => $this->contract_type,
             'job_description' => $this->job_description,
+            'probation_end_at' => $this->probation_end_at,
             'gross_salary' => $this->gross_salary,
             'basic_salary' => $this->basic_salary,
             'pf_from_employee' => $this->pf_from_employee,

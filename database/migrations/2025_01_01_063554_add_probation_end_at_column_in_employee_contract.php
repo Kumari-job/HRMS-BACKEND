@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('employee_contracts', function (Blueprint $table) {
-            $table->date('probation_end_at')->nullable();
+            $table->date('probation_end_at')->after('contract_type')->nullable();
         });
     }
 

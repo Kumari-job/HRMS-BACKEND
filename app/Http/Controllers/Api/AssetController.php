@@ -22,15 +22,14 @@ class AssetController extends Controller
 
     public function index(Request $request)
     {
-        $query = Asset::forCompany()->with('assetCategory', 'vendor');
+        $query = Asset::forCompany()->with('vendor', 'assetCategory', 'assetDispose', 'assetSale', 'assetUnderMaintenance');
 
-        if (!empty($request->except('page', 'page_size','under_maintenance','not_under_maintenance','asset_assigned','no_asset_assigned','sold','not_sold','not_disposed'))) {
-            foreach ($request->except('page', 'page_size','under_maintenance','not_under_maintenance','asset_assigned','no_asset_assigned','sold','not_sold','disposed','not_disposed') as $key => $value) {
+        if (!empty($request->except('page', 'page_size', 'under_maintenance', 'not_under_maintenance', 'asset_assigned', 'no_asset_assigned', 'sold', 'not_sold', 'not_disposed'))) {
+            foreach ($request->except('page', 'page_size', 'under_maintenance', 'not_under_maintenance', 'asset_assigned', 'no_asset_assigned', 'sold', 'not_sold', 'disposed', 'not_disposed') as $key => $value) {
                 if (isset($value) && !empty($value)) {
                     if (in_array($key, ['id'])) {
                         $query->where($key, $value);
-                    }
-                    else {
+                    } else {
                         $query->where($key, 'LIKE', '%' . $value . '%');
                     }
                 }

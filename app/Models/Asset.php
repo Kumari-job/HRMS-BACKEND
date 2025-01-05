@@ -141,6 +141,7 @@ class Asset extends Model
     // if asset is under maintenance currently or not 
     public function assetUnderMaintenance(): HasOne
     {
+
         return $this->hasOne(AssetMaintenance::class, 'asset_id')->where('start_date', '<=', now())->whereNull('end_date')->latest();
     }
 

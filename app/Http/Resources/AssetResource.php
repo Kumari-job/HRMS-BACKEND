@@ -50,8 +50,8 @@ class AssetResource extends JsonResource
             'vendor' => new VendorResource($this->whenLoaded('vendor')),
             'asset_usages' => AssetUsageResource::collection($this->whenLoaded('assetUsages')),
             'asset_under_maintenance' => $this->assetUnderMaintenance ? new AssetMaintenanceResource($this->assetUnderMaintenance) : null,
-            'asset_dispose' => AssetDisposeResource::collection($this->whenLoaded('assetDispose')),
-            'asset_sale' => AssetSaleResource::collection($this->whenLoaded('assetSale')),
+            'asset_dispose' => new AssetDisposeResource($this->whenLoaded('assetDispose')),
+            'asset_sale' => new AssetSaleResource($this->whenLoaded('assetSale')),
         ];
     }
 }

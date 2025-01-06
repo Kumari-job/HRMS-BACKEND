@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssetSaleRequest;
 use App\Http\Resources\AssetSaleResource;
+use App\Models\Asset;
 use App\Models\AssetSale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -22,9 +23,14 @@ class AssetSaleController extends Controller
     {
         try {
             $data = $request->validated();
+            $asset = Asset::find($request->asset_id);
+            if($asset->status == 'sold' || $asset->status == 'disposed'){
+                return response()->json(['error'=>true,'message'=>'Asset is already '. $asset->status."."],403);
+            }
             $assetSale = new AssetSale();
             $assetSale->fill($data);
             $assetSale->save();
+            $asset->update(['status' => "sold"]);
             return response()->json(['success' => true, 'message' => 'Asset sale created successfully.'],201);
         }catch (\Exception $exception)
         {

@@ -7,6 +7,7 @@ use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssetDisposeRequest;
 use App\Http\Resources\AssetDisposeResource;
+use App\Models\Asset;
 use App\Models\AssetDispose;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,9 +30,15 @@ class AssetDisposeController extends Controller
             $data = $request->except('disposed_at_nepali','disposed_at');
             $disposed_at = $request->filled('disposed_at_nepali') ? DateHelper::nepaliToEnglish($request->disposed_at_nepali) : $request->disposed_at;
             $data['disposed_at'] = $disposed_at;
+            $asset = Asset::find($request->asset_id);
+            if($asset->status == 'sold' || $asset->status == 'disposed'){
+                return response()->json(['error'=>true,'message'=>'Asset is already '. $asset->status."."],403);
+            }
+
             $assetDispose = new AssetDispose();
             $assetDispose->fill($data);
             $assetDispose->save();
+            $asset->update(['status' => "disposed"]);
             return response()->json(['success' => true, 'message' => 'Asset disposed Successfully'],201);
         } catch (\Exception $exception)
         {

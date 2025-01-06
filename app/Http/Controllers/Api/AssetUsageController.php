@@ -7,6 +7,7 @@ use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssetUsageRequest;
 use App\Http\Resources\AssetUsageResource;
+use App\Models\Asset;
 use App\Models\AssetUsage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -35,7 +36,10 @@ class AssetUsageController extends Controller
             $assigned_end_at = $request->filled('assigned_end_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_end_at_nepali) : $request->assigned_end_at;
             $data['assigned_end_at'] = $assigned_end_at;
             $data['assigned_at'] = $assigned_at;
-            
+            $asset = Asset::find($request->asset_id);
+            if($asset->status == 'sold' || $asset->status == 'disposed'){
+                return response()->json(['error'=>true,'message'=>'Asset is already '. $asset->status."."],403);
+            }
             AssetUsage::create($data);
             return response()->json(['success' => true, 'message' => 'Asset usage created successfully'], 201);
         } catch (\Exception $exception) {

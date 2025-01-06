@@ -86,9 +86,11 @@ class StatisticsController extends Controller
                         'department_name' => $department->name,
                         'employee_count' => $employee_count,
                     ];
-                });
-
-
+                })
+                ->filter(function ($department) {
+                    return $department['employee_count'] > 0;
+                })
+                ->values();
             return response()->json([
                 'has_many_branches' => false,
                 'employee_counts' => $employee_counts
@@ -121,7 +123,11 @@ class StatisticsController extends Controller
                     'branch_name' => $branch->name,
                     'employee_count' => $total_employees,
                 ];
-            });
+            })
+            ->filter(function ($branch) {
+                return $branch['employee_count'] > 0;
+            })
+            ->values();
 
         return response()->json([
             'has_many_branches' => true,

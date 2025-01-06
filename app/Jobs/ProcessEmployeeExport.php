@@ -10,6 +10,7 @@ use App\Models\Download;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProcessEmployeeExport
@@ -53,9 +54,8 @@ class ProcessEmployeeExport
         $storeStatus = Excel::store($export, $path . '/' . $fileName, 'public');
         if ($storeStatus) {
             $download->state = "ready";
-            if(isset($idpUser['email'])){
-                Mail::to($idpUser['email'])->send(new ExcelExportMail('TMS Fee Payment Export','fee payment',$path . '/' . $fileName,$idpUser['name']),);
-            }
+            Mail::to($this->user->email)->send(new ExcelExportMail('Employee Export','employees',$path . '/' . $fileName,$this->user->name),);
+
         } else {
             $download->state = "failed";
         }

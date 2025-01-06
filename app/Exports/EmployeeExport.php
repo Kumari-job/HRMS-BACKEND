@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 
+use App\Helpers\DateHelper;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromArray;
@@ -15,45 +16,31 @@ class EmployeeExport implements FromArray, WithHeadings, WithStyles, WithColumnW
 {
     use Exportable;
 
-    protected $batches;
-    private $headers = ["S.N.", "Name","Start date",'End date',"Shifts","Instructor","Total Admissions","Collected Amount"];
+    protected $employees;
+    private $headers = ["S.N.", "Name","Email","Mobile","Address","Date of Birth","Date of Birth Nepali","Marital Status","Blood Group","Religion"];
 
-    public function __construct($batches)
+    public function __construct($employees)
     {
-        $this->batches = $batches;
+        $this->employees = $employees;
     }
 
     public function array(): array
     {
         $data = [];
         $counter = 1;
-        foreach ($this->batches as $batch) {
-            $instructor_names = [];
-            $shifts_info = [];
-            $collected_amount = 0;
-            $collected_amount = SalesHelper::collectedAmount($batch);
-            $total_admissions = $batch->admissions->count();
-            foreach($batch->instructors as $instructor)
-            {
-                $instructor_names[] = $instructor->name ?? null;
-            }
-            foreach($batch->shifts as $shift)
-            {
-                $start_time = Carbon::parse($shift->start_time)->format('h:i A') ?? null;
-                $end_time = Carbon::parse($shift->end_time)->format('h:i A') ?? null;
-                $shifts_info[] = "{$shift->title} ({$start_time} - {$end_time})";
-            }
-            $instructor_names_string = implode(',', $instructor_names);
-            $shifts_info_string = implode(',', $shifts_info);
+        foreach ($this->employees as $employee) {
+
             $excel_rows = [
                 $counter++,
-                "(".$batch->title.")". $batch->course->title,
-                $batch->start_date,
-                $batch->end_date,
-                $shifts_info_string,
-                $instructor_names_string,
-                $total_admissions ?? 0,
-                $collected_amount ?? 0
+                $employee->name,
+                $employee->email,
+                $employee->mobile,
+                $employee->address,
+                $employee->date_of_birth,
+                DateHelper::englishToNepali($employee->date_of_birth,'Y-m-d'),
+                $employee->marital_status,
+                $employee->blood_group,
+                $employee->religion,
             ];
             array_push($data, [array_combine($this->headers, $excel_rows)]);
         }
@@ -74,12 +61,15 @@ class EmployeeExport implements FromArray, WithHeadings, WithStyles, WithColumnW
     {
         return [
             'A' => 8,
-            'B' => 40,
-            'C' => 15,
+            'B' => 30,
+            'C' => 30,
             'D' => 15,
             'E' => 25,
             'F' => 15,
-            'G' => 15
+            'G' => 15,
+            'H' => 15,
+            'I' => 15,
+            'J' => 15,
         ];
     }
 

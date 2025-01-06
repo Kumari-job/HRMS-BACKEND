@@ -5,6 +5,7 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -13,12 +14,19 @@ class ExcelExportMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $title;
+    public $filePath;
+    public $subject;
+    public $name;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($subject,$title, $filePath, $name)
     {
-        //
+        $this->subject = $subject;
+        $this->title = $title;
+        $this->filePath = $filePath;
+        $this->name = $name;
     }
 
     /**
@@ -27,7 +35,7 @@ class ExcelExportMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Excel Export Mail',
+            subject: $this->subject,
         );
     }
 
@@ -37,7 +45,11 @@ class ExcelExportMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'mail.excel-export',
+            with: [
+                'name' => $this->name,
+                'title' => $this->title
+            ]
         );
     }
 
@@ -48,6 +60,10 @@ class ExcelExportMail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        return [
+            Attachment::fromStorageDisk('public',$this->filePath)
+                ->as($this->title.'.xlsx')
+                ->withMime('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+        ];
     }
 }

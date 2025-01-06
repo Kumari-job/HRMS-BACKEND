@@ -44,6 +44,7 @@ class EmployeeController extends Controller
         if ($request->has('export')) {
             $employees = $query->get();
             ProcessEmployeeExport::dispatch($employees, $company_id,Auth::user());
+            return response()->json(['success' => true, 'message' => 'Download file is being ready. The file will be sent to your mail']);
         }
         $employees = $query->where('company_id', $company_id)->latest()->paginate($request->page_size ?? 10);
         return EmployeeResource::collection($employees);

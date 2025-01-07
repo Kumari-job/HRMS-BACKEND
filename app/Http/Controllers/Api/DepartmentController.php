@@ -10,6 +10,7 @@ use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class DepartmentController extends Controller
 {
@@ -80,6 +81,34 @@ class DepartmentController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Department updated successfully.'], 200);
     }
+
+    public function updateHead(Request $request, $id)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+
+        $validator = Validator::make($request->all(), [
+            'employee_id' => ['required', Rule::exists('employees', 'id')->where('company_id', $company_id)]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => 'Employee not found.'], 422);
+        }
+
+        $department = Department::where('id', $id)
+            ->whereHas('branch', fn($q) => $q->where('company_id', $company_id))
+            ->first();
+
+        if (!$department) {
+            return response()->json(['error' => true, 'message' => 'Department not found'], 404);
+        }
+
+        $department->employee_id = $request->employee_id;
+        $department->save();
+
+
+        return response()->json(['success' => true, 'message' => 'Department Head updated successfully.'], 200);
+    }
+
     public function destroy(Request $request)
     {
         $validator = Validator::make($request->all(), [

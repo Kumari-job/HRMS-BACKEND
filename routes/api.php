@@ -72,6 +72,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('store', [BranchController::class, 'store']);
         Route::get('show/{id}', [BranchController::class, 'show']);
         Route::post('update/{id}', [BranchController::class, 'update']);
+        Route::post('update-manager/{id}', [BranchController::class, 'updateManager']);
         Route::post('destroy', [BranchController::class, 'destroy']);
         Route::get('trashed', [BranchController::class, 'trashed']);
         Route::post('restore', [BranchController::class, 'restore']);
@@ -83,6 +84,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('store', [DepartmentController::class, 'store']);
         Route::get('show/{id}', [DepartmentController::class, 'show']);
         Route::post('update/{id}', [DepartmentController::class, 'update']);
+        Route::post('update-head/{id}', [DepartmentController::class, 'updateHead']);
         Route::post('destroy', [DepartmentController::class, 'destroy']);
         Route::get('trashed', [DepartmentController::class, 'trashed']);
         Route::post('restore', [DepartmentController::class, 'restore']);

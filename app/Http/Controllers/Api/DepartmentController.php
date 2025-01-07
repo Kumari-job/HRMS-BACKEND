@@ -17,20 +17,21 @@ class DepartmentController extends Controller
     {
         $company_id = Auth::user()->selectedCompany->company_id;
         $query = Department::
-            with('branch')
+            withCount('employees')->
+            with(['branch:id,company_id,name', 'headOfDepartment:id,company_id,name'])
             ->whereHas('branch', fn($q) => $q->where('company_id', $company_id));
-            if (!empty($request->except('page', 'page_size'))) {
-                foreach ($request->except('page', 'page_size') as $key => $value) {
-                    if (isset($value) && !empty($value)) {
-                        if (in_array($key, ['id', 'company_id'])) {
-                            $query->where($key, $value);
-                        } else {
-                            $query->where($key, 'LIKE', '%' . $value . '%');
-                        }
+        if (!empty($request->except('page', 'page_size'))) {
+            foreach ($request->except('page', 'page_size') as $key => $value) {
+                if (isset($value) && !empty($value)) {
+                    if (in_array($key, ['id', 'company_id'])) {
+                        $query->where($key, $value);
+                    } else {
+                        $query->where($key, 'LIKE', '%' . $value . '%');
                     }
                 }
             }
-        $departments= $query->latest()->paginate($request->page_size ?? 10);
+        }
+        $departments = $query->latest()->paginate($request->page_size ?? 10);
 
         return DepartmentResource::collection($departments);
 
@@ -52,9 +53,9 @@ class DepartmentController extends Controller
     {
         $company_id = Auth::user()->selectedCompany->company_id;
 
-        $department = Department::where('id', $id)
-        ->whereHas('branch', fn($q) => $q->where('company_id', $company_id))
-        ->first();
+        $department = Department::with(['branch:id,company_id,name', 'headOfDepartment:id,company_id,name'])->where('id', $id)
+            ->whereHas('branch', fn($q) => $q->where('company_id', $company_id))
+            ->first();
 
         if (!$department) {
             return response()->json(['error' => true, 'errors' => 'Department not found.'], 404);

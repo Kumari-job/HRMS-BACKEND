@@ -18,7 +18,9 @@ class DepartmentResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'branch' => $this->whenLoaded('branch'),
-            'created_by' => $this->created_by
+            'head_of_department' => $this->whenLoaded('headOfDepartment'),
+            'created_by' => $this->created_by,
+            'employees_count' => $this->employees_count
         ];
     }
 }

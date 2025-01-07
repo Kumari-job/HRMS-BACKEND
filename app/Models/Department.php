@@ -18,15 +18,20 @@ class Department extends Model
     use SoftDeletes, LogsActivity;
     protected $guarded = [];
 
-    public function getActivitylogOptions():LogOptions
+    public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(fn(string $eventName) => "A department has been {$eventName}")
-            ->logOnly(['branch.name','name']);
+            ->logOnly(['branch.name', 'name']);
     }
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');
+    }
+
+    public function headOfDepartment(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
     }
 
     public function employees(): BelongsToMany
@@ -35,10 +40,13 @@ class Department extends Model
             ->withPivot(['designation', 'joined_at', 'created_at']);
     }
 
+
+    // scopes 
+
     public function scopeForCompany(Builder $query)
     {
         if (Auth::check()) {
-            $company_id = request('company_id') ??  Auth::user()->selectedCompany->company_id;
+            $company_id = request('company_id') ?? Auth::user()->selectedCompany->company_id;
             $query->whereHas('branch', function ($query) use ($company_id) {
                 $query->where('company_id', $company_id);
             });

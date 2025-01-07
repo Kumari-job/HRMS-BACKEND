@@ -27,7 +27,8 @@ class BranchResource extends JsonResource
             'established_date_formatted' => Carbon::parse($this->established_date)->format('d M Y'),
             'established_date_nepali' => DateHelper::englishToNepali($this->established_date,'Y-m-d'),
             'established_date_nepali_formatted' => DateHelper::englishToNepali($this->established_date),
-
+            'departments_count' => $this->departments_count,
+            'employees_count' => $this->employees_count ?? 0
         ];
     }
 }

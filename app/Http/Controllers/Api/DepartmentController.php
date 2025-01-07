@@ -24,7 +24,7 @@ class DepartmentController extends Controller
         if (!empty($request->except('page', 'page_size'))) {
             foreach ($request->except('page', 'page_size') as $key => $value) {
                 if (isset($value) && !empty($value)) {
-                    if (in_array($key, ['id', 'company_id'])) {
+                    if (in_array($key, ['id', 'branch_id'])) {
                         $query->where($key, $value);
                     } else {
                         $query->where($key, 'LIKE', '%' . $value . '%');

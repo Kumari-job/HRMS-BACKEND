@@ -19,9 +19,21 @@ class DepartmentEmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function getEmployeesByDepartment(Request $request,$id)
+    public function employeesByDepartment(Request $request, $id)
     {
-        $query = DepartmentEmployee::with('employee','department','createdBy','updatedBy')->where('department_id', $id);
+        $query = DepartmentEmployee::with('employee', 'department', 'createdBy', 'updatedBy')->where('department_id', $id);
+
+        $departmentEmployees = $query->latest()->paginate($request->page_size ?? 10);
+        return DepartmentEmployeeResource::collection($departmentEmployees);
+    }
+
+    public function employeesByBranch(Request $request, $branchID)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+        $departmentIDs = Department::whereHas('branch', function ($q) use ($branchID, $company_id) {
+            $q->where('id', $branchID)->where('company_id', $company_id);
+        })->pluck('id')->toArray();
+        $query = DepartmentEmployee::with('employee', 'department', 'createdBy', 'updatedBy')->whereIn('department_id', $departmentIDs);
 
         $departmentEmployees = $query->latest()->paginate($request->page_size ?? 10);
         return DepartmentEmployeeResource::collection($departmentEmployees);
@@ -40,10 +52,10 @@ class DepartmentEmployeeController extends Controller
             $departmentEmployee->fill($data);
             $departmentEmployee->created_by = Auth::id();
             $departmentEmployee->save();
-            return response()->json(['success' => true, 'message' => 'Department employee added successfully.'],201);
-        }catch (\Exception $exception){
+            return response()->json(['success' => true, 'message' => 'Department employee added successfully.'], 201);
+        } catch (\Exception $exception) {
             Log::error("Unable to add department employee: " . $exception->getMessage());
-            return response()->json(['error' => true, 'message' => 'Unable to add department employee.'],500);
+            return response()->json(['error' => true, 'message' => 'Unable to add department employee.'], 500);
         }
     }
 
@@ -56,17 +68,17 @@ class DepartmentEmployeeController extends Controller
         try {
             $departmentEmployee = DepartmentEmployee::find($id);
             if (!$departmentEmployee) {
-                return response()->json(['error' => true, 'message' => 'Department employee not found.'],404);
+                return response()->json(['error' => true, 'message' => 'Department employee not found.'], 404);
             }
             $data = $request->except('joined_at');
             $joined_at = $request->filled('joined_at_nepali') ? DateHelper::nepaliToEnglish($request->joined_at_nepali) : $request->joined_at;
             $data['joined_at'] = $joined_at;
             $data['updated_by'] = Auth::id();
             $departmentEmployee->update($data);
-            return response()->json(['success' => true, 'message' => 'Department employee updated successfully.'],200);
-        } catch (\Exception $exception){
+            return response()->json(['success' => true, 'message' => 'Department employee updated successfully.'], 200);
+        } catch (\Exception $exception) {
             Log::error("Unable to update department employee: " . $exception->getMessage());
-            return response()->json(['error' => true, 'message' => 'Unable to update department employee.'],500);
+            return response()->json(['error' => true, 'message' => 'Unable to update department employee.'], 500);
         }
     }
 

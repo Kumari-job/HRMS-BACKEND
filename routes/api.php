@@ -92,7 +92,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::prefix('department-employee')->group(function () {
-        Route::get('list/{department_id}', [DepartmentEmployeeController::class, 'getEmployeesByDepartment']);
+        Route::get('list-by-department/{department_id}', [DepartmentEmployeeController::class, 'employeesByDepartment']);
+        Route::get('list-by-branch/{department_id}', [DepartmentEmployeeController::class, 'employeesByBranch']);
         Route::post('store', [DepartmentEmployeeController::class, 'store']);
         Route::post('update/{id}', [DepartmentEmployeeController::class, 'update']);
         Route::post('destroy', [DepartmentEmployeeController::class, 'destroy']);

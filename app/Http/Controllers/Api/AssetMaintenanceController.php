@@ -7,6 +7,7 @@ use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssetMaintenanceRequest;
 use App\Http\Resources\AssetMaintenanceResource;
+use App\Models\Asset;
 use App\Models\AssetMaintenance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,10 +38,15 @@ class AssetMaintenanceController extends Controller
 
             $data['start_date'] = $start_date;
             $data['end_date'] = $end_date;
+            $asset = Asset::find($request->asset_id);
+            if($asset->status == 'sold' || $asset->status == 'disposed'){
+                return response()->json(['error'=>true,'message'=>'Asset is already '. $asset->status."."],403);
+            }
             $assetMaintenance = new AssetMaintenance();
             $assetMaintenance->fill($data);
             $assetMaintenance->created_by = Auth::id();
             $assetMaintenance->save();
+            $asset->update(['status'=>'maintenance']);
             return response()->json(['success' => true, 'message' => 'Asset Maintenance added successfully'],201);
         } catch (\Exception $exception)
         {

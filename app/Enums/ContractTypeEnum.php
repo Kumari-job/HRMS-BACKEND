@@ -7,10 +7,10 @@ enum ContractTypeEnum: string
     case FixedTerm = 'fixed_term';
     case PartTime = 'part_time';
     case Temporary = 'temporary';
-    case Casual = 'casual';
     case Internship = 'internship';
     case Traineeship = 'traineeship';
     case RemoteWork = 'remote_work';
+    case Freelancing = 'freelance';
 
     public function customTitle(): string
     {
@@ -18,7 +18,6 @@ enum ContractTypeEnum: string
             ContractTypeEnum::FixedTerm => 'Fixed Term',
             ContractTypeEnum::PartTime => 'Part Time',
             ContractTypeEnum::Temporary => 'Temporary',
-            ContractTypeEnum::Casual => 'Casual',
             ContractTypeEnum::Internship => 'Internship',
             ContractTypeEnum::Traineeship => 'Traineeship',
             ContractTypeEnum::RemoteWork => 'Remote Work',

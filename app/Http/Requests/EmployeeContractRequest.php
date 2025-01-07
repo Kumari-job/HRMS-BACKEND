@@ -30,12 +30,14 @@ class EmployeeContractRequest extends FormRequest
             'job_description' => 'required|string',
             'gross_salary' => 'nullable|numeric',
             'basic_salary' => 'nullable|numeric',
-            'pf_from_employee' => 'nullable|numeric',
-            'pf_from_company' => 'nullable|numeric',
+            'pf_from_employee' => 'nullable|numeric|min:0|max:100',
+            'extra_pf_from_employee' => 'nullable|numeric', #amount
+            'pf_from_company' => 'nullable|numeric|min:0|max:100',
+            'ssf_from_employee' => 'nullable|numeric|min:0|max:100',
+            'extra_ssf_from_employee' => 'nullable|numeric', #amount
+            'ssf_from_company' => 'nullable|numeric|min:0|max:100',
             'gratuity' => 'nullable|numeric',
-            'cit_percentage' => 'nullable|numeric',
             'cit_amount' => 'nullable|numeric',
-            'ssf_amount' => 'nullable|numeric',
         ];
     }
     protected function failedValidation(Validator $validator)

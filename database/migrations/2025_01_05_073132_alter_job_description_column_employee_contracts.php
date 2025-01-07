@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('employee_contracts', function (Blueprint $table) {
-            $table->date('probation_end_at')->after('contract_type')->nullable();
+            $table->longText('job_description')->nullable(true)->change();
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('employee_contracts', function (Blueprint $table) {
-            $table->dropColumn('probation_end_at');
+            $table->text('job_description')->nullable(true)->change();
         });
     }
 };

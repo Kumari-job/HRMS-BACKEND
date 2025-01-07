@@ -54,7 +54,7 @@ class BranchController extends Controller
 
     public function show($branch_id)
     {
-        $branch = Branch::withCount(['departments'])
+        $branch = Branch::with('manager:id,company_id,name')->withCount(['departments'])
         
         ->find($branch_id);
         if (!$branch) {

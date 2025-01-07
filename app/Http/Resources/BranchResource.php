@@ -22,6 +22,8 @@ class BranchResource extends JsonResource
             'email' => $this->email,
             'location' => $this->location,
             'employee_id' => $this->employee_id,
+            'manager' => $this->whenLoaded('manager'),
+
             'contact_number' => $this->contact_number,
             'established_date' => $this->established_date,
             'established_date_formatted' => Carbon::parse($this->established_date)->format('d M Y'),

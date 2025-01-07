@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -35,13 +36,14 @@ class Branch extends Model
             ->setDescriptionForEvent(fn(string $eventName) => "A branch has been {$eventName}")
             ->logOnly(['name', 'company_id', 'location']);
     }
+
     public function departments(): HasMany
     {
         return $this->hasMany(Department::class, 'branch_id');
     }
-
-    public function employees(): HasMany
+    public function manager(): BelongsTo
     {
-        return $this->hasMany(Department::class, DepartmentEmployee::class);
+        return $this->belongsTo(Employee::class, 'employee_id');
     }
+
 }

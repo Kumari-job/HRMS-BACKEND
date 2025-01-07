@@ -14,12 +14,13 @@ use Spatie\Activitylog\Traits\LogsActivity;
 #[ScopedBy([CompanyScope::class])]
 class Branch extends Model
 {
-    use SoftDeletes,LogsActivity;
+    use SoftDeletes, LogsActivity;
 
     protected $table = 'branches';
 
     protected $fillable = [
         'name',
+        'email',
         'company_id',
         'location',
         'employee_id',
@@ -27,11 +28,11 @@ class Branch extends Model
         'established_date',
     ];
 
-    public function getActivitylogOptions():LogOptions
+    public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(fn(string $eventName) => "A branch has been {$eventName}")
-            ->logOnly(['name','company_id','location']);
+            ->logOnly(['name', 'company_id', 'location']);
     }
     public function departments(): HasMany
     {

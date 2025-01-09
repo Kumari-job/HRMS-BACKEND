@@ -35,7 +35,7 @@ class Employee extends Model
         'blood_group',
         'religion',
     ];
-
+    public $appends = ['image_path'];
     public function getActivitylogOptions():LogOptions
     {
         return LogOptions::defaults()

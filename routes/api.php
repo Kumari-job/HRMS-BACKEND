@@ -65,6 +65,10 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('employment-type', [DataController::class, 'employmentType']);
         Route::get('contract-type', [DataController::class, 'contractType']);
         Route::get('asset-status', [DataController::class, 'assetStatus']);
+        Route::get('calendar-type', [DataController::class, 'calendarType']);
+        Route::get('day',[DataController::class, 'day']);
+        Route::get('english-month',[DataController::class, 'englishMonth']);
+        Route::get('nepali-month',[DataController::class, 'nepaliMonth']);
     });
 
     Route::prefix('branch')->group(function () {

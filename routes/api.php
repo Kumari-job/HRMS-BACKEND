@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AssetSaleController;
 use App\Http\Controllers\Api\AssetUsageController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
+use App\Http\Controllers\Api\CompanyProfileController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\DepartmentEmployeeController;
@@ -69,6 +70,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('day',[DataController::class, 'day']);
         Route::get('english-month',[DataController::class, 'englishMonth']);
         Route::get('nepali-month',[DataController::class, 'nepaliMonth']);
+        Route::get('country',[DataController::class, 'country']);
     });
 
     Route::prefix('branch')->group(function () {
@@ -238,5 +240,10 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('employee-count-by-branch', [StatisticsController::class, 'getEmployeeCountsByBranch']);
         Route::get('asset-count', [StatisticsController::class, 'getAssetCounts']);
         Route::get('asset-list', [StatisticsController::class, 'getAssetList']);
+    });
+
+    Route::prefix('company-profile')->group(function () {
+        Route::post('upsert', [CompanyProfileController::class, 'upsert']);
+        Route::get('show',[CompanyProfileController::class, 'showCompanyProfile']);
     });
 });

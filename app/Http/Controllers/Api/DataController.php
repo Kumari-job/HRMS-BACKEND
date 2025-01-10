@@ -6,6 +6,7 @@ use App\Enums\AssetStatusEnum;
 use App\Enums\BloodGroupEnum;
 use App\Enums\CalendarTypeEnum;
 use App\Enums\ContractTypeEnum;
+use App\Enums\CountryEnum;
 use App\Enums\DayEnum;
 use App\Enums\EmploymentTypeEnum;
 use App\Enums\EnglishMonthEnum;
@@ -70,6 +71,12 @@ class DataController extends Controller
     {
         $bloodGroup = collect(BloodGroupEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->customTitle()])->toArray();
         return response()->json(['success' => true, 'data' => $bloodGroup], 200);
+    }
+
+    public function country(): JsonResponse
+    {
+        $country = collect(CountryEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->customTitle()])->toArray();
+        return response()->json(['success' => true, 'data' => $country], 200);
     }
 
     public function religion(): JsonResponse

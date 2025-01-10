@@ -34,7 +34,7 @@ class EmployeeController extends Controller
             $query->latest()->first();
         }, 'employeeBanks' => function ($query) {
             $query->select('id', 'employee_id', 'account_name', 'account_number', 'bank_name','bank_branch')
-                ->latest()
+                ->where('is_primary',1)
                 ->first();
         },]);
         if (!empty($request->except('page', 'page_size', 'export'))) {

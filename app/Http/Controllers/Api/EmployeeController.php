@@ -29,7 +29,7 @@ class EmployeeController extends Controller
         $company_id = Auth::user()->selectedCompany->company_id;
 
         $query = Employee::with(['departments','employeeContracts'=>function ($query) {
-            $query->select('id','employee_id','contract_type','job_description')
+            $query->select('id','employee_id','contract_type','job_description','probation_end_at')
                 ->latest()->first();
         },'employeeOnboardings' => function ($query) {
             $query->select('id','employee_id','employment_type','joined_at')

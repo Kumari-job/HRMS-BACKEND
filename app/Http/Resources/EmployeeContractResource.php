@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,6 +21,7 @@ class EmployeeContractResource extends JsonResource
             'contract_type' => $this->contract_type,
             'job_description' => $this->job_description,
             'probation_end_at' => $this->probation_end_at,
+            'probation_end_at_formatted' => Carbon::parse($this->probation_end_at)->format('d M Y'),
             'gross_salary' => $this->gross_salary,
             'basic_salary' => $this->basic_salary,
             'pf_from_employee' => $this->pf_from_employee,

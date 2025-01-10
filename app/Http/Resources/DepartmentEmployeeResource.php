@@ -23,6 +23,7 @@ class DepartmentEmployeeResource extends JsonResource
             'department_id' => $pivot->department_id ?? $this->department_id,
             'employee_id' => $pivot->employee_id ?? $this->employee_id,
             'designation' => $pivot->designation ?? $this->designation,
+            'department_name' => $this->name ?? null,
             'telephone' => $pivot->telephone ?? $this->telephone,
             'email' => $pivot->email ?? $this->email,
             'mobile' => $pivot->mobile ?? $this->mobile,

@@ -28,8 +28,15 @@ class EmployeeController extends Controller
     {
         $company_id = Auth::user()->selectedCompany->company_id;
 
-        $query = Employee::with('departments');
-
+        $query = Employee::with(['departments','employeeContracts'=>function ($query) {
+            $query->latest()->first();
+        },'employeeOnboardings' => function ($query) {
+            $query->latest()->first();
+        }, 'employeeBanks' => function ($query) {
+            $query->select('id', 'employee_id', 'account_name', 'account_number', 'bank_name','bank_branch')
+                ->latest()
+                ->first();
+        },]);
         if (!empty($request->except('page', 'page_size', 'export'))) {
             foreach ($request->except('page', 'page_size', 'export') as $key => $value) {
                 if (isset($value) && !empty($value)) {
@@ -56,6 +63,7 @@ class EmployeeController extends Controller
             ProcessEmployeeExport::dispatch($employees, $company_id, Auth::user());
             return response()->json(['success' => true, 'message' => 'Download file is being ready. The file will be sent to your mail']);
         }
+
         $employees = $query->where('company_id', $company_id)->latest()->paginate($request->page_size ?? 10);
         return EmployeeResource::collection($employees);
     }

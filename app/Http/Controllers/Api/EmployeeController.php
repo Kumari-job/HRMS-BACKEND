@@ -29,7 +29,7 @@ class EmployeeController extends Controller
         $company_id = Auth::user()->selectedCompany->company_id;
 
         $query = Employee::with(['departments','employeeContracts'=>function ($query) {
-            $query->select('id','employee_id','contract_type','job_description','probation_end_at')
+            $query->select('id','employee_id','contract_type','job_description','probation_end_at','gross_salary')
                 ->latest()->first();
         },'employeeOnboardings' => function ($query) {
             $query->select('id','employee_id','employment_type','joined_at')
@@ -38,7 +38,7 @@ class EmployeeController extends Controller
             $query->select('id', 'employee_id', 'account_name', 'account_number', 'bank_name','bank_branch')
                 ->where('is_primary',1)
                 ->first();
-        },'employeeAddress:id,employee_id,t_district,t_street']);
+        },'employeeAddress:id,employee_id,t_district,t_street', 'employeeBenefit:id,employee_id,pan,ssf,cit,pf']);
         if (!empty($request->except('page', 'page_size', 'export'))) {
             foreach ($request->except('page', 'page_size', 'export') as $key => $value) {
                 if (isset($value) && !empty($value)) {

@@ -27,7 +27,7 @@ class BranchRequest extends FormRequest
             'name' => 'required',
             'location' => 'required',
             'employee_id' => 'nullable',
-            'contact_number' => 'nullable',
+            'contact_number' => 'required',
             'established_date' => 'nullable|date|before_or_equal:today|required_without:established_date_nepali',
             'established_date_nepali' => 'nullable|required_without:established_date',
         ];

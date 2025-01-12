@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AssetSaleController;
 use App\Http\Controllers\Api\AssetUsageController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
+use App\Http\Controllers\Api\CompanyHolidayController;
 use App\Http\Controllers\Api\CompanyProfileController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DepartmentController;
@@ -245,5 +246,13 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::prefix('company-profile')->group(function () {
         Route::post('upsert', [CompanyProfileController::class, 'upsert']);
         Route::get('show',[CompanyProfileController::class, 'showCompanyProfile']);
+    });
+
+    Route::prefix('company-holiday')->group(function () {
+        Route::get('list', [CompanyHolidayController::class, 'index']);
+        Route::post('store', [CompanyHolidayController::class, 'store']);
+        Route::get('show/{id}', [CompanyHolidayController::class, 'show']);
+        Route::post('update/{id}', [CompanyHolidayController::class, 'update']);
+        Route::post('destroy', [CompanyHolidayController::class, 'destroy']);
     });
 });

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('holiday');
             $table->date('date');
             $table->string('description');
-            $table->boolean('female_only')->default(false);
+            $table->boolean('female_only')->default(0);
             $table->string('holiday_for_religion')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();

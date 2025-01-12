@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\AssetStatusEnum;
 use App\Enums\BloodGroupEnum;
+use App\Enums\CalendarTypeEnum;
 use App\Enums\ContractTypeEnum;
+use App\Enums\CountryEnum;
+use App\Enums\DayEnum;
 use App\Enums\EmploymentTypeEnum;
+use App\Enums\EnglishMonthEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
+use App\Enums\NepaliMonthEnum;
 use App\Enums\ReligionEnum;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -19,6 +24,30 @@ class DataController extends Controller
     {
         $gender = collect(GenderEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
         return response()->json(['success' => true, 'data' => $gender], 200);
+    }
+
+    public function calendarType()
+    {
+        $calendarType = collect(CalendarTypeEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
+        return response()->json(['success' => true, 'data' => $calendarType], 200);
+    }
+
+    public function day()
+    {
+        $day = collect(DayEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
+        return response()->json(['success' => true, 'data' => $day], 200);
+    }
+
+    public function englishMonth()
+    {
+        $month = collect(EnglishMonthEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
+        return response()->json(['success' => true, 'data' => $month], 200);
+    }
+
+    public function nepaliMonth()
+    {
+        $month = collect(NepaliMonthEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
+        return response()->json(['success' => true, 'data' => $month], 200);
     }
 
     public function assetStatus(): JsonResponse
@@ -42,6 +71,12 @@ class DataController extends Controller
     {
         $bloodGroup = collect(BloodGroupEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->customTitle()])->toArray();
         return response()->json(['success' => true, 'data' => $bloodGroup], 200);
+    }
+
+    public function country(): JsonResponse
+    {
+        $country = collect(CountryEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->customTitle()])->toArray();
+        return response()->json(['success' => true, 'data' => $country], 200);
     }
 
     public function religion(): JsonResponse

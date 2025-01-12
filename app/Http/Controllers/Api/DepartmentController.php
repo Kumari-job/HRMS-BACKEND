@@ -10,6 +10,7 @@ use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class DepartmentController extends Controller
 {
@@ -17,20 +18,21 @@ class DepartmentController extends Controller
     {
         $company_id = Auth::user()->selectedCompany->company_id;
         $query = Department::
-            with('branch')
+            withCount('employees')->
+            with(['branch:id,company_id,name', 'headOfDepartment:id,company_id,name'])
             ->whereHas('branch', fn($q) => $q->where('company_id', $company_id));
-            if (!empty($request->except('page', 'page_size'))) {
-                foreach ($request->except('page', 'page_size') as $key => $value) {
-                    if (isset($value) && !empty($value)) {
-                        if (in_array($key, ['id', 'company_id'])) {
-                            $query->where($key, $value);
-                        } else {
-                            $query->where($key, 'LIKE', '%' . $value . '%');
-                        }
+        if (!empty($request->except('page', 'page_size'))) {
+            foreach ($request->except('page', 'page_size') as $key => $value) {
+                if (isset($value) && !empty($value)) {
+                    if (in_array($key, ['id', 'branch_id'])) {
+                        $query->where($key, $value);
+                    } else {
+                        $query->where($key, 'LIKE', '%' . $value . '%');
                     }
                 }
             }
-        $departments= $query->latest()->paginate($request->page_size ?? 10);
+        }
+        $departments = $query->latest()->paginate($request->page_size ?? 10);
 
         return DepartmentResource::collection($departments);
 
@@ -52,9 +54,9 @@ class DepartmentController extends Controller
     {
         $company_id = Auth::user()->selectedCompany->company_id;
 
-        $department = Department::where('id', $id)
-        ->whereHas('branch', fn($q) => $q->where('company_id', $company_id))
-        ->first();
+        $department = Department::with(['branch:id,company_id,name', 'headOfDepartment:id,company_id,name'])->where('id', $id)
+            ->whereHas('branch', fn($q) => $q->where('company_id', $company_id))
+            ->first();
 
         if (!$department) {
             return response()->json(['error' => true, 'errors' => 'Department not found.'], 404);
@@ -79,6 +81,34 @@ class DepartmentController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Department updated successfully.'], 200);
     }
+
+    public function updateHead(Request $request, $id)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+
+        $validator = Validator::make($request->all(), [
+            'employee_id' => ['required', Rule::exists('employees', 'id')->where('company_id', $company_id)]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => 'Employee not found.'], 422);
+        }
+
+        $department = Department::where('id', $id)
+            ->whereHas('branch', fn($q) => $q->where('company_id', $company_id))
+            ->first();
+
+        if (!$department) {
+            return response()->json(['error' => true, 'message' => 'Department not found'], 404);
+        }
+
+        $department->employee_id = $request->employee_id;
+        $department->save();
+
+
+        return response()->json(['success' => true, 'message' => 'Department Head updated successfully.'], 200);
+    }
+
     public function destroy(Request $request)
     {
         $validator = Validator::make($request->all(), [

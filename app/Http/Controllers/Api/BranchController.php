@@ -11,6 +11,7 @@ use App\Models\Branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class BranchController extends Controller
 {
@@ -40,7 +41,7 @@ class BranchController extends Controller
     {
         $company_id = Auth::user()->selectedCompany->company_id;
 
-        if (Branch::where('company_id', $company_id)->where('name',$request->name)->exists()) {
+        if (Branch::where('company_id', $company_id)->where('name', $request->name)->exists()) {
             return response()->json(['error' => true, 'message' => 'Branch name already exists'], 422);
         }
         $established_date = $request->filled('established_date_nepali') ? DateHelper::nepaliToEnglish($request->established_date_nepali) : $request->established_date;
@@ -49,12 +50,13 @@ class BranchController extends Controller
         $branch->established_date = $established_date;
         $branch->company_id = $company_id;
         $branch->save();
-        return response()->json(['success'=>true, 'message' => 'Branch created successfully.'], 201);
+        return response()->json(['success' => true, 'message' => 'Branch created successfully.'], 201);
     }
 
     public function show($branch_id)
     {
-        $branch = Branch::find($branch_id);
+        $branch = Branch::with('manager:id,company_id,name,image')->withCount(['departments'])
+            ->find($branch_id);
         if (!$branch) {
             return response()->json(['error' => true, 'errors' => 'Branch not found.'], 404);
         }
@@ -75,6 +77,31 @@ class BranchController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Branch updated successfully.'], 200);
     }
+
+    public function updateManager(Request $request, $id)
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+
+        $validator = Validator::make($request->all(), [
+            'employee_id' => ['required', Rule::exists('employees', 'id')->where('company_id', $company_id)]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => 'Employee not found.'], 422);
+        }
+
+        $branch = Branch::where('id', $id)->where('company_id', $company_id)->first();
+        if (!$branch) {
+            return response()->json(['error' => true, 'message' => 'Branch not found'], 404);
+        }
+
+        $branch->employee_id = $request->employee_id;
+        $branch->save();
+
+        return response()->json(['success' => true, 'message' => 'Manager updated successfully.'], 200);
+    }
+
+
     public function destroy(Request $request)
     {
         $validator = Validator::make($request->all(), [

@@ -8,6 +8,9 @@ use App\Http\Controllers\Api\AssetSaleController;
 use App\Http\Controllers\Api\AssetUsageController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
+use App\Http\Controllers\Api\CompanyHolidayController;
+use App\Http\Controllers\Api\CompanyLeaveController;
+use App\Http\Controllers\Api\CompanyProfileController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\DepartmentEmployeeController;
@@ -21,6 +24,7 @@ use App\Http\Controllers\Api\EmployeeEducationController;
 use App\Http\Controllers\Api\EmployeeExperienceController;
 use App\Http\Controllers\Api\EmployeeFamilyController;
 use App\Http\Controllers\Api\EmployeeOnboardingController;
+use App\Http\Controllers\Api\PayrollSettingController;
 use App\Http\Controllers\Api\SelectedCompanyController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\UserController;
@@ -65,6 +69,11 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('employment-type', [DataController::class, 'employmentType']);
         Route::get('contract-type', [DataController::class, 'contractType']);
         Route::get('asset-status', [DataController::class, 'assetStatus']);
+        Route::get('calendar-type', [DataController::class, 'calendarType']);
+        Route::get('day',[DataController::class, 'day']);
+        Route::get('english-month',[DataController::class, 'englishMonth']);
+        Route::get('nepali-month',[DataController::class, 'nepaliMonth']);
+        Route::get('country',[DataController::class, 'country']);
     });
 
     Route::prefix('branch')->group(function () {
@@ -72,6 +81,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('store', [BranchController::class, 'store']);
         Route::get('show/{id}', [BranchController::class, 'show']);
         Route::post('update/{id}', [BranchController::class, 'update']);
+        Route::post('update-manager/{id}', [BranchController::class, 'updateManager']);
         Route::post('destroy', [BranchController::class, 'destroy']);
         Route::get('trashed', [BranchController::class, 'trashed']);
         Route::post('restore', [BranchController::class, 'restore']);
@@ -83,6 +93,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('store', [DepartmentController::class, 'store']);
         Route::get('show/{id}', [DepartmentController::class, 'show']);
         Route::post('update/{id}', [DepartmentController::class, 'update']);
+        Route::post('update-head/{id}', [DepartmentController::class, 'updateHead']);
         Route::post('destroy', [DepartmentController::class, 'destroy']);
         Route::get('trashed', [DepartmentController::class, 'trashed']);
         Route::post('restore', [DepartmentController::class, 'restore']);
@@ -90,7 +101,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::prefix('department-employee')->group(function () {
-        Route::get('list/{department_id}', [DepartmentEmployeeController::class, 'getEmployeesByDepartment']);
+        Route::get('list-by-department/{department_id}', [DepartmentEmployeeController::class, 'employeesByDepartment']);
+        Route::get('list-by-branch/{department_id}', [DepartmentEmployeeController::class, 'employeesByBranch']);
         Route::post('store', [DepartmentEmployeeController::class, 'store']);
         Route::post('update/{id}', [DepartmentEmployeeController::class, 'update']);
         Route::post('destroy', [DepartmentEmployeeController::class, 'destroy']);
@@ -231,5 +243,31 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('employee-count-by-branch', [StatisticsController::class, 'getEmployeeCountsByBranch']);
         Route::get('asset-count', [StatisticsController::class, 'getAssetCounts']);
         Route::get('asset-list', [StatisticsController::class, 'getAssetList']);
+    });
+
+    Route::prefix('company-profile')->group(function () {
+        Route::post('upsert', [CompanyProfileController::class, 'upsert']);
+        Route::get('show',[CompanyProfileController::class, 'showCompanyProfile']);
+    });
+
+    Route::prefix('company-holiday')->group(function () {
+        Route::get('list', [CompanyHolidayController::class, 'index']);
+        Route::post('store', [CompanyHolidayController::class, 'store']);
+        Route::get('show/{id}', [CompanyHolidayController::class, 'show']);
+        Route::post('update/{id}', [CompanyHolidayController::class, 'update']);
+        Route::post('destroy', [CompanyHolidayController::class, 'destroy']);
+    });
+
+    Route::prefix('company-leave')->group(function () {
+       Route::get('list', [CompanyLeaveController::class, 'index']);
+       Route::post('store', [CompanyLeaveController::class, 'store']);
+       Route::get('show/{id}', [CompanyLeaveController::class, 'show']);
+       Route::post('update/{id}', [CompanyLeaveController::class, 'update']);
+       Route::post('destroy', [CompanyLeaveController::class, 'destroy']);
+    });
+
+    Route::prefix('payroll-setting')->group(function () {
+        Route::get('show',[PayrollSettingController::class, 'showPayrollSetting']);
+        Route::post('upsert',[PayrollSettingController::class,'upsert']);
     });
 });

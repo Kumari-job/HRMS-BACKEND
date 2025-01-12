@@ -28,14 +28,13 @@ class Employee extends Model
         'email',
         'image',
         'mobile',
-        'address',
         'gender',
         'date_of_birth',
         'marital_status',
         'blood_group',
         'religion',
     ];
-
+    public $appends = ['image_path'];
     public function getActivitylogOptions():LogOptions
     {
         return LogOptions::defaults()

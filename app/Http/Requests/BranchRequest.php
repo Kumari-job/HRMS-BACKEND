@@ -25,6 +25,7 @@ class BranchRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'email' => 'nullable|email|max:100',
             'location' => 'required',
             'employee_id' => 'nullable',
             'contact_number' => 'required',

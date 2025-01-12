@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class EmployeeRequest extends FormRequest
+class CompanyHolidayRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,16 +24,20 @@ class EmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'email' => 'required|email',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'mobile' => 'required|min:10|max:10',
-            'gender' => 'required',
-            'date_of_birth' => 'required_without:date_of_birth_nepali|date',
-            'date_of_birth_nepali' => 'required_without:date_of_birth|date',
-            'marital_status' => 'required',
-            'blood_group' => 'required',
-            'religion' => 'required',
+            'date' => [
+                'required_without:date_nepali',
+                'nullable',
+                'date',
+            ],
+            'date_nepali' => [
+                'required_without:date',
+                'nullable',
+                'date',
+            ],
+            'holiday' => 'required|string|max:100',
+            'description' => 'nullable|string|max:255',
+            'female_only' => 'required|boolean',
+            'holiday_for_religion' => 'nullable|string',
         ];
     }
 

@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class EmployeeRequest extends FormRequest
+class PayrollSettingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,16 +24,13 @@ class EmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'email' => 'required|email',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'mobile' => 'required|min:10|max:10',
-            'gender' => 'required',
-            'date_of_birth' => 'required_without:date_of_birth_nepali|date',
-            'date_of_birth_nepali' => 'required_without:date_of_birth|date',
-            'marital_status' => 'required',
-            'blood_group' => 'required',
-            'religion' => 'required',
+            'cit_number' => 'nullable|string',
+            'pf_number' => 'nullable|string',
+            'ssf_number' => 'nullable|string',
+            'bank_name' => 'required|string',
+            'bank_branch_name' => 'required|string',
+            'bank_account_name' => 'required|string',
+            'bank_account_number' => 'required|string',
         ];
     }
 

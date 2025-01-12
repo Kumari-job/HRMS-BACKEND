@@ -37,12 +37,17 @@ class VendorController extends Controller
 
     public function store(VendorRequest $request)
     {
-        $company_id = Auth::user()->selectedCompany->company_id;
-        $vendor = new Vendor($request->validated());
-        $vendor->created_by = Auth::id();
-        $vendor->company_id = $company_id;
-        $vendor->save();
-        return response()->json(['success' => true,'message'=>'Vendor created successfully'],201);
+        try {
+            $company_id = Auth::user()->selectedCompany->company_id;
+            $vendor = new Vendor($request->validated());
+            $vendor->created_by = Auth::id();
+            $vendor->company_id = $company_id;
+            $vendor->save();
+            return response()->json(['success' => true, 'message' => 'Vendor created successfully'], 201);
+        } catch (\Exception $e) {
+            Log::error("Unable to create vendor: {$e->getMessage()}");
+            return response()->json(['error' => true, 'message' => 'Unable to create vendor'], 500);
+        }
     }
 
     public function show($id)

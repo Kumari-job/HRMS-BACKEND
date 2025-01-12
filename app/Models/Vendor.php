@@ -24,8 +24,8 @@ class Vendor extends Model
     public function getActivitylogOptions():LogOptions
     {
         return LogOptions::defaults()
-            ->setDescriptionForEvent(fn(string $eventName) => "An employee address has been {$eventName}")
-            ->logOnly(['employee.name','employee_id']);
+            ->setDescriptionForEvent(fn(string $eventName) => "A vendor has been {$eventName}")
+            ->logOnly(['name','email','mobile','address']);
     }
     public function createdBy():BelongsTo
     {

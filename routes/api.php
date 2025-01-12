@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\EmployeeEducationController;
 use App\Http\Controllers\Api\EmployeeExperienceController;
 use App\Http\Controllers\Api\EmployeeFamilyController;
 use App\Http\Controllers\Api\EmployeeOnboardingController;
+use App\Http\Controllers\Api\PayrollSettingController;
 use App\Http\Controllers\Api\SelectedCompanyController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\UserController;
@@ -263,5 +264,10 @@ Route::group(['middleware' => 'auth:api'], function () {
        Route::get('show/{id}', [CompanyLeaveController::class, 'show']);
        Route::post('update/{id}', [CompanyLeaveController::class, 'update']);
        Route::post('destroy', [CompanyLeaveController::class, 'destroy']);
+    });
+
+    Route::prefix('payroll-setting')->group(function () {
+        Route::get('show',[PayrollSettingController::class, 'showPayrollSetting']);
+        Route::post('upsert',[PayrollSettingController::class,'upsert']);
     });
 });

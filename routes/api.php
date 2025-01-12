@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\AssetUsageController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\CompanyHolidayController;
+use App\Http\Controllers\Api\CompanyLeaveController;
 use App\Http\Controllers\Api\CompanyProfileController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DepartmentController;
@@ -254,5 +255,13 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('show/{id}', [CompanyHolidayController::class, 'show']);
         Route::post('update/{id}', [CompanyHolidayController::class, 'update']);
         Route::post('destroy', [CompanyHolidayController::class, 'destroy']);
+    });
+
+    Route::prefix('company-leave')->group(function () {
+       Route::get('list', [CompanyLeaveController::class, 'index']);
+       Route::post('store', [CompanyLeaveController::class, 'store']);
+       Route::get('show/{id}', [CompanyLeaveController::class, 'show']);
+       Route::post('update/{id}', [CompanyLeaveController::class, 'update']);
+       Route::post('destroy', [CompanyLeaveController::class, 'destroy']);
     });
 });

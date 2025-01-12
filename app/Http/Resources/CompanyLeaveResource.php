@@ -2,12 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Helpers\DateHelper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CompanyHolidayResource extends JsonResource
+class CompanyLeaveResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,14 +18,14 @@ class CompanyHolidayResource extends JsonResource
         return [
             'id' => $this->id,
             'company_id' => $this->company_id,
-            'date' => $this->date,
-            'date_formatted' => Carbon::parse($this->date)->format('d M Y'),
-            'date_nepali' => DateHelper::englishToNepali($this->date,'Y-m-d'),
-            'date_nepali_formatted' => DateHelper::englishToNepali($this->date,'d M Y'),
-            'holiday' => $this->holiday,
-            'description' => $this->description,
-            'females_only' => $this->females_only,
-            'holiday_for_religion' => $this->holiday_for_religion,
+            'name' => $this->name,
+            'days' => $this->days,
+            'year' => $this->year,
+            'gender' => $this->gender,
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d'),
+            'created_at_formatted' => Carbon::parse($this->created_at)->format('d M Y'),
+            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d'),
+            'updated_at_formatted' => Carbon::parse($this->updated_at)->format('d M Y'),
             'created_by' => new UserResource($this->whenLoaded('createdBy')),
             'updated_by' => new UserResource($this->whenLoaded('updatedBy')),
         ];

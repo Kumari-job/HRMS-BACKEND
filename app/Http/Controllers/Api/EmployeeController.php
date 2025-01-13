@@ -73,26 +73,31 @@ class EmployeeController extends Controller
 
     public function store(EmployeeRequest $request)
     {
-        $company_id = Auth::user()->selectedCompany->company_id;
-        if (Employee::where('company_id', $company_id)->where('email', $request['email'])->exists()) {
-            return response()->json(['error' => true, "message" => "Employee already exists"], 400);
+        try {
+            $company_id = Auth::user()->selectedCompany->company_id;
+            if (Employee::where('company_id', $company_id)->where('email', $request['email'])->exists()) {
+                return response()->json(['error' => true, "message" => "Employee already exists"], 400);
+            }
+            $data = $request->except('date_of_birth', 'image');
+            $date_of_birth = $request->filled('date_of_birth_nepali') ? DateHelper::nepaliToEnglish($request->date_of_birth_nepali) : $request->date_of_birth;
+
+            $data['date_of_birth'] = $date_of_birth;
+            $employee = new Employee();
+
+            $employee->fill($data);
+            $employee->company_id = $company_id;
+
+            if ($request->hasFile('image')) {
+                $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id, $employee->id);
+                $fileName = $this->fileUpload($request->file('image'), $path);
+                $employee->image = $fileName;
+            }
+            $employee->save();
+            return response()->json(['success' => true, "message" => "Employee added successfully", 'id' => $employee->id], 201);
+        }catch (\Exception $exception){
+            Log::error("Unable to create employee: " . $exception->getMessage());
+            return response()->json(['error' => true, 'message' => $exception->getMessage()], 500);
         }
-        $data = $request->except('date_of_birth', 'image');
-        $date_of_birth = $request->filled('date_of_birth_nepali') ? DateHelper::nepaliToEnglish($request->date_of_birth_nepali) : $request->date_of_birth;
-
-        $data['date_of_birth'] = $date_of_birth;
-        $employee = new Employee();
-
-        $employee->fill($data);
-        $employee->company_id = $company_id;
-
-        if ($request->hasFile('image')) {
-            $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id, $employee->id);
-            $fileName = $this->fileUpload($request->file('image'), $path);
-            $employee->image = $fileName;
-        }
-        $employee->save();
-        return response()->json(['success' => true, "message" => "Employee added successfully", 'id' => $employee->id], 201);
     }
 
     /**

@@ -52,6 +52,16 @@ class AuthHelper implements ShouldQueue
         return $company;
     }
 
+    public static function getCompanySubscription($company_id)
+    {
+        $idpAppUrl = config('custom.client_app.idp_url');
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+        ])->get($idpAppUrl . '/api/subscription-by-company/' . $company_id);
+        $companySubscriptionData = $response->json();
+        return $companySubscriptionData;
+    }
+
     public static function getIdpUser($idp_user_id)
     {
         $idpAppUrl = config('custom.client_app.idp_url');

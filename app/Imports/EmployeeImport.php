@@ -72,7 +72,7 @@ class EmployeeImport implements ToCollection, WithHeadingRow, SkipsOnError, Skip
                     'religion' => $row['religion'],
                 ]
             );
-            return true;
         }
+        return true;
     }
 }

@@ -45,7 +45,12 @@ class CompanyProfileController extends Controller
         $company_id = Auth::user()->selectedCompany->company_id;
         $companyProfile = CompanyProfile::select('country')->where('company_id', $company_id)->first();
         $country = strtolower($companyProfile->country);
-        $jsonFile = json_decode(file_get_contents(public_path('assets/country_policy/'.$country.'.json')));
-        return response()->json(['success' => true,'policy' => $jsonFile]);
+        $jsonFile = public_path('assets/country_policy/'.$country.'.json');
+
+        if (file_exists($jsonFile)) {
+            $content = json_decode(file_get_contents($jsonFile));
+            return response()->json(['success' => true,'policy' => $content]);
+        }
+        return response()->json(['success' => false,'message'=> 'Country Policy not found.'], 404);
     }
 }

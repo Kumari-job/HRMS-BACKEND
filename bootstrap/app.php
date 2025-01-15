@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckRequestSource;
+use App\Http\Middleware\IDPSubscriptionValidation;
 use App\Http\Middleware\VerifyCommonToken;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'verify_common_token' => VerifyCommonToken::class,
             'client' => CheckClientCredentials::class,
             'check.source' => CheckRequestSource::class,
+            'idp_subscription_validation' => IdpSubscriptionValidation::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

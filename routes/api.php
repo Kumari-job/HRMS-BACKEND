@@ -110,7 +110,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::prefix('employee')->group(function () {
         Route::get('list', [EmployeeController::class, 'index']);
-        Route::post('store', [EmployeeController::class, 'store']);
+        Route::post('store', [EmployeeController::class, 'store'])->middleware('idp_subscription_validation:employee');
         Route::get('show/{id}', [EmployeeController::class, 'show']);
         Route::post('update/{id}', [EmployeeController::class, 'update']);
         Route::post('update-image/{id}', [EmployeeController::class, 'updateImage']);
@@ -177,7 +177,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::prefix('asset')->group(function () {
         Route::get('list', [AssetController::class, 'index']);
-        Route::post('store', [AssetController::class, 'store']);
+        Route::post('store', [AssetController::class, 'store'])->middleware('idp_subscription_validation:asset');;
         Route::get('show/{id}', [AssetController::class, 'show']);
         Route::post('update/{id}', [AssetController::class, 'update']);
         Route::post('destroy', [AssetController::class, 'destroy']);

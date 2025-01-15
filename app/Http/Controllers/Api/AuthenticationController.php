@@ -33,7 +33,7 @@ class AuthenticationController extends Controller
         $user->image_path = $request->image_path;
         $user->save();
 
-        return response()->json(['success' => true, 'message' => 'User added in TMS application'], 201);
+        return response()->json(['success' => true, 'message' => 'User added in HRMS application'], 201);
     }
 
 

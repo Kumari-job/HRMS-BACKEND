@@ -21,7 +21,9 @@ class DepartmentEmployeeController extends Controller
      */
     public function employeesByDepartment(Request $request, $id)
     {
-        $query = DepartmentEmployee::with('employee', 'department', 'createdBy', 'updatedBy')->where('department_id', $id);
+        $query = DepartmentEmployee::with(['employee' => function ($query) {
+            $query->whereNull('deleted_at');
+        }, 'department', 'createdBy', 'updatedBy'])->where('department_id', $id);
 
         $departmentEmployees = $query->latest()->paginate($request->page_size ?? 10);
         return DepartmentEmployeeResource::collection($departmentEmployees);

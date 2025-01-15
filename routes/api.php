@@ -248,6 +248,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::prefix('company-profile')->group(function () {
         Route::post('upsert', [CompanyProfileController::class, 'upsert']);
         Route::get('show',[CompanyProfileController::class, 'showCompanyProfile']);
+        Route::get('country-policy',[CompanyProfileController::class, 'showCompanyCountryPolicy']);
     });
 
     Route::prefix('company-holiday')->group(function () {

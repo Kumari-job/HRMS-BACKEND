@@ -48,6 +48,15 @@ class DepartmentEmployeeController extends Controller
     {
         try {
             $data = $request->except('joined_at');
+            $department = Department::select('branch_id')->find($data['department_id']);
+            if (!$department) {
+                return response()->json(['error'=>true,'message' => 'Department not found'], 404);
+            }
+            if(DepartmentEmployee::whereHas('department', function ($q) use ($department) {
+                $q->where('branch_id','!=', $department->branch_id);
+            })->where('employee_id', $data['employee_id'])->exists()) {
+                return response()->json(['error'=>true,'message'=>'Employee exists in another branch'],422);
+            }
             $joined_at = $request->filled('joined_at_nepali') ? DateHelper::nepaliToEnglish($request->joined_at_nepali) : $request->joined_at;
             $data['joined_at'] = $joined_at;
             $departmentEmployee = new DepartmentEmployee();

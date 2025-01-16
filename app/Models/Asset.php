@@ -29,6 +29,8 @@ class Asset extends Model
         'brand',
         'cost',
         'model',
+        'depreciation_type',
+        'depreciation_rate',
         'serial_number',
         'purchased_at',
         'warranty_end_at',

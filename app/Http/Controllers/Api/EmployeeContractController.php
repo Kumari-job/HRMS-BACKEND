@@ -14,11 +14,6 @@ use Illuminate\Support\Facades\Log;
 
 class EmployeeContractController extends Controller
 {
-    public function index()
-    {
-
-    }
-
     public function store(EmployeeContractRequest $request, EmployeeBenefitRequest $employeeBenefitRequest)
     {
         try {

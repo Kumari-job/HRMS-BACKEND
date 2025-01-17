@@ -24,6 +24,13 @@ class PayrollSettingController extends Controller
             $data = $request->validated();
             $data['created_by'] = Auth::id();
             $data['updated_by'] = Auth::id();
+
+            if($request->filled('vat_number')){
+                $data['pan_number'] = null ;
+            }else{
+                $data['vat_number'] = null ;
+            }
+            
             $payrollSetting = new PayrollSetting();
             $payrollSetting->updateOrCreate(['company_id' => $company_id], $data);
             return response()->json(['success' => true,'message' => 'Payroll Setting updated successfully.'],200);

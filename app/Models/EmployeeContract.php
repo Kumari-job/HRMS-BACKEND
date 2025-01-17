@@ -29,6 +29,8 @@ class EmployeeContract extends Model
         'ssf_from_company',
         'gratuity',
         'cit_amount',
+        'dearness_allowance',
+        'other_allowance',
         'created_by',
         'updated_by',
     ];

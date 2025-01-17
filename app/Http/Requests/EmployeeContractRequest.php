@@ -38,6 +38,8 @@ class EmployeeContractRequest extends FormRequest
             'ssf_from_company' => 'nullable|numeric|min:0|max:100',
             'gratuity' => 'nullable|numeric',
             'cit_amount' => 'nullable|numeric',
+            'dearness_allowance' => 'required|numeric', #amount
+            'other_allowance' => 'nullable|numeric', #amount
         ];
     }
     protected function failedValidation(Validator $validator)

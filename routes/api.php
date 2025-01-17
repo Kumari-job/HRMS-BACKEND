@@ -177,7 +177,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::prefix('asset')->group(function () {
         Route::get('list', [AssetController::class, 'index']);
-        Route::post('store', [AssetController::class, 'store'])->middleware('idp_subscription_validation:asset');;
+        Route::post('store', [AssetController::class, 'store'])->middleware('idp_subscription_validation:asset');
         Route::get('show/{id}', [AssetController::class, 'show']);
         Route::post('update/{id}', [AssetController::class, 'update']);
         Route::post('destroy', [AssetController::class, 'destroy']);

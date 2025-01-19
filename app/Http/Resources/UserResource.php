@@ -2,8 +2,10 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends JsonResource
 {
@@ -14,6 +16,10 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        if($this->employee_id)
+        {
+            $company_id = Employee::withoutGlobalScopes()->find($this->employee_id);
+        }
         return [
             'id' => $this->id,
             'idp_user_id' => $this->idp_user_id,
@@ -21,7 +27,8 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'mobile' => $this->mobile,
             'image_path' => $this->image_path,
-            'employee_id' => $this->employee_id
+            'employee_id' => $this->employee_id,
+            'selected_company' => Auth::user()->selectedCompany?->company_id ?? $company_id->company_id,
         ];
     }
 }

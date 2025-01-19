@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -23,8 +24,26 @@ class User extends Authenticatable
         'mobile',
         'image_path',
     ];
+
+    protected static function booted()
+    {
+        static::updated(function ($user) {
+            if ($user->isDirty(['email', 'name'])) {
+                $user->employee->update([
+                    'email' => $user->email,
+                    'name' => $user->name,
+                ]);
+            }
+        });
+    }
+
     public function selectedCompany(): HasOne
     {
         return $this->hasOne(SelectedCompany::class);
+    }
+
+    public function employee():BelongsTo
+    {
+        return $this->belongsTo(Employee::class,'employee_id');
     }
 }

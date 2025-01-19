@@ -35,6 +35,19 @@ class Employee extends Model
         'religion',
     ];
     public $appends = ['image_path'];
+
+    protected static function booted()
+    {
+        static::updated(function ($employee) {
+            if ($employee->isDirty(['email', 'name'])) {
+                $employee->user->update([
+                    'email' => $employee->email,
+                    'name' => $employee->name,
+                ]);
+            }
+        });
+    }
+
     public function getActivitylogOptions():LogOptions
     {
         return LogOptions::defaults()
@@ -126,5 +139,10 @@ class Employee extends Model
         }, 0);
 
         return round($totalMonths / 12);
+    }
+
+    public function user():HasOne
+    {
+        return $this->hasOne(User::class);
     }
 }

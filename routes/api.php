@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\SelectedCompanyController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VendorController;
+use App\Http\Controllers\Api\EmployeeAuth\AuthenticationController as EmployeeAuthController;
 use App\Http\Middleware\VerifyCommonToken;
 use App\Models\Department;
 use Illuminate\Http\Request;
@@ -37,17 +38,22 @@ use Illuminate\Support\Facades\Route;
 // temp 
 Route::post('users/store-idp-user-id', [AuthenticationController::class, 'storeIdpUserID'])->middleware('verify_common_token');
 Route::post('users/generate-access-token', [AuthenticationController::class, 'generateAccessToken'])->middleware('verify_common_token');
-
-// client sync and access token 
+Route::post('employee-login',[EmployeeAuthController::class, 'login']);
+Route::post('employee-forgot-password', [EmployeeAuthController::class,'forgotPassword']);
+Route::post('employee-verify-token', [EmployeeAuthController::class, 'verifyToken']);
+Route::post('employee-verify-otp', [EmployeeAuthController::class, 'verifyOTP']);
+Route::post('employee-reset-password',[EmployeeAuthController::class,'resetPassword']);
+// client sync and access token
 Route::group(['middleware' => 'client'], function () {
     Route::post('sync-user', [AuthenticationController::class, 'syncIdpUser']);
     Route::post('access-token', [AuthenticationController::class, 'generateAccessToken']);
 });
 
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => ['auth:api','is_employee_password_changed']], function () {
+    Route::post('employee-logout',[EmployeeAuthController::class,'logout'])->withoutMiddleware('is_employee_password_changed');
     Route::post('logout', [AuthenticationController::class, 'logout']);
-
+    Route::post('employee-change-password',[EmployeeAuthController::class, 'changePassword'])->withoutMiddleware('is_employee_password_changed');
     Route::prefix('user')->group(function () {
         Route::get('list', [UserController::class, 'index']);
         Route::get('profile', [UserController::class, 'profile']);

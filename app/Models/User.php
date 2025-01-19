@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'mobile',
         'image_path',
+        'is_password_changed',
     ];
 
     protected static function booted()

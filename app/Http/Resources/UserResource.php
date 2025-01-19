@@ -16,10 +16,6 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        if($this->employee_id)
-        {
-            $company_id = Employee::withoutGlobalScopes()->find($this->employee_id);
-        }
         return [
             'id' => $this->id,
             'idp_user_id' => $this->idp_user_id,
@@ -28,7 +24,7 @@ class UserResource extends JsonResource
             'mobile' => $this->mobile,
             'image_path' => $this->image_path,
             'employee_id' => $this->employee_id,
-            'selected_company' => Auth::user()->selectedCompany?->company_id ?? $company_id->company_id,
+            'selected_company' => Auth::user()->selectedCompany->company_id,
         ];
     }
 }

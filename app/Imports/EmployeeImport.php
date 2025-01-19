@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Helpers\DateHelper;
 use App\Models\Employee;
+use App\Models\SelectedCompany;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -86,6 +87,18 @@ class EmployeeImport implements ToCollection, WithHeadingRow, SkipsOnError, Skip
             }
 
             $user->save();
+            if ($user)
+            {
+                $selectedCompany =  SelectedCompany::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                    ],
+                    [
+                        'company_id' => $company_id,
+                        'user_id' => $user->id,
+                    ]
+                );
+            }
         }
         return true;
     }

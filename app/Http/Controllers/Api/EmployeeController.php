@@ -10,6 +10,7 @@ use App\Http\Requests\EmployeeRequest;
 use App\Http\Resources\EmployeeResource;
 use App\Jobs\ProcessEmployeeExport;
 use App\Models\Employee;
+use App\Models\SelectedCompany;
 use App\Models\User;
 use App\Traits\FileHelper;
 use App\Imports\EmployeeImport;
@@ -104,6 +105,13 @@ class EmployeeController extends Controller
                 $user->employee_id = $employee->id;
                 $user->is_password_changed = false;
                 $user->save();
+            }
+            if ($user)
+            {
+                $selectedCompany = new SelectedCompany();
+                $selectedCompany->company_id = $company_id;
+                $selectedCompany->user_id = $user->id;
+                $selectedCompany->save();
             }
             return response()->json(['success' => true, "message" => "Employee added successfully", 'id' => $employee->id], 201);
         }catch (\Exception $exception){

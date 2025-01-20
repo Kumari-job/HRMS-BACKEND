@@ -75,30 +75,7 @@ class EmployeeImport implements ToCollection, WithHeadingRow, SkipsOnError, Skip
                     'religion' => $row['religion'],
                 ]
             );
-            $user = User::firstOrNew(['employee_id' => $employee->id]);
 
-            $user->name = $row['name'];
-            $user->email = $row['email'];
-            $user->employee_id = $employee->id;
-            $user->is_password_changed = false;
-
-            if (!$user->exists) {
-                $user->password = Hash::make('test@123');
-            }
-
-            $user->save();
-            if ($user)
-            {
-                $selectedCompany =  SelectedCompany::updateOrCreate(
-                    [
-                        'user_id' => $user->id,
-                    ],
-                    [
-                        'company_id' => $company_id,
-                        'user_id' => $user->id,
-                    ]
-                );
-            }
         }
         return true;
     }

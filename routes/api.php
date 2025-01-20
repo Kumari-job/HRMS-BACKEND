@@ -57,6 +57,7 @@ Route::group(['middleware' => ['auth:api','is_employee_password_changed']], func
     Route::prefix('user')->group(function () {
         Route::get('list', [UserController::class, 'index']);
         Route::get('profile', [UserController::class, 'profile']);
+        Route::post('migrate-employee-data',[UserController::class, 'migrateEmployeeData']);
     });
 
 

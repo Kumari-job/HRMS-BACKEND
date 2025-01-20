@@ -18,6 +18,6 @@ class CompanyScope implements Scope
             $company_id = (request('company_id') && request('request_source') === 'client') ? request('company_id') : Auth::user()->selectedCompany->company_id;
             $builder->where('company_id', $company_id);
         }
-        ;
+
     }
 }

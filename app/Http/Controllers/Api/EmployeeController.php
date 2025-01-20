@@ -96,7 +96,22 @@ class EmployeeController extends Controller
                 $employee->image = $fileName;
             }
             $employee->save();
-
+            if ($employee)
+            {
+                $user = new User();
+                $user->name = $employee->name;
+                $user->email = $employee->email;
+                $user->password = Hash::make('test@123');
+                $user->employee_id = $employee->id;
+                $user->is_password_changed = false;
+                $user->save();
+            }
+            if($user)
+            {
+                $selectedCompany = new SelectedCompany();
+                $selectedCompany->company_id = $company_id;
+                $selectedCompany->user_id = $user->id;
+            }
             return response()->json(['success' => true, "message" => "Employee added successfully", 'id' => $employee->id], 201);
         }catch (\Exception $exception){
             Log::error("Unable to create employee: " . $exception->getMessage());

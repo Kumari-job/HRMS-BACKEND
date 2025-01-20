@@ -19,6 +19,7 @@ class EmployeeContract extends Model
         'contract_type',
         'probation_end_at',
         'job_description',
+        'contract_end_date',
         'gross_salary',
         'basic_salary',
         'pf_from_employee',

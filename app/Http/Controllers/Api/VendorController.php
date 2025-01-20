@@ -45,9 +45,10 @@ class VendorController extends Controller
             $vendor->company_id = $company_id;
             $vendor->save();
             return response()->json(['success' => true, 'message' => 'Vendor created successfully'], 201);
-        }catch (\Exception $exception){
-            Log::error("Unable to store vendor: " . $exception->getMessage());
-            return response()->json(['success' => false, 'message' => "Unable to store vendor"], 500);
+        } catch (\Exception $e) {
+            Log::error("Unable to create vendor: {$e->getMessage()}");
+            return response()->json(['error' => true, 'message' => 'Unable to create vendor'], 500);
+
         }
     }
 

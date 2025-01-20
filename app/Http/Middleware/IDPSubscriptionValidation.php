@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use App\Helpers\AuthHelper;
@@ -64,7 +63,7 @@ class IDPSubscriptionValidation
             default => 0,
         };
 
-        $limitKey = "{$type}_limit";
+        $limitKey = $type === "employee" ? "pims_employee_limit" : "asset_limit";
         $remaining = $subscriptionData[$limitKey] - $count;
 
         return [

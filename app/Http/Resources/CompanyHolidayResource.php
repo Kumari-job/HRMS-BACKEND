@@ -24,9 +24,10 @@ class CompanyHolidayResource extends JsonResource
             'date_nepali' => DateHelper::englishToNepali($this->date,'Y-m-d'),
             'date_nepali_formatted' => DateHelper::englishToNepali($this->date,'d M Y'),
             'holiday' => $this->holiday,
+            'type' => 'holiday',
             'description' => $this->description,
-            'females_only' => $this->females_only,
-            'holiday_for_religion' => $this->holiday_for_religion,
+            'female_only' => $this->female_only,
+            'holiday_for_religion' => $this->holiday_for_religion ?? null,
             'created_by' => new UserResource($this->whenLoaded('createdBy')),
             'updated_by' => new UserResource($this->whenLoaded('updatedBy')),
         ];

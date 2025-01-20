@@ -26,6 +26,7 @@ class Vendor extends Model
         return LogOptions::defaults()
             ->setDescriptionForEvent(fn(string $eventName) => "A vendor has been {$eventName}")
             ->logOnly(['name','email','mobile','address']);
+
     }
     public function createdBy():BelongsTo
     {

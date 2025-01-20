@@ -78,22 +78,26 @@ class CompanyHolidayController extends Controller
      */
     public function update(CompanyHolidayRequest $request, string $id)
     {
+        try {
+            $data = $request->except('date', 'date_nepali');
 
-        $data = $request->except('date','date_nepali');
+            $date = $request->filled('date_nepali') ? DateHelper::nepaliToEnglish($request->date_nepali) : $request->date;
+            $data['date'] = $date;
 
-        $date =  $request->filled('date_nepali') ? DateHelper::nepaliToEnglish($request->date_nepali) : $request->date;
-        $data['date'] = $date;
+            $companyHoliday = CompanyHoliday::where('id', $id)->first();
+            if (!$companyHoliday) {
+                return response()->json(['error' => true, 'message' => 'Holiday not found'], 404);
+            }
 
-        $companyHoliday = CompanyHoliday::where('id', $id)->first();
-        if (!$companyHoliday) {
-            return response()->json(['error' => true, 'message' => 'Holiday not found'], 404);
+            $companyHoliday->fill($data);
+            $companyHoliday->updated_by = Auth::id();
+            $companyHoliday->update();
+
+            return response()->json(['success' => true, 'message' => 'Holiday updated successfully.'], 200);
+        }catch (\Exception $exception){
+            Log::error("Unable to update holiday: ". $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to update holiday'], 500);
         }
-
-        $companyHoliday->fill($data);
-        $companyHoliday->updated_by = Auth::id();
-        $companyHoliday->update();
-
-        return response()->json(['success' => true, 'message' => 'Holiday updated successfully.'], 200);
     }
 
     /**

@@ -4,9 +4,12 @@ namespace App\Imports;
 
 use App\Helpers\DateHelper;
 use App\Models\Employee;
+use App\Models\SelectedCompany;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;

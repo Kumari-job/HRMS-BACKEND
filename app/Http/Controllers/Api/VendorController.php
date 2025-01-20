@@ -38,6 +38,7 @@ class VendorController extends Controller
     public function store(VendorRequest $request)
     {
         try {
+
             $company_id = Auth::user()->selectedCompany->company_id;
             $vendor = new Vendor($request->validated());
             $vendor->created_by = Auth::id();
@@ -47,6 +48,7 @@ class VendorController extends Controller
         } catch (\Exception $e) {
             Log::error("Unable to create vendor: {$e->getMessage()}");
             return response()->json(['error' => true, 'message' => 'Unable to create vendor'], 500);
+
         }
     }
 

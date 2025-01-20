@@ -10,10 +10,13 @@ use App\Http\Requests\EmployeeRequest;
 use App\Http\Resources\EmployeeResource;
 use App\Jobs\ProcessEmployeeExport;
 use App\Models\Employee;
+use App\Models\SelectedCompany;
+use App\Models\User;
 use App\Traits\FileHelper;
 use App\Imports\EmployeeImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -93,6 +96,22 @@ class EmployeeController extends Controller
                 $employee->image = $fileName;
             }
             $employee->save();
+            if ($employee)
+            {
+                $user = new User();
+                $user->name = $employee->name;
+                $user->email = $employee->email;
+                $user->password = Hash::make('test@123');
+                $user->employee_id = $employee->id;
+                $user->is_password_changed = false;
+                $user->save();
+            }
+            if($user)
+            {
+                $selectedCompany = new SelectedCompany();
+                $selectedCompany->company_id = $company_id;
+                $selectedCompany->user_id = $user->id;
+            }
             return response()->json(['success' => true, "message" => "Employee added successfully", 'id' => $employee->id], 201);
         }catch (\Exception $exception){
             Log::error("Unable to create employee: " . $exception->getMessage());
@@ -117,28 +136,33 @@ class EmployeeController extends Controller
      */
     public function update(EmployeeRequest $request, string $id)
     {
-        $employee = Employee::find($id);
-        if (!$employee) {
-            return response()->json(['error' => true, "message" => "Employee not found"], 404);
-        }
-        if (Employee::where('name', $request['name'])->where('email', $request['email'])->where('id', '!=', $id)->exists()) {
-            return response()->json(['error' => true, "message" => "Employee already exists"], 400);
-        }
-        $data = $request->except('image', 'date_of_birth');
-        $date_of_birth = $request->filled('date_of_birth_nepali') ? DateHelper::nepaliToEnglish($request->date_of_birth_nepali) : $request->date_of_birth;
-
-        $data['date_of_birth'] = $date_of_birth;
-        if ($request->hasFile('image')) {
-            $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id, $employee->id);
-            if ($employee->image) {
-                $this->fileDelete($path, $employee->image);
+        try {
+            $employee = Employee::find($id);
+            if (!$employee) {
+                return response()->json(['error' => true, "message" => "Employee not found"], 404);
             }
-            $fileName = $this->fileUpload($request->file('image'), $path);
-            $data['image'] = $fileName;
-        }
+            if (Employee::where('name', $request['name'])->where('email', $request['email'])->where('id', '!=', $id)->exists()) {
+                return response()->json(['error' => true, "message" => "Employee already exists"], 400);
+            }
+            $data = $request->except('image', 'date_of_birth');
+            $date_of_birth = $request->filled('date_of_birth_nepali') ? DateHelper::nepaliToEnglish($request->date_of_birth_nepali) : $request->date_of_birth;
 
-        $employee->update($data);
-        return response()->json(['success' => true, "message" => "Employee updated successfully", 'id' => $employee->id], 200);
+            $data['date_of_birth'] = $date_of_birth;
+            if ($request->hasFile('image')) {
+                $path = DirectoryPathHelper::employeeImageDirectoryPath($employee->company_id, $employee->id);
+                if ($employee->image) {
+                    $this->fileDelete($path, $employee->image);
+                }
+                $fileName = $this->fileUpload($request->file('image'), $path);
+                $data['image'] = $fileName;
+            }
+
+            $employee->update($data);
+            return response()->json(['success' => true, "message" => "Employee updated successfully", 'id' => $employee->id], 200);
+        }catch (\Exception $exception){
+            Log::error("Unable to update employee: " . $exception->getMessage());
+            return response()->json(['error' => true, 'message' => "Unable to update employee"], 500);
+        }
     }
 
     public function updateImage(Request $request, string $id)

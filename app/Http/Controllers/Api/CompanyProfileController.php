@@ -40,5 +40,17 @@ class CompanyProfileController extends Controller
         }
 
     }
+    public function showCompanyCountryPolicy()
+    {
+        $company_id = Auth::user()->selectedCompany->company_id;
+        $companyProfile = CompanyProfile::select('country')->where('company_id', $company_id)->first();
+        $country = strtolower($companyProfile->country);
+        $jsonFile = public_path('assets/country_policy/'.$country.'.json');
 
+        if (file_exists($jsonFile)) {
+            $content = json_decode(file_get_contents($jsonFile));
+            return response()->json(['success' => true,'policy' => $content]);
+        }
+        return response()->json(['success' => false,'message'=> 'Country Policy not found.'], 404);
+    }
 }

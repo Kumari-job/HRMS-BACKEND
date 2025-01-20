@@ -47,6 +47,8 @@ class AssetRequest extends FormRequest
             'guarantee_end_at_nepali' => 'nullable|date',
             'guarantee_image' => 'nullable|mimes:jpg,jpeg,png|max:2048',
             'status' => 'required|in:new,used,disposed,damaged,maintenance',
+            'depreciation_type' => 'nullable|string',
+            'depreciation_rate' => 'nullable|numeric',
         ];
     }
 

@@ -9,6 +9,7 @@ use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -40,14 +41,19 @@ class DepartmentController extends Controller
 
     public function store(DepartmentRequest $request)
     {
-        if (Department::where('branch_id', $request->branch_id)->where('name', $request->name)->exists()) {
-            return response()->json(['error' => true, 'message' => 'Department name already exists'], 422);
-        }
-        $data = $request->only(['name', 'branch_id']);
-        $data['created_by'] = Auth::id();
+        try {
+            if (Department::where('branch_id', $request->branch_id)->where('name', $request->name)->exists()) {
+                return response()->json(['error' => true, 'message' => 'Department name already exists'], 422);
+            }
+            $data = $request->only(['name', 'branch_id']);
+            $data['created_by'] = Auth::id();
 
-        Department::create($data);
-        return response()->json(['success' => true, 'message' => 'Department created successfully.'], 201);
+            Department::create($data);
+            return response()->json(['success' => true, 'message' => 'Department created successfully.'], 201);
+        }catch (\Exception $exception){
+            Log::error("Unable to store department: ". $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to store department'], 500);
+        }
     }
 
     public function show($id)
@@ -66,66 +72,78 @@ class DepartmentController extends Controller
 
     public function update(DepartmentRequest $request, $id)
     {
-        $company_id = Auth::user()->selectedCompany->company_id;
+        try {
+            $company_id = Auth::user()->selectedCompany->company_id;
 
-        $department = Department::where('id', $id)
-            ->whereHas('branch', fn($q) => $q->where('company_id', $company_id))
-            ->first();
-        if (!$department) {
-            return response()->json(['error' => true, 'message' => 'Department not found'], 404);
+            $department = Department::where('id', $id)
+                ->whereHas('branch', fn($q) => $q->where('company_id', $company_id))
+                ->first();
+            if (!$department) {
+                return response()->json(['error' => true, 'message' => 'Department not found'], 404);
+            }
+
+            $data = $request->only(['name', 'branch_id']);
+            $data['updated_by'] = Auth::id();
+            $department->update($data);
+
+            return response()->json(['success' => true, 'message' => 'Department updated successfully.'], 200);
+        }catch (\Exception $exception){
+            Log::error("Unable to update department: ". $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to update department'], 500);
         }
-
-        $data = $request->only(['name', 'branch_id']);
-        $data['updated_by'] = Auth::id();
-        $department->update($data);
-
-        return response()->json(['success' => true, 'message' => 'Department updated successfully.'], 200);
     }
 
     public function updateHead(Request $request, $id)
     {
-        $company_id = Auth::user()->selectedCompany->company_id;
+        try {
+            $company_id = Auth::user()->selectedCompany->company_id;
 
-        $validator = Validator::make($request->all(), [
-            'employee_id' => ['required', Rule::exists('employees', 'id')->where('company_id', $company_id)]
-        ]);
+            $validator = Validator::make($request->all(), [
+                'employee_id' => ['required', Rule::exists('employees', 'id')->where('company_id', $company_id)]
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => 'Employee not found.'], 422);
+            if ($validator->fails()) {
+                return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => 'Employee not found.'], 422);
+            }
+
+            $department = Department::where('id', $id)
+                ->whereHas('branch', fn($q) => $q->where('company_id', $company_id))
+                ->first();
+
+            if (!$department) {
+                return response()->json(['error' => true, 'message' => 'Department not found'], 404);
+            }
+            $department->employee_id = $request->employee_id;
+            $department->save();
+            return response()->json(['success' => true, 'message' => 'Department Head updated successfully.'], 200);
+        }catch (\Exception $exception){
+            Log::error("Unable to update department: ". $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to update department'], 500);
         }
-
-        $department = Department::where('id', $id)
-            ->whereHas('branch', fn($q) => $q->where('company_id', $company_id))
-            ->first();
-
-        if (!$department) {
-            return response()->json(['error' => true, 'message' => 'Department not found'], 404);
-        }
-
-        $department->employee_id = $request->employee_id;
-        $department->save();
-
-
-        return response()->json(['success' => true, 'message' => 'Department Head updated successfully.'], 200);
     }
 
     public function destroy(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'ids' => 'array'
-        ]);
-        $ids = $request->ids;
-        if ($validator->fails()) {
-            return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
-        }
-        $departments = Department::whereIn('id', $ids);
-        $count = $departments->count();
-        if ($count > 0) {
-            $deleteStatus = $departments->delete();
+        try {
+            $validator = Validator::make($request->all(), [
+                'ids' => 'array'
+            ]);
+            $ids = $request->ids;
+            if ($validator->fails()) {
+                return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
+            }
+            $departments = Department::whereIn('id', $ids);
+            $count = $departments->count();
+            if ($count > 0) {
+                $deleteStatus = $departments->delete();
 
-            return response()->json(['success' => true, 'message' => 'Departments trashed successfully.'], 200);
+                return response()->json(['success' => true, 'message' => 'Departments trashed successfully.'], 200);
+            }
+            return response()->json(['error' => true, 'message' => 'Departments not found.'], 400);
+        } catch (\Exception $exception){
+            Log::error("Unable to delete departments: ". $exception->getMessage());
+            return response()->json(['error' => true, 'message' => 'Unable to delete departments'], 500);
         }
-        return response()->json(['error' => true, 'message' => 'Departments not found.'], 400);
     }
 
     public function trashed(Request $request)

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckRequestSource;
+use App\Http\Middleware\EnsureEmployeePasswordIsChanged;
 use App\Http\Middleware\IDPSubscriptionValidation;
 use App\Http\Middleware\VerifyCommonToken;
 use Illuminate\Foundation\Application;
@@ -16,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
-            $router->middleware(['client','check.source'])
+            $router->middleware(['client', 'check.source'])
                     ->prefix('api/client')
                     ->group(base_path('routes/client-api.php'));
         }
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'client' => CheckClientCredentials::class,
             'check.source' => CheckRequestSource::class,
             'idp_subscription_validation' => IdpSubscriptionValidation::class,
+            'is_employee_password_changed' => EnsureEmployeePasswordIsChanged::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

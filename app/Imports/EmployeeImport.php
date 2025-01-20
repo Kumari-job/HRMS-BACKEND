@@ -4,9 +4,12 @@ namespace App\Imports;
 
 use App\Helpers\DateHelper;
 use App\Models\Employee;
+use App\Models\SelectedCompany;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
@@ -72,6 +75,30 @@ class EmployeeImport implements ToCollection, WithHeadingRow, SkipsOnError, Skip
                     'religion' => $row['religion'],
                 ]
             );
+            if ($employee)
+            {
+                $user = User::firstOrNew(['employee_id' => $employee->id]);
+
+                $user->name = $employee->name;
+                $user->email = $employee->email;
+                $user->employee_id = $employee->id;
+
+                if (!$user->exists) {
+                    $user->password = Hash::make('test@123');
+                    $user->is_password_changed = false;
+                }
+            }
+            if ($user)
+            {
+                $selectedCompany = SelectedCompany::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'company_id' => $company_id,
+                        'user_id' => $user->id,
+                    ]
+                );
+
+            }
         }
         return true;
     }

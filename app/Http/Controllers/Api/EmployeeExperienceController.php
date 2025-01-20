@@ -12,6 +12,7 @@ use App\Models\EmployeeExperience;
 use App\Traits\FileHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeExperienceController extends Controller
 {
@@ -26,24 +27,29 @@ class EmployeeExperienceController extends Controller
     }
     public function store(EmployeeExperienceRequest $request)
     {
-        $company_id = Auth::user()->selectedCompany->company_id;
-        $employeeExperience = new EmployeeExperience($request->except('experience_letter'));
-        $data = $request->except(['experience_letter','from_date','to_date']);
-        $from_date = $request->filled('from_date_nepali') ? DateHelper::nepaliToEnglish($request->from_date_nepali) : $request->from_date;
-        $to_date = $request->filled('to_date_nepali') ? DateHelper::nepaliToEnglish($request->to_date_nepali) : $request->to_date;
+        try {
+            $company_id = Auth::user()->selectedCompany->company_id;
+            $employeeExperience = new EmployeeExperience($request->except('experience_letter'));
+            $data = $request->except(['experience_letter', 'from_date', 'to_date']);
+            $from_date = $request->filled('from_date_nepali') ? DateHelper::nepaliToEnglish($request->from_date_nepali) : $request->from_date;
+            $to_date = $request->filled('to_date_nepali') ? DateHelper::nepaliToEnglish($request->to_date_nepali) : $request->to_date;
 
-        $data['from_date'] = $from_date;
-        $data['to_date'] = $to_date;
-        $employeeExperience->fill($data);
-        if ($request->hasFile('experience_letter')) {
-            $path = DirectoryPathHelper::experienceDirectoryPath($company_id, $request->employee_id);
-            $fileName = $this->fileUpload($request->file('experience_letter'), $path);
-            $employeeExperience->experience_letter = $fileName;
+            $data['from_date'] = $from_date;
+            $data['to_date'] = $to_date;
+            $employeeExperience->fill($data);
+            if ($request->hasFile('experience_letter')) {
+                $path = DirectoryPathHelper::experienceDirectoryPath($company_id, $request->employee_id);
+                $fileName = $this->fileUpload($request->file('experience_letter'), $path);
+                $employeeExperience->experience_letter = $fileName;
+            }
+            $employeeExperience->created_by = Auth::id();
+
+            $employeeExperience->save();
+            return response()->json(['success' => true, 'message' => 'Experience entered successfully'], 201);
+        }catch (\Exception $exception){
+            Log::error("Unable to store employee experience " . $exception->getMessage());
+            return response()->json(['error' => true, 'message' => "Unable to store employee experience "], 500);
         }
-        $employeeExperience->created_by = Auth::id();
-
-        $employeeExperience->save();
-        return response()->json(['success' => true,'message'=>'Experience entered successfully'],201);
     }
     public function update(EmployeeExperienceRequest $request, $id)
     {

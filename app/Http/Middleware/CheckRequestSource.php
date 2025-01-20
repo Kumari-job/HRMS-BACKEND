@@ -15,14 +15,22 @@ class CheckRequestSource
      */
     public function handle($request, Closure $next)
     {
-        if (auth()->check()) {
-            $request->attributes->set('request_source', 'user');
-        } elseif (auth()->user() === null && auth()->guard('api')->check()) {
-            $request->attributes->set('request_source', 'client');
-        } else {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+        // if (auth()->guard()->check()) {
+        //     $request->attributes->set('request_source', 'user');
+        //     return $next($request);
+        // } elseif (auth()->user() === null && auth()->guard('api')->check()) {
+        //     $request->attributes->set('request_source', 'client');
+        //     return $next($request);
+        // } else {
+        //     return response()->json(['message' => 'Unauthorized client'], 401);
+        // }
 
-        return $next($request);
+        if (auth()->guard()->check()) {
+            $request->attributes->set('request_source', 'user');
+            return $next($request);
+        } else {
+            $request->attributes->set('request_source', 'client');
+            return $next($request);
+        }
     }
 }

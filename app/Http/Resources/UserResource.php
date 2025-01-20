@@ -2,8 +2,10 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends JsonResource
 {
@@ -20,7 +22,9 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'mobile' => $this->mobile,
-            'image_path' => $this->image_path
+            'image_path' => $this->image_path,
+            'employee_id' => $this->employee_id,
+            'selected_company' => Auth::user()->selectedCompany->company_id,
         ];
     }
 }

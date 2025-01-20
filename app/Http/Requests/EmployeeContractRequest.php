@@ -27,6 +27,7 @@ class EmployeeContractRequest extends FormRequest
             'employee_id' => 'required|integer|exists:employees,id',
             'contract_type' => 'required|string',
             'probation_end_at' => 'nullable|date',
+            'contract_end_date' => 'nullable|date',
             'job_description' => 'required|string',
             'gross_salary' => 'nullable|numeric',
             'basic_salary' => 'nullable|numeric',
@@ -38,6 +39,8 @@ class EmployeeContractRequest extends FormRequest
             'ssf_from_company' => 'nullable|numeric|min:0|max:100',
             'gratuity' => 'nullable|numeric',
             'cit_amount' => 'nullable|numeric',
+            'dearness_allowance' => 'required|numeric', #amount
+            'other_allowance' => 'nullable|numeric', #amount
         ];
     }
     protected function failedValidation(Validator $validator)

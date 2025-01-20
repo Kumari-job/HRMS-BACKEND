@@ -30,6 +30,8 @@ class AssetResource extends JsonResource
             'brand' => $this->brand,
             'cost' => $this->cost,
             'model' => $this->model,
+            'depreciation_type' => $this->depreciation_type,
+            'depreciation_rate' => $this->depreciation_rate,
             'serial_number' => $this->serial_number,
             'purchased_at' => Carbon::parse($this->purchased_at)->format('Y-m-d'),
             'purchased_at_formatted' => Carbon::parse($this->purchased_at)->format('d M Y'),

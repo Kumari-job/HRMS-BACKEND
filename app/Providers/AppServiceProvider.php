@@ -24,5 +24,12 @@ class AppServiceProvider extends ServiceProvider
         Passport::useClientModel(Passport::clientModel());
         Passport::useAuthCodeModel(Passport::authCodeModel());
         Passport::usePersonalAccessClientModel(Passport::personalAccessClientModel());
+        Passport::tokensCan([
+            'employee' => 'employee',
+        ]);
+
+        Passport::setDefaultScope([
+            'employee',
+        ]);
     }
 }

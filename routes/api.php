@@ -81,6 +81,7 @@ Route::group(['middleware' => ['auth:api','is_employee_password_changed']], func
         Route::get('english-month',[DataController::class, 'englishMonth']);
         Route::get('nepali-month',[DataController::class, 'nepaliMonth']);
         Route::get('country',[DataController::class, 'country']);
+        Route::get('leave-type', [DataController::class, 'leaveType']);
     });
 
     Route::prefix('branch')->group(function () {

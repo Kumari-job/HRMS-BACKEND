@@ -17,6 +17,8 @@ class PayrollSetting extends Model
         'bank_branch_name',
         'bank_account_name',
         'bank_account_number',
+        'vat_number',
+        'pan_number',
         'created_by',
         'updated_by',
     ];

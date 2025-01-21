@@ -31,6 +31,8 @@ class PayrollSettingRequest extends FormRequest
             'bank_branch_name' => 'required|string',
             'bank_account_name' => 'required|string',
             'bank_account_number' => 'required|string',
+            'vat_number' => 'nullable|string|required_without:pan_number',
+            'pan_number' => 'nullable|string|required_without:vat_number',
         ];
     }
 

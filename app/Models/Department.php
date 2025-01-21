@@ -45,12 +45,10 @@ class Department extends Model
 
     public function scopeForCompany(Builder $query)
     {
-        if (Auth::check()) {
-            $company_id = request('company_id') ?? Auth::user()->selectedCompany->company_id;
-            $query->whereHas('branch', function ($query) use ($company_id) {
-                $query->where('company_id', $company_id);
-            });
-        }
+        $company_id = request('company_id') ?? Auth::user()->selectedCompany->company_id;
+        $query->whereHas('branch', function ($query) use ($company_id) {
+            $query->where('company_id', $company_id);
+        });
         return $query;
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('employee_contracts', function (Blueprint $table) {
             $table->decimal('other_allowance')->nullable()->after('cit_amount');
-            $table->decimal('dearness_allowance')->nullable()->after('cit_amount');
+            $table->decimal('dearness_allowance')->nullable()->after('other_allowance');
         });
     }
 

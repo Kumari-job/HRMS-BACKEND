@@ -114,7 +114,7 @@ class AssetUsageController extends Controller
             return response()->json(['success' => true, 'message' => 'Asset Usage status changed successfully'],200);
 
         }catch(\Exception $ex){
-            return response()->json(['success' => true, 'message' => 'Failed to update asset usage status'],200);
+            return response()->json(['error' => true, 'message' => 'Failed to update asset usage status'],200);
         }
     }
 

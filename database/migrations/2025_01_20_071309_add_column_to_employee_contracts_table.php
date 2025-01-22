@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('employee_contracts', function (Blueprint $table) {
-            $table->decimal('other_allowance')->nullable()->after('cit_amount');
-            $table->decimal('dearness_allowance')->nullable()->after('other_allowance');
+            $table->date('contract_end_date')->nullable()->after('other_allowance');
         });
     }
 
@@ -23,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('employee_contracts', function (Blueprint $table) {
-            $table->dropColumn('other_allowance');
-            $table->dropColumn('dearness_allowance');
+            $table->dropColumn('contract_end_date');
         });
     }
 };

@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
-            $router->middleware(['client','check.source'])
+            $router->middleware(['client', 'check.source'])
                     ->prefix('api/client')
                     ->group(base_path('routes/client-api.php'));
         }

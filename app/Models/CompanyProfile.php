@@ -17,5 +17,7 @@ class CompanyProfile extends Model
       'week_end_day',
       'weekly_leaves',
       'country',
+      'start_time',
+      'end_time',
     ];
 }

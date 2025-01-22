@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CompanyProfileRequest extends FormRequest
+class EmployeeLeaveRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,14 +24,12 @@ class CompanyProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fiscal_calendar_type' => 'required',
-            'fiscal_start_month' => 'required',
-            'week_start_day' => 'required',
-            'week_end_day' => 'required',
-            'weekly_leaves' => 'required',
-            'country' => 'required',
-            'start_time' => 'nullable',
-            'end_time' => 'nullable|after:start_time',
+            'leave_id' => 'required|integer|exists:company_leaves,id',
+            'leave_type' => 'required|string|in:full,half,quarter',
+            'reason' => 'required|string|max:1048',
+            'requested_to' => 'required|array',
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ];
     }
 

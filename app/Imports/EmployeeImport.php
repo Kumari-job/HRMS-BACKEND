@@ -75,6 +75,7 @@ class EmployeeImport implements ToCollection, WithHeadingRow, SkipsOnError, Skip
                     'religion' => $row['religion'],
                 ]
             );
+
             if ($employee)
             {
                 $user = User::firstOrNew(['employee_id' => $employee->id]);

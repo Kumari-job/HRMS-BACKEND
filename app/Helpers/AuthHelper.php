@@ -10,20 +10,8 @@ use Spatie\Permission\Models\Role;
 
 class AuthHelper implements ShouldQueue
 {
-    public static function getRoleName(): string|null
-    {
-        if (Auth::guard('api')->check()) {
-            $company_id = Auth::user()?->selectedCompany?->company_id;
-            if ($company_id) {
-                $user = Auth::user();
-                $role = $user->roles()->where('company_id', $company_id)->first();
-                return $role?->name;
-            }
-        }
-        return null;
-    }
 
-    public static function getCompanyInformation($idp_user_id)
+    public static function getCompanyInformation()
     {
         if (Auth::check()) {
             $company_id = Auth::user()->selectedCompany->company_id;
@@ -32,24 +20,12 @@ class AuthHelper implements ShouldQueue
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $commonToken,
                 'Accept' => 'application/json',
-            ])->get($idpAppUrl . '/api/company/get-by-id/' . $company_id . '/' . $idp_user_id);
+            ])->get($idpAppUrl . '/api/company/get-by-id/' . $company_id);
             $companyData = $response->json();
             $company = $companyData['data'];
             return $company;
         }
         return null;
-    }
-    public static function getStudentCompanyInformation($company_id)
-    {
-        $idpAppUrl = config('custom.client_app.idp_url');
-        $commonToken = config('custom.common_token');
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $commonToken,
-            'Accept' => 'application/json',
-        ])->get($idpAppUrl . '/api/company/get-by-id/' . $company_id);
-        $companyData = $response->json();
-        $company = $companyData['data'];
-        return $company;
     }
 
     public static function getCompanySubscription($company_id)

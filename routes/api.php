@@ -23,6 +23,8 @@ use App\Http\Controllers\Api\EmployeeDocumentController;
 use App\Http\Controllers\Api\EmployeeEducationController;
 use App\Http\Controllers\Api\EmployeeExperienceController;
 use App\Http\Controllers\Api\EmployeeFamilyController;
+use App\Http\Controllers\Api\EmployeeLeaveController;
+use App\Http\Controllers\Api\EmployeeLeaveStatusController;
 use App\Http\Controllers\Api\EmployeeOnboardingController;
 use App\Http\Controllers\Api\PayrollSettingController;
 use App\Http\Controllers\Api\SelectedCompanyController;
@@ -81,6 +83,7 @@ Route::group(['middleware' => ['auth:api','is_employee_password_changed']], func
         Route::get('english-month',[DataController::class, 'englishMonth']);
         Route::get('nepali-month',[DataController::class, 'nepaliMonth']);
         Route::get('country',[DataController::class, 'country']);
+        Route::get('leave-type', [DataController::class, 'leaveType']);
     });
 
     Route::prefix('branch')->group(function () {
@@ -133,6 +136,14 @@ Route::group(['middleware' => ['auth:api','is_employee_password_changed']], func
             Route::post('store', [EmployeeOnboardingController::class, 'store']);
             Route::post('update/{id}', [EmployeeOnboardingController::class, 'update']);
             Route::post('destroy/{id}', [EmployeeOnboardingController::class, 'destroy']);
+        });
+
+        Route::prefix('leave')->group(function (){
+           Route::post('store', [EmployeeLeaveController::class, 'store']);
+           Route::prefix('status')->group(function (){
+               Route::get('pending',[EmployeeLeaveStatusController::class, 'listPendingLeaves']);
+               Route::post('change-status/{id}',[EmployeeLeaveStatusController::class, 'changeStatus']);
+           });
         });
 
         Route::prefix('contract')->group(function () {

@@ -49,7 +49,7 @@ class AssetController extends Controller
             $query->whereHas('assetMaintenances', $maintenanceQuery);
         }
         if ($request->has('not_under_maintenance')) {
-            $query->whereDoesntHave('assetMaintenances', $maintenanceQuery);
+            $query->whereDoesntHave('assetMaiwntenances', $maintenanceQuery);
         }
         $usageQuery = function ($query) {
             $query->where(function ($q) {

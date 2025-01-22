@@ -75,7 +75,6 @@ class AuthenticationController extends Controller
             $token->expires_at = now()->addMonth();
             $token->save();
 
-            Log::info($token);
             return response()->json([
                 'success' => true,
                 'data' => [

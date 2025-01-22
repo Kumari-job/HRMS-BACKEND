@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\Leave\EmployeeLeaveRequested;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeLeaveRequest;
+use App\Http\Resources\EmployeeLeaveResource;
 use App\Models\EmployeeLeave;
 use App\Models\EmployeeLeaveStatus;
 use Carbon\Carbon;
@@ -15,6 +16,24 @@ use function Laravel\Prompts\error;
 
 class EmployeeLeaveController extends Controller
 {
+    public function showUsersLeaves(Request $request)
+    {
+        $query = EmployeeLeave::with('leaveStatus.requestedTo:id,idp_user_id,name','leave:name,company_id,id');
+
+        if (!empty($request->except('page', 'page_size'))) {
+            foreach ($request->except('page', 'page_size') as $key => $value) {
+                if (isset($value) && !empty($value)) {
+                    if (in_array($key, ['id', 'leave_id'])) {
+                        $query->where($key, $value);
+                    } else {
+                        $query->where($key, 'LIKE', '%' . $value . '%');
+                    }
+                }
+            }
+        }
+        $employee_leaves = $query->where('requested_by',Auth::id())->latest()->paginate($request->page_size ?? 10);
+        return EmployeeLeaveResource::collection($employee_leaves);
+    }
     public function store(EmployeeLeaveRequest $request)
     {
         try{

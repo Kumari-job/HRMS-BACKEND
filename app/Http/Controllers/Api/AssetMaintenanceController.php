@@ -128,7 +128,7 @@ class AssetMaintenanceController extends Controller
             return response()->json(['success' => true, 'message' => 'Asset Maintenance status changed successfully'],200);
 
         }catch(\Exception $ex){
-            return response()->json(['success' => true, 'message' => 'Failed to update asset maintenance status'],200);
+            return response()->json(['error' => true, 'message' => 'Failed to update asset maintenance status'],200);
         }
     }
 

@@ -89,18 +89,19 @@ class EmployeeController extends Controller
 
             $employee->fill($data);
             $employee->company_id = $company_id;
-
+            $employee->save();
             if ($request->hasFile('image')) {
                 $path = DirectoryPathHelper::employeeImageDirectoryPath($company_id, $employee->id);
                 $fileName = $this->fileUpload($request->file('image'), $path);
                 $employee->image = $fileName;
+                $employee->save();
             }
-            $employee->save();
             if ($employee)
             {
                 $user = new User();
                 $user->name = $employee->name;
                 $user->email = $employee->email;
+                $user->image_path = $employee->image_path;
                 $user->password = Hash::make('test@123');
                 $user->employee_id = $employee->id;
                 $user->is_password_changed = false;

@@ -19,7 +19,8 @@ class AssetUsage extends Model
         'employee_id',
         'assigned_at',
         'assigned_end_at',
-        'assigned_by'
+        'assigned_by',
+        'usage_status'
     ];
 
     public function getActivitylogOptions():LogOptions

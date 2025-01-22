@@ -52,13 +52,13 @@ Route::group(['middleware' => 'client'], function () {
 });
 
 
-Route::group(['middleware' => ['auth:api','is_employee_password_changed']], function () {
+Route::group(['middleware' => ['auth:api']], function () {
     Route::post('employee-logout',[EmployeeAuthController::class,'logout'])->withoutMiddleware('is_employee_password_changed');
     Route::post('logout', [AuthenticationController::class, 'logout']);
     Route::post('employee-change-password',[EmployeeAuthController::class, 'changePassword'])->withoutMiddleware('is_employee_password_changed');
     Route::prefix('user')->group(function () {
         Route::get('list', [UserController::class, 'index']);
-        Route::get('profile', [UserController::class, 'profile']);
+        Route::get('profile', [UserController::class, 'profile'])->withoutMiddleware('is_employee_password_changed');
         Route::post('migrate-employee-data',[UserController::class, 'migrateEmployeeData']);
     });
 
@@ -243,6 +243,7 @@ Route::group(['middleware' => ['auth:api','is_employee_password_changed']], func
             Route::post('store', [AssetMaintenanceController::class, 'store']);
             Route::get('show/{id}', [AssetMaintenanceController::class, 'show']);
             Route::post('update/{id}', [AssetMaintenanceController::class, 'update']);
+            Route::patch('toggle-status/{id}', [AssetMaintenanceController::class, 'toggleMaintenanceStatus']);
             Route::post('destroy', [AssetMaintenanceController::class, 'destroy']);
         });
 
@@ -251,6 +252,7 @@ Route::group(['middleware' => ['auth:api','is_employee_password_changed']], func
             Route::post('store', [AssetUsageController::class, 'store']);
             Route::get('show/{id}', [AssetUsageController::class, 'show']);
             Route::post('update/{id}', [AssetUsageController::class, 'update']);
+            Route::patch('toggle-status/{id}', [AssetUsageController::class, 'toggleUsageStatus']);
             Route::post('destroy', [AssetUsageController::class, 'destroy']);
         });
     });

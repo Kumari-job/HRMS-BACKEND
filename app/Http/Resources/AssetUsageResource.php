@@ -31,6 +31,7 @@ class AssetUsageResource extends JsonResource
             'assigned_by' => new UserResource($this->whenLoaded('assignedBy')),
             'employee' => new EmployeeResource($this->whenLoaded('employee')),
             'asset' => new AssetResource($this->whenLoaded('asset')),
+            'usage_status' => $this->usage_status
         ];
     }
 }

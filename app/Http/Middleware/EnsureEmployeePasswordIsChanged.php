@@ -20,7 +20,7 @@ class EnsureEmployeePasswordIsChanged
             return response()->json([
                 'error' => true,
                 'message' => 'Please change your password.',
-                'url' => url(config('custom.client_app.hrms_app_frontend_url').'/auth/change-password')
+                // 'url' => url(config('custom.client_app.hrms_app_frontend_url').'/auth/change-password')
             ], 412);
         }
 

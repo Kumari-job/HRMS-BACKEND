@@ -111,6 +111,7 @@ class EmployeeController extends Controller
                 $selectedCompany = new SelectedCompany();
                 $selectedCompany->company_id = $company_id;
                 $selectedCompany->user_id = $user->id;
+                $selectedCompany->save();
             }
             return response()->json(['success' => true, "message" => "Employee added successfully", 'id' => $employee->id], 201);
         }catch (\Exception $exception){

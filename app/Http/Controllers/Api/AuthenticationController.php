@@ -75,7 +75,7 @@ class AuthenticationController extends Controller
             $token->expires_at = now()->addMonth();
             $token->save();
 
-
+            Log::info($token);
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -86,6 +86,7 @@ class AuthenticationController extends Controller
                     )->toDateTimeString()
                 ]
             ], 200);
+        
         } catch (\Exception $exception) {
             Log::error('Unable to generate access token: ' . $exception->getMessage());
         }

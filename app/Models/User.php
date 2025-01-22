@@ -26,6 +26,11 @@ class User extends Authenticatable
         'is_password_changed',
     ];
 
+    public function getImagePathAttribute($value)
+    {
+        return $value ?? asset('assets/images/image.jpg');
+    }
+
     protected static function booted()
     {
         static::updated(function ($user) {

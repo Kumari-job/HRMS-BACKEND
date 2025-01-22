@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EmployeeLeave extends Model
 {
@@ -16,4 +18,17 @@ class EmployeeLeave extends Model
       'start_time',
       'end_time',
     ];
+
+    public function requestedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'requested_by');
+    }
+    public function leave(): BelongsTo
+    {
+        return $this->belongsTo(CompanyLeave::class, 'leave_id');
+    }
+    public function leaveStatus(): HasMany
+    {
+        return $this->hasMany(EmployeeLeaveStatus::class, 'employee_leave_id');
+    }
 }

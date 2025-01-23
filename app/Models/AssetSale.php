@@ -19,7 +19,8 @@ class AssetSale extends Model
         'price',
         'details',
         'sold_to',
-        'sold_by'
+        'sold_by',
+        'sold_at',
     ];
     public function getActivitylogOptions():LogOptions
     {

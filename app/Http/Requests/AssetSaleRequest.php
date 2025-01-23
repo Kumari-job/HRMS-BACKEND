@@ -35,6 +35,7 @@ class AssetSaleRequest extends FormRequest
             'details' => 'nullable|string',
             'sold_to' => 'required|string',
             'sold_by' => 'required|integer|exists:users,id',
+            'sold_at' => 'required|date',
         ];
     }
     public function messages(): array

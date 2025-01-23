@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\EmployeeAuth;
 use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeLoginRequest;
+use App\Models\Scopes\CompanyScope;
 use App\Models\User;
 use App\Notifications\OTPNotification;
 use Carbon\Carbon;
@@ -20,7 +21,7 @@ class AuthenticationController extends Controller
     {
             $data = $request->validated();
             $user = User::where('email', $data['email'])->whereHas('employee',function ($query) use ($data){
-                $query->where('company_id', $data['company_id']);
+                $query->withoutGlobalscope(CompanyScope::class)->where('company_id', $data['company_id']);
             })->first();
 
         if ($user?->password && Hash::check($request->password, $user->password)) {

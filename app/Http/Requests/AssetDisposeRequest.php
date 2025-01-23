@@ -32,8 +32,8 @@ class AssetDisposeRequest extends FormRequest
                 Rule::unique('asset_dispose', 'asset_id')->ignore($disposeId)
             ],
             'details' => 'required|string',
-            'disposed_at' => 'required_if:disposed_at,null|date',
-            'disposed_at_nepali ' => 'required_if:disposed_at,null|date',
+            'disposed_at' => 'required_without:disposed_at_nepali|date',
+            'disposed_at_nepali ' => 'required_without:disposed_at|date',
             'disposed_by' => 'required|string|exists:users,id',
         ];
     }

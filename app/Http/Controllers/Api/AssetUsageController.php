@@ -49,6 +49,7 @@ class AssetUsageController extends Controller
             $assigned_end_at = $request->filled('assigned_end_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_end_at_nepali) : $request->assigned_end_at;
             $data['assigned_end_at'] = $assigned_end_at;
             $data['assigned_at'] = $assigned_at;
+            $data['usage_status'] = true;
             $asset = Asset::find($request->asset_id);
             if($asset->status == 'sold' || $asset->status == 'disposed'){
                 return response()->json(['error'=>true,'message'=>'Asset is already '. $asset->status."."],403);

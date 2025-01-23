@@ -25,6 +25,7 @@ class CompanyLeaveResource extends JsonResource
             'marital_status' => $this->marital_status ?? null ,
             'exclude_holiday' => $this->exclude_holiday ,
             'exclude_weekend' => $this->exclude_weekend ,
+            'icon_index' => $this->icon_index ,
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d'),
             'created_at_formatted' => Carbon::parse($this->created_at)->format('d M Y'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d'),

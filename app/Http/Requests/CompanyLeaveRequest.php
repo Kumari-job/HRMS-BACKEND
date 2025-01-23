@@ -28,6 +28,7 @@ class CompanyLeaveRequest extends FormRequest
             'days' => 'required|integer',
             'year' => 'required|string',
             'gender' => 'nullable|string',
+            'icon_index' => 'nullable|integer',
             'marital_status' => 'nullable|string',
             'exclude_holiday' => 'required|boolean',
             'exclude_weekend' => 'required|boolean',

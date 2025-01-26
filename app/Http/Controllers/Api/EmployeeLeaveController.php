@@ -16,6 +16,43 @@ use function Laravel\Prompts\error;
 
 class EmployeeLeaveController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = EmployeeLeave::with([
+            'leaveStatus' => function ($query) {
+                $query
+                    ->orderBy('status', 'ASC');
+            },
+            'leaveStatus.requestedTo',
+            'requestedBy',
+            'leave' => function ($query) {
+                $query
+                    ->select('name','id');
+            }
+            ,
+        ])
+            // ->whereHas('leaveStatus', function ($q) {
+            //     $q->whereIn('status', [null, 0]);
+            // })
+
+
+            // Additional filtering based on request parameters
+            ->where(function ($q) use ($request) {
+                foreach ($request->except('page', 'page_size') as $key => $value) {
+                    if (isset($value) && !empty($value)) {
+                        if (in_array($key, ['id', 'leave_id'])) {
+                            $q->where($key, $value);
+                        } else {
+                            $q->where($key, 'LIKE', '%' . $value . '%');
+                        }
+                    }
+                }
+            });
+
+        $employee_leaves = $query->latest()
+            ->paginate($request->page_size ?? 10);
+        return EmployeeLeaveResource::collection($employee_leaves);
+    }
     public function showUsersLeaves(Request $request)
     {
         $query = EmployeeLeave::with('leaveStatus.requestedTo:id,idp_user_id,name,image_path,employee_id','leave:name,company_id,id');

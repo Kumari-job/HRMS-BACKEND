@@ -28,6 +28,7 @@ class EmployeeLeaveResource extends JsonResource
             'end_time' => $this->end_time ? Carbon::parse($this->end_time)->format('H:i') : null,
             'leave' => new CompanyLeaveResource($this->whenLoaded('leave')),
             'leave_status' => EmployeeLeaveStatusResource::collection($this->whenLoaded('leaveStatus')),
+            'requested_by' => new UserResource($this->whenLoaded('requestedBy')),
         ];
     }
 }

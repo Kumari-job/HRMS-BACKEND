@@ -20,14 +20,13 @@ class EmployeeLeaveController extends Controller
     {
         $query = EmployeeLeave::with([
             'leaveStatus' => function ($query) {
-                $query
-                ->orderBy('status', 'ASC');
+                $query->orderBy('status', 'ASC');
             },
+            'leaveStatus.requestedTo',
+            'requestedBy',
             'leave' => function ($query) {
-                $query 
-                    ->select('name','id');
+                $query->select('name','id');
             }
-            ,
         ])
             // ->whereHas('leaveStatus', function ($q) {
             //     $q->whereIn('status', [null, 0]);
@@ -45,12 +44,11 @@ class EmployeeLeaveController extends Controller
                         }
                     }
                 }
-            })
-            // Order by status and date
-            ->latest()
-            ->paginate($request->page_size ?? 10);
+            });
 
-        return response()->json($query);
+        $employee_leaves = $query->latest()
+            ->paginate($request->page_size ?? 10);
+        return EmployeeLeaveResource::collection($employee_leaves);
     }
 
     public function showUsersLeaves(Request $request)

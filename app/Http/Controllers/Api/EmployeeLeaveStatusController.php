@@ -20,9 +20,12 @@ class EmployeeLeaveStatusController extends Controller
     public function changeStatus(EmployeeLeaveStatusRequest $request, $employee_leave_status_id)
     {
         try {
-            $employee_leave_status = EmployeeLeaveStatus::where('requested_to', Auth::id())->find($employee_leave_status_id);
+            $employee_leave_status = EmployeeLeaveStatus::find($employee_leave_status_id);
             if (!$employee_leave_status) {
                 return response()->json(['error' => true, 'message' => 'Employee Leave not found'], 404);
+            }
+            if($employee_leave_status->requested_to != Auth::id()){
+                return response()->json(['error' => true, 'message' => 'You are not authorized to perform this action'], 403);
             }
             if (EmployeeLeaveStatus::where('employee_leave_id', $employee_leave_status->employee_leave_id)->where('status','rejected')->exists()) {
                 return response()->json(['error' => true, 'message' => 'Leave has already been rejected'], 409);

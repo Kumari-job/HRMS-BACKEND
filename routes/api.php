@@ -139,6 +139,7 @@ Route::group(['middleware' => ['auth:api']], function () {
         });
 
         Route::prefix('leave')->group(function (){
+           Route::get('list',[EmployeeLeaveController::class, 'index']);
            Route::get('my-leave',[EmployeeLeaveController::class, 'showUsersLeaves']);
            Route::post('store', [EmployeeLeaveController::class, 'store']);
            Route::prefix('status')->group(function (){

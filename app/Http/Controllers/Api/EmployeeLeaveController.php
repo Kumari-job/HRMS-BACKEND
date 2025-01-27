@@ -50,7 +50,6 @@ class EmployeeLeaveController extends Controller
             ->paginate($request->page_size ?? 10);
         return EmployeeLeaveResource::collection($employee_leaves);
     }
-
     public function showUsersLeaves(Request $request)
     {
         $query = EmployeeLeave::with('leaveStatus.requestedTo:id,idp_user_id,name,image_path,employee_id', 'leave:name,company_id,id');

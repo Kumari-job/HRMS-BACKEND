@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AssetDisposeController;
 use App\Http\Controllers\Api\AssetMaintenanceController;
 use App\Http\Controllers\Api\AssetSaleController;
 use App\Http\Controllers\Api\AssetUsageController;
+use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\CompanyHolidayController;
@@ -194,7 +195,11 @@ Route::group(['middleware' => ['auth:api']], function () {
             Route::post('destroy/{id}', [EmployeeBankController::class, 'destroy']);
         });
     });
-
+    Route::prefix('attendance')->group(function () {
+        Route::get('list', [AttendanceController::class, 'index']);
+        Route::post('store', [AttendanceController::class, 'store']);
+        Route::post('punch-in', [AttendanceController::class, 'punchIn']);
+    });
     Route::prefix('asset')->group(function () {
         Route::get('list', [AssetController::class, 'index']);
         Route::post('store', [AssetController::class, 'store'])->middleware('idp_subscription_validation:asset');

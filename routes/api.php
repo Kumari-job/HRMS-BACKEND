@@ -28,11 +28,15 @@ use App\Http\Controllers\Api\EmployeeLeaveController;
 use App\Http\Controllers\Api\EmployeeLeaveStatusController;
 use App\Http\Controllers\Api\EmployeeOnboardingController;
 use App\Http\Controllers\Api\PayrollSettingController;
+use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\RolePermissionController;
 use App\Http\Controllers\Api\SelectedCompanyController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VendorController;
 use App\Http\Controllers\Api\EmployeeAuth\AuthenticationController as EmployeeAuthController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\UserRoleController;
 use App\Http\Middleware\VerifyCommonToken;
 use App\Models\Department;
 use Illuminate\Http\Request;
@@ -195,6 +199,34 @@ Route::group(['middleware' => ['auth:api']], function () {
             Route::post('destroy/{id}', [EmployeeBankController::class, 'destroy']);
         });
     });
+
+    Route::prefix('role')->group(function () {
+        Route::get('list', [RoleController::class, 'index']);
+        Route::post('store', [RoleController::class, 'store']);
+        Route::post('update/{id}', [RoleController::class, 'update']);
+        Route::post('destroy', [RoleController::class, 'destroy']);
+    });
+
+    Route::prefix('permission')->group(function () {
+        Route::get('list', [PermissionController::class, 'index']);
+        Route::post('store', [PermissionController::class, 'store']);
+        Route::post('update/{id}', [PermissionController::class, 'update']);
+        Route::post('destroy', [PermissionController::class, 'destroy']);
+        Route::get('/{user_id}', [PermissionController::class, 'permissionsByUser']);
+    });
+
+    Route::prefix('role-permission')->group(function () {
+        Route::post('store', [RolePermissionController::class, 'store']);
+        Route::get('permissions-by-role/{id}', [RolePermissionController::class, 'permissionsByRole']);
+    });
+
+    Route::prefix('user-role')->group(function () {
+        Route::get('/list/{user_id}', [UserRoleController::class, 'index']);
+        Route::get('user-role-by-company', [UserRoleController::class, 'userRolesByCompany']);
+        Route::post('store', [UserRoleController::class, 'store']);
+        Route::post('destroy/{user_id}', [UserRoleController::class, 'destroy']);
+    });
+
     Route::prefix('attendance')->group(function () {
         Route::get('list', [AttendanceController::class, 'index']);
         Route::post('store', [AttendanceController::class, 'store']);

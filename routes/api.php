@@ -198,7 +198,9 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::prefix('attendance')->group(function () {
         Route::get('list', [AttendanceController::class, 'index']);
         Route::post('store', [AttendanceController::class, 'store']);
+        Route::get('daily', [AttendanceController::class, 'dailyAttendance']);
         Route::post('punch-in', [AttendanceController::class, 'punchIn']);
+        Route::post('punch-out', [AttendanceController::class, 'punchOut']);
     });
     Route::prefix('asset')->group(function () {
         Route::get('list', [AssetController::class, 'index']);

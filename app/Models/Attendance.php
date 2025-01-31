@@ -22,7 +22,7 @@ class Attendance extends Model
 
     public function employee(): BelongsTo
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(User::class);
     }
 
     public function createdBy(): BelongsTo

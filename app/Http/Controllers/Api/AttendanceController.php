@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\DateHelper;
+use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AttendanceRequest;
 use App\Http\Requests\AttendanceUpdateRequest;
+use App\Http\Resources\AttendanceResource;
 use App\Models\Attendance;
 use App\Models\CompanyProfile;
 use Carbon\Carbon;
@@ -13,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
@@ -33,6 +36,16 @@ class AttendanceController extends Controller
         }
         $attendance = $query->orderByDesc('date')->paginate($request->page_size ?? 10);
         return response()->json($attendance);
+    }
+    public function dailyAttendance(Request $request)
+    {
+        $attendance = Attendance::with('employee:id,name,image_path,mobile','createdBy:id,name,image_path,mobile')
+            ->whereDate('date', '=', Carbon::today()->toDateString())
+            ->where('employee_id', '=', Auth::id())->first();
+        if (!$attendance) {
+            return response()->json(['error'=>true,'message'=>'No attendance found'],404);
+        }
+        return new AttendanceResource($attendance);
     }
     public function store(AttendanceRequest $request){
         try {
@@ -59,6 +72,12 @@ class AttendanceController extends Controller
     public function punchIn(Request $request)
     {
         try {
+            $validator = Validator::make($request->all(),[
+                'remark' => 'nullable|string|max:125',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
+            }
             $user = Auth::user();
 
             $date =  Carbon::now()->toDateString();
@@ -67,7 +86,6 @@ class AttendanceController extends Controller
 
                 return response()->json(['error'=>true,'message'=>'Attendance already exists.'],403);
             }
-            $ip = $request->ip();
             $company_profile = CompanyProfile::where('company_id', $user->selectedCompany->company_id)->first();
             $startTime = Carbon::createFromFormat('H:i:s', $company_profile->start_time);
             $nowTime = Carbon::now()->toTimeString();
@@ -80,11 +98,12 @@ class AttendanceController extends Controller
             $attendance->is_present = true;
             $attendance->date = $date;
             $attendance->punch_in_at = Carbon::now()->toTimeString();
+            $attendance->remark= $request->remark;
             $attendance->punch_in_ip = $request->ip();
             $attendance->late_punch_in = $minutesDifference;
             $attendance->created_by = $user->id;
             $attendance->save();
-            return response()->json(['success' => true, 'message' => 'Attendance added successfully.'], 201);
+            return response()->json(['success' => true, 'message' => 'Successfully punched in'], 201);
         }catch (\Exception $exception){
             Log::error("Unable to store attendance: ".$exception->getMessage());
             return response()->json(['error'=>true,'message'=>'Unable to store attendance'],500);
@@ -92,6 +111,30 @@ class AttendanceController extends Controller
     }
     public function punchOut(Request $request)
     {
+        try{
+            $validator = Validator::make($request->all(),[
+                'remark' => 'nullable|string|max:125',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => true, 'errors' => $validator->errors(), 'message' => MessageHelper::getErrorMessage('form')], 422);
+            }
+            $user = Auth::user();
+            $date =  Carbon::now()->toDateString();
+            $attendance = Attendance::where('date',$date)->where('employee_id',$user->id)->first();
+            if (!$attendance) {
+                return response()->json(['error'=>true,'message'=>'Attendance not found. Please punch in first'],403);
+            }
+            if (isset($attendance->punch_out_at)) {
+                return response()->json(['error'=>true,'message'=>'User has already punched out'],403);
 
+            }
+            $attendance->punch_out_at = Carbon::now()->toTimeString();
+            $attendance->punch_out_ip = $request->ip();
+            $attendance->update();
+            return response()->json(['success' => true, 'message' => 'Successfully punched out'], 201);
+        }catch (\Exception $exception){
+            Log::error("Unable to punch out: ".$exception->getMessage());
+            return response()->json(['error'=>true,'message'=>'Unable to punch out'],500);
+        }
     }
 }

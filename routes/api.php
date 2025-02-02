@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\EmployeeFamilyController;
 use App\Http\Controllers\Api\EmployeeLeaveController;
 use App\Http\Controllers\Api\EmployeeLeaveStatusController;
 use App\Http\Controllers\Api\EmployeeOnboardingController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PayrollSettingController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\RolePermissionController;
@@ -198,6 +199,19 @@ Route::group(['middleware' => ['auth:api']], function () {
             Route::post('update/{id}', [EmployeeBankController::class, 'update']);
             Route::post('destroy/{id}', [EmployeeBankController::class, 'destroy']);
         });
+    });
+
+    Route::prefix('notification')->group(function () {
+        Route::get('/list', [NotificationController::class, 'index']);
+        Route::get('/list/read-notifications', [NotificationController::class, 'readNotifications']);
+        Route::get('/list/unread-notifications', [NotificationController::class, 'unReadNotifications']);
+
+        Route::get('/mark-all-read', [NotificationController::class, 'markAllRead']);
+        Route::get('/mark-as-read/{id}', [NotificationController::class, 'markSingleRead']);
+        Route::get('/mark-all-unread', [NotificationController::class, 'markAllUnread']);
+        Route::get('/mark-as-unread/{id}', [NotificationController::class, 'markSingleUnread']);
+        Route::get('/clear-all', [NotificationController::class, 'clearAll']);
+        Route::get('/clear-single/{id}', [NotificationController::class, 'notificationDelete']);
     });
 
     Route::prefix('role')->group(function () {

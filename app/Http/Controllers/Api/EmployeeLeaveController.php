@@ -18,7 +18,7 @@ class EmployeeLeaveController extends Controller
 {
     public function index(Request $request)
     {
-        $query = EmployeeLeave::with([
+        $query = EmployeeLeave::forCompany()->with([
             'leaveStatus' => function ($query) {
                 $query->orderBy('status', 'ASC');
             },
@@ -52,7 +52,7 @@ class EmployeeLeaveController extends Controller
     }
     public function showUsersLeaves(Request $request)
     {
-        $query = EmployeeLeave::with('leaveStatus.requestedTo:id,idp_user_id,name,image_path,employee_id', 'leave:name,company_id,id');
+        $query = EmployeeLeave::forCompany()->with('leaveStatus.requestedTo:id,idp_user_id,name,image_path,employee_id', 'leave:name,company_id,id');
 
         if (!empty($request->except('page', 'page_size'))) {
             foreach ($request->except('page', 'page_size') as $key => $value) {

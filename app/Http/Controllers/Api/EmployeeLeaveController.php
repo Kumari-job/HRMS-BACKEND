@@ -18,7 +18,7 @@ class EmployeeLeaveController extends Controller
 {
     public function index(Request $request)
     {
-        $query = EmployeeLeave::with([
+        $query = EmployeeLeave::forCompany()->with([
             'leaveStatus' => function ($query) {
                 $query->orderBy('status', 'ASC');
             },

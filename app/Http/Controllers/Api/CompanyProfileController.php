@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CompanyProfileRequest;
 use App\Http\Resources\CompanyProfileResource;
 use App\Models\CompanyProfile;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -32,6 +33,8 @@ class CompanyProfileController extends Controller
                 'week_end_day' => $data['week_end_day'],
                 'weekly_leaves' => $data['weekly_leaves'],
                 'country' => $data['country'],
+                'start_time' => Carbon::parse($data['start_time'])->format('H:i:s') ,
+                'end_time' => Carbon::parse($data['end_time'])->format('H:i:s'),
             ]);
             return response()->json(['success' => true,'message'=> 'Company Profile updated Successfully.'],201);
         }catch (\Exception $exception){

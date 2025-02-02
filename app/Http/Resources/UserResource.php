@@ -24,7 +24,8 @@ class UserResource extends JsonResource
             'mobile' => $this->mobile,
             'image_path' => $this->image_path,
             'employee_id' => $this->employee_id,
-            'selected_company' => Auth::user()->selectedCompany->company_id,
+            'selected_company' => Auth::user()->selectedCompany,
+            'is_password_changed' => Auth::user()->is_password_changed,
         ];
     }
 }

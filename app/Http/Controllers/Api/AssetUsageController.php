@@ -21,6 +21,19 @@ class AssetUsageController extends Controller
     public function index(Request $request)
     {
         $query = AssetUsage::with('assignedBy', 'employee:id,name,image,company_id', 'asset')->forCompany();
+
+        if (!empty($request->except('page', 'page_size'))) {
+            foreach ($request->except('page', 'page_size') as $key => $value) {
+                if ($value !== null && $value !== '') {
+                    if (in_array($key, ['id', 'company_id', 'maintenance_status'])) {
+                        $query->where($key, $value);
+                    } else {
+                        $query->where($key, 'LIKE', '%' . $value . '%');
+                    }
+                }
+            }
+        }
+
         $assetUsages = $query->latest()->paginate($request->page_size ?? 10);
         return AssetUsageResource::collection($assetUsages);
     }
@@ -36,6 +49,7 @@ class AssetUsageController extends Controller
             $assigned_end_at = $request->filled('assigned_end_at_nepali') ? DateHelper::nepaliToEnglish($request->assigned_end_at_nepali) : $request->assigned_end_at;
             $data['assigned_end_at'] = $assigned_end_at;
             $data['assigned_at'] = $assigned_at;
+            $data['usage_status'] = true;
             $asset = Asset::find($request->asset_id);
             if($asset->status == 'sold' || $asset->status == 'disposed'){
                 return response()->json(['error'=>true,'message'=>'Asset is already '. $asset->status."."],403);
@@ -81,6 +95,27 @@ class AssetUsageController extends Controller
         } catch (\Exception $exception) {
             Log::error("Unable to update asset usage: {$exception->getMessage()}");
             return response()->json(['error' => true, 'message' => "Unable to update asset usage"], 500);
+        }
+    }
+
+    // 
+    public function toggleUsageStatus(string $id){
+        try{
+            $assetUsage = AssetUsage::forCompany()->find($id);
+            if(!$assetUsage){
+                return response()->json(['error' => true, 'message' => 'Asset usage not found'],404);
+            }
+            $asset = Asset::find($assetUsage->asset_id);
+            $asset->update(['status'=> !$assetUsage->usage_status == 0 ? 'usage' : 'used']);
+
+            $assetUsage->update([
+                'usage_status' => !$assetUsage->usage_status
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Asset Usage status changed successfully'],200);
+
+        }catch(\Exception $ex){
+            return response()->json(['error' => true, 'message' => 'Failed to update asset usage status'],200);
         }
     }
 

@@ -11,6 +11,7 @@ use App\Enums\DayEnum;
 use App\Enums\EmploymentTypeEnum;
 use App\Enums\EnglishMonthEnum;
 use App\Enums\GenderEnum;
+use App\Enums\LeaveTypeEnum;
 use App\Enums\MaritalStatusEnum;
 use App\Enums\NepaliMonthEnum;
 use App\Enums\ReligionEnum;
@@ -88,5 +89,11 @@ class DataController extends Controller
     {
         $contractType = collect(ContractTypeEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->customTitle()])->toArray();
         return response()->json(['success' => true, 'data' => $contractType], 200);
+    }
+
+    public function leaveType(): JsonResponse
+    {
+        $leaveTypes = collect(LeaveTypeEnum::cases())->mapWithKeys(fn ($case) => [$case->value => $case->name])->toArray();
+        return response()->json(['success' => true, 'data' => $leaveTypes], 200);
     }
 }

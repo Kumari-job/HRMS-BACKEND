@@ -24,6 +24,9 @@ class AssetSaleController extends Controller
         try {
             $data = $request->validated();
             $asset = Asset::find($request->asset_id);
+            if (!$asset) {
+                return response()->json(['error'=>true,'message'=>'Asset Not Found'], 404);
+            }
             if($asset->status == 'sold' || $asset->status == 'disposed'){
                 return response()->json(['error'=>true,'message'=>'Asset is already '. $asset->status."."],403);
             }

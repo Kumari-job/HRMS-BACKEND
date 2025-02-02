@@ -22,8 +22,21 @@ class AssetMaintenanceController extends Controller
     public function index(Request $request)
     {
         $query = AssetMaintenance::with('createdBy','updatedBy','asset')->forCompany();
-        $assetDisposes = $query->latest()->paginate($request->page_size ?? 10);
-        return AssetMaintenanceResource::collection($assetDisposes);
+
+        if (!empty($request->except('page', 'page_size'))) {
+            foreach ($request->except('page', 'page_size') as $key => $value) {
+                if ($value !== null && $value !== '') {
+                    if (in_array($key, ['id', 'company_id', 'maintenance_status'])) {
+                        $query->where($key, $value);
+                    } else {
+                        $query->where($key, 'LIKE', '%' . $value . '%');
+                    }
+                }
+            }
+        }
+
+        $assetMaintenance = $query->latest()->paginate($request->page_size ?? 10);
+        return AssetMaintenanceResource::collection($assetMaintenance);
     }
 
     /**
@@ -45,6 +58,7 @@ class AssetMaintenanceController extends Controller
             $assetMaintenance = new AssetMaintenance();
             $assetMaintenance->fill($data);
             $assetMaintenance->created_by = Auth::id();
+            $assetMaintenance->maintenance_status = false ;
             $assetMaintenance->save();
             $asset->update(['status'=>'maintenance']);
             return response()->json(['success' => true, 'message' => 'Asset Maintenance added successfully'],201);
@@ -94,6 +108,28 @@ class AssetMaintenanceController extends Controller
             return response()->json(['error' => true, 'message' => 'Unable to update asset maintenance'],400);
         }
 
+    }
+    /**
+     * Updates maintenance status
+     * 
+     */
+    public function toggleMaintenanceStatus(string $id){
+        try{
+            $assetMaintenance = AssetMaintenance::forCompany()->find($id);
+            if(!$assetMaintenance){
+                return response()->json(['error' => true, 'message' => 'Asset Maintenance not found'],404);
+            }
+            $asset = Asset::find($assetMaintenance->asset_id);
+            $asset->update(['status'=> !$assetMaintenance->maintenance_status == 0 ? 'maintenance' : 'used']);
+            $assetMaintenance->update([
+                'maintenance_status' => !$assetMaintenance->maintenance_status
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Asset Maintenance status changed successfully'],200);
+
+        }catch(\Exception $ex){
+            return response()->json(['error' => true, 'message' => 'Failed to update asset maintenance status'],200);
+        }
     }
 
     /**

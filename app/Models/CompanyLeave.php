@@ -17,6 +17,7 @@ class CompanyLeave extends Model
       'marital_status',
       'exclude_holiday',
       'exclude_weekend',
+      'icon_index'
     ];
 
     public function createdBy()

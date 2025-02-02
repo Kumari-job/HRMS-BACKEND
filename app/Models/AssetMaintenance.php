@@ -21,6 +21,7 @@ class AssetMaintenance extends Model
         'end_date',
         'cost',
         'details',
+        'maintenance_status'
     ];
     public function getActivitylogOptions():LogOptions
     {

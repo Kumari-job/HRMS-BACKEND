@@ -30,6 +30,8 @@ class CompanyProfileRequest extends FormRequest
             'week_end_day' => 'required',
             'weekly_leaves' => 'required',
             'country' => 'required',
+            'start_time' => 'nullable',
+            'end_time' => 'nullable|after:start_time',
         ];
     }
 

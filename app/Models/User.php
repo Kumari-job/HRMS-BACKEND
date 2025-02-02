@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Employee::class,'employee_id');
     }
+
+    public function attendances():HasMany
+    {
+        return $this->hasMany(Attendance::class,'employee_id');
+    }
 }

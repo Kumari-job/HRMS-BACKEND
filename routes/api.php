@@ -65,6 +65,7 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::get('list', [UserController::class, 'index']);
         Route::get('profile', [UserController::class, 'profile'])->withoutMiddleware('is_employee_password_changed');
         Route::post('migrate-employee-data',[UserController::class, 'migrateEmployeeData']);
+        Route::get('employee-information', [UserController::class, 'listUserEmployees']);
     });
 
 

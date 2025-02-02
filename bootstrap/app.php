@@ -3,6 +3,7 @@
 use App\Http\Middleware\CheckRequestSource;
 use App\Http\Middleware\EnsureEmployeePasswordIsChanged;
 use App\Http\Middleware\IDPSubscriptionValidation;
+use App\Http\Middleware\PermissionCheck;
 use App\Http\Middleware\VerifyCommonToken;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -28,7 +29,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'client' => CheckClientCredentials::class,
             'check.source' => CheckRequestSource::class,
             'idp_subscription_validation' => IdpSubscriptionValidation::class,
-            'is_employee_password_changed' => EnsureEmployeePasswordIsChanged::class
+            'is_employee_password_changed' => EnsureEmployeePasswordIsChanged::class,
+            'permission_check' => PermissionCheck::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

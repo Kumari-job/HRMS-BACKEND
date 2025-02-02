@@ -93,55 +93,55 @@ Route::group(['middleware' => ['auth:api']], function () {
     });
 
     Route::prefix('branch')->group(function () {
-        Route::get('list', [BranchController::class, 'index']);
-        Route::post('store', [BranchController::class, 'store']);
-        Route::get('show/{id}', [BranchController::class, 'show']);
-        Route::post('update/{id}', [BranchController::class, 'update']);
-        Route::post('update-manager/{id}', [BranchController::class, 'updateManager']);
-        Route::post('destroy', [BranchController::class, 'destroy']);
-        Route::get('trashed', [BranchController::class, 'trashed']);
-        Route::post('restore', [BranchController::class, 'restore']);
-        Route::post('force-delete', [BranchController::class, 'forceDelete']);
+        Route::get('list', [BranchController::class, 'index'])->middleware('permission_check:view_branch');
+        Route::post('store', [BranchController::class, 'store'])->middleware('permission_check:create_branch');
+        Route::get('show/{id}', [BranchController::class, 'show'])->middleware('permission_check:show_branch');
+        Route::post('update/{id}', [BranchController::class, 'update'])->middleware('permission_check:edit_branch');
+        Route::post('update-manager/{id}', [BranchController::class, 'updateManager'])->middleware('permission_check:edit_branch');
+        Route::post('destroy', [BranchController::class, 'destroy'])->middleware('permission_check:delete_branch');
+        Route::get('trashed', [BranchController::class, 'trashed'])->middleware('permission_check:delete_branch');
+        Route::post('restore', [BranchController::class, 'restore'])->middleware('permission_check:delete_branch');
+        Route::post('force-delete', [BranchController::class, 'forceDelete'])->middleware('permission_check:delete_branch');
     });
 
     Route::prefix('department')->group(function () {
-        Route::get('list', [DepartmentController::class, 'index']);
-        Route::post('store', [DepartmentController::class, 'store']);
-        Route::get('show/{id}', [DepartmentController::class, 'show']);
-        Route::post('update/{id}', [DepartmentController::class, 'update']);
-        Route::post('update-head/{id}', [DepartmentController::class, 'updateHead']);
-        Route::post('destroy', [DepartmentController::class, 'destroy']);
-        Route::get('trashed', [DepartmentController::class, 'trashed']);
-        Route::post('restore', [DepartmentController::class, 'restore']);
-        Route::post('force-delete', [DepartmentController::class, 'forceDelete']);
+        Route::get('list', [DepartmentController::class, 'index'])->middleware('permission_check:view_department');
+        Route::post('store', [DepartmentController::class, 'store'])->middleware('permission_check:create_department');
+        Route::get('show/{id}', [DepartmentController::class, 'show'])->middleware('permission_check:view_department');
+        Route::post('update/{id}', [DepartmentController::class, 'update'])->middleware('permission_check:edit_department');
+        Route::post('update-head/{id}', [DepartmentController::class, 'updateHead'])->middleware('permission_check:edit_department');
+        Route::post('destroy', [DepartmentController::class, 'destroy'])->middleware('permission_check:delete_department');
+        Route::get('trashed', [DepartmentController::class, 'trashed'])->middleware('permission_check:delete_department');
+        Route::post('restore', [DepartmentController::class, 'restore'])->middleware('permission_check:delete_department');
+        Route::post('force-delete', [DepartmentController::class, 'forceDelete'])->middleware('permission_check:delete_department');
     });
 
     Route::prefix('department-employee')->group(function () {
-        Route::get('list-by-department/{department_id}', [DepartmentEmployeeController::class, 'employeesByDepartment']);
-        Route::get('list-by-branch/{department_id}', [DepartmentEmployeeController::class, 'employeesByBranch']);
-        Route::post('store', [DepartmentEmployeeController::class, 'store']);
-        Route::post('update/{id}', [DepartmentEmployeeController::class, 'update']);
-        Route::post('destroy', [DepartmentEmployeeController::class, 'destroy']);
+        Route::get('list-by-department/{department_id}', [DepartmentEmployeeController::class, 'employeesByDepartment'])->middleware('permission_check:view_department_employee');
+        Route::get('list-by-branch/{department_id}', [DepartmentEmployeeController::class, 'employeesByBranch'])->middleware('permission_check:view_department_employee');
+        Route::post('store', [DepartmentEmployeeController::class, 'store'])->middleware('permission_check:create_department_employee');
+        Route::post('update/{id}', [DepartmentEmployeeController::class, 'update'])->middleware('permission_check:edit_department_employee');
+        Route::post('destroy', [DepartmentEmployeeController::class, 'destroy'])->middleware('permission_check:delete_department_employee');
     });
 
     Route::prefix('employee')->group(function () {
-        Route::get('list', [EmployeeController::class, 'index']);
-        Route::post('store', [EmployeeController::class, 'store'])->middleware('idp_subscription_validation:employee');
-        Route::get('show/{id}', [EmployeeController::class, 'show']);
-        Route::post('update/{id}', [EmployeeController::class, 'update']);
-        Route::post('update-image/{id}', [EmployeeController::class, 'updateImage']);
-        Route::post('remove-image/{id}', [EmployeeController::class, 'removeImage']);
-        Route::post('destroy', [EmployeeController::class, 'destroy']);
-        Route::get('trashed', [EmployeeController::class, 'trashed']);
-        Route::post('restore', [EmployeeController::class, 'restore']);
-        Route::post('force-delete', [EmployeeController::class, 'forceDelete']);
-        Route::post('import', [EmployeeController::class, 'employeeImport']);
+        Route::get('list', [EmployeeController::class, 'index'])->middleware('permission_check:view_employee');
+        Route::post('store', [EmployeeController::class, 'store'])->middleware(['idp_subscription_validation:employee'])->middleware('permission_check:create_employee');
+        Route::get('show/{id}', [EmployeeController::class, 'show'])->middleware('permission_check:view_employee');
+        Route::post('update/{id}', [EmployeeController::class, 'update'])->middleware('permission_check:edit_employee');
+        Route::post('update-image/{id}', [EmployeeController::class, 'updateImage'])->middleware('permission_check:edit_employee');
+        Route::post('remove-image/{id}', [EmployeeController::class, 'removeImage'])->middleware('permission_check:edit_employee');
+        Route::post('destroy', [EmployeeController::class, 'destroy'])->middleware('permission_check:delete_employee');
+        Route::get('trashed', [EmployeeController::class, 'trashed'])->middleware('permission_check:delete_employee');
+        Route::post('restore', [EmployeeController::class, 'restore'])->middleware('permission_check:delete_employee');
+        Route::post('force-delete', [EmployeeController::class, 'forceDelete'])->middleware('permission_check:delete_employee');
+        Route::post('import', [EmployeeController::class, 'employeeImport'])->middleware('permission_check:create_employee');
         Route::get('download-sample', [EmployeeController::class, 'downloadSample']);
 
         Route::prefix('onboard')->group(function () {
-            Route::post('store', [EmployeeOnboardingController::class, 'store']);
-            Route::post('update/{id}', [EmployeeOnboardingController::class, 'update']);
-            Route::post('destroy/{id}', [EmployeeOnboardingController::class, 'destroy']);
+            Route::post('store', [EmployeeOnboardingController::class, 'store'])->middleware('permission_check:manage_employee_details');
+            Route::post('update/{id}', [EmployeeOnboardingController::class, 'update'])->middleware('permission_check:manage_employee_details');
+            Route::post('destroy/{id}', [EmployeeOnboardingController::class, 'destroy'])->middleware('permission_check:manage_employee_details');
         });
 
         Route::prefix('leave')->group(function (){
@@ -155,49 +155,49 @@ Route::group(['middleware' => ['auth:api']], function () {
         });
 
         Route::prefix('contract')->group(function () {
-            Route::post('store', [EmployeeContractController::class, 'store']);
-            Route::post('update/{id}', [EmployeeContractController::class, 'update']);
-            Route::post('destroy/{id}', [EmployeeContractController::class, 'destroy']);
+            Route::post('store', [EmployeeContractController::class, 'store'])->middleware('permission_check:manage_employee_details');
+            Route::post('update/{id}', [EmployeeContractController::class, 'update'])->middleware('permission_check:manage_employee_details');
+            Route::post('destroy/{id}', [EmployeeContractController::class, 'destroy'])->middleware('permission_check:manage_employee_details');
         });
 
         Route::prefix('benefit')->group(function () {
-            Route::post('store', [EmployeeBenefitController::class, 'store']);
-            Route::post('update/{id}', [EmployeeBenefitController::class, 'update']);
+            Route::post('store', [EmployeeBenefitController::class, 'store'])->middleware('permission_check:manage_employee_details');
+            Route::post('update/{id}', [EmployeeBenefitController::class, 'update'])->middleware('permission_check:manage_employee_details');
         });
 
         Route::prefix('address')->group(function () {
-            Route::post('store', [EmployeeAddressController::class, 'store']);
-            Route::post('update/{id}', [EmployeeAddressController::class, 'update']);
+            Route::post('store', [EmployeeAddressController::class, 'store'])->middleware('permission_check:manage_employee_details');
+            Route::post('update/{id}', [EmployeeAddressController::class, 'update'])->middleware('permission_check:manage_employee_details');
         });
 
         Route::prefix('experience')->group(function () {
-            Route::post('store', [EmployeeExperienceController::class, 'store']);
-            Route::get('list/{employee_id}', [EmployeeExperienceController::class, 'index']);
-            Route::post('update/{id}', [EmployeeExperienceController::class, 'update']);
-            Route::post('destroy/{id}', [EmployeeExperienceController::class, 'destroy']);
+            Route::post('store', [EmployeeExperienceController::class, 'store'])->middleware('permission_check:manage_employee_details');
+            Route::get('list/{employee_id}', [EmployeeExperienceController::class, 'index'])->middleware('permission_check:manage_employee_details');
+            Route::post('update/{id}', [EmployeeExperienceController::class, 'update'])->middleware('permission_check:manage_employee_details');
+            Route::post('destroy/{id}', [EmployeeExperienceController::class, 'destroy'])->middleware('permission_check:manage_employee_details');
         });
 
         Route::prefix('education')->group(function () {
-            Route::post('store', [EmployeeEducationController::class, 'store']);
-            Route::get('list/{employee_id}', [EmployeeEducationController::class, 'index']);
-            Route::post('update/{id}', [EmployeeEducationController::class, 'update']);
-            Route::post('destroy/{id}', [EmployeeEducationController::class, 'destroy']);
+            Route::post('store', [EmployeeEducationController::class, 'store'])->middleware('permission_check:manage_employee_details');
+            Route::get('list/{employee_id}', [EmployeeEducationController::class, 'index'])->middleware('permission_check:manage_employee_details');
+            Route::post('update/{id}', [EmployeeEducationController::class, 'update'])->middleware('permission_check:manage_employee_details');
+            Route::post('destroy/{id}', [EmployeeEducationController::class, 'destroy'])->middleware('permission_check:manage_employee_details');
         });
 
         Route::prefix('family')->group(function () {
-            Route::post('store', [EmployeeFamilyController::class, 'store']);
-            Route::get('list/{employee_id}', [EmployeeFamilyController::class, 'index']);
-            Route::post('update/{id}', [EmployeeFamilyController::class, 'update']);
-            Route::post('destroy/{id}', [EmployeeFamilyController::class, 'destroy']);
+            Route::post('store', [EmployeeFamilyController::class, 'store'])->middleware('permission_check:manage_employee_details');
+            Route::get('list/{employee_id}', [EmployeeFamilyController::class, 'index'])->middleware('permission_check:manage_employee_details');
+            Route::post('update/{id}', [EmployeeFamilyController::class, 'update'])->middleware('permission_check:manage_employee_details');
+            Route::post('destroy/{id}', [EmployeeFamilyController::class, 'destroy'])->middleware('permission_check:manage_employee_details');
         });
         Route::prefix('document')->group(function () {
-            Route::post('store', [EmployeeDocumentController::class, 'store']);
+            Route::post('store', [EmployeeDocumentController::class, 'store'])->middleware('permission_check:manage_employee_details');
         });
 
         Route::prefix('bank')->group(function () {
-            Route::post('store', [EmployeeBankController::class, 'store']);
-            Route::post('update/{id}', [EmployeeBankController::class, 'update']);
-            Route::post('destroy/{id}', [EmployeeBankController::class, 'destroy']);
+            Route::post('store', [EmployeeBankController::class, 'store'])->middleware('permission_check:manage_employee_details');
+            Route::post('update/{id}', [EmployeeBankController::class, 'update'])->middleware('permission_check:manage_employee_details');
+            Route::post('destroy/{id}', [EmployeeBankController::class, 'destroy'])->middleware('permission_check:manage_employee_details');
         });
     });
 
@@ -215,100 +215,93 @@ Route::group(['middleware' => ['auth:api']], function () {
     });
 
     Route::prefix('role')->group(function () {
-        Route::get('list', [RoleController::class, 'index']);
-        Route::post('store', [RoleController::class, 'store']);
-        Route::post('update/{id}', [RoleController::class, 'update']);
-        Route::post('destroy', [RoleController::class, 'destroy']);
+        Route::get('list', [RoleController::class, 'index'])->middleware('permission_check:manage_role');
+        Route::post('store', [RoleController::class, 'store'])->middleware('permission_check:manage_role');
+        Route::post('update/{id}', [RoleController::class, 'update'])->middleware('permission_check:manage_role');
+        Route::post('destroy', [RoleController::class, 'destroy'])->middleware('permission_check:manage_role');
     });
 
-    Route::prefix('permission')->group(function () {
-        Route::get('list', [PermissionController::class, 'index']);
-        Route::post('store', [PermissionController::class, 'store']);
-        Route::post('update/{id}', [PermissionController::class, 'update']);
-        Route::post('destroy', [PermissionController::class, 'destroy']);
-        Route::get('/{user_id}', [PermissionController::class, 'permissionsByUser']);
-    });
 
     Route::prefix('role-permission')->group(function () {
-        Route::post('store', [RolePermissionController::class, 'store']);
-        Route::get('permissions-by-role/{id}', [RolePermissionController::class, 'permissionsByRole']);
+        Route::post('store', [RolePermissionController::class, 'store'])->middleware('permission_check:manage_role');
+        Route::get('permissions-by-role/{id}', [RolePermissionController::class, 'permissionsByRole'])->middleware('permission_check:manage_role');
     });
 
     Route::prefix('user-role')->group(function () {
-        Route::get('/list/{user_id}', [UserRoleController::class, 'index']);
-        Route::get('user-role-by-company', [UserRoleController::class, 'userRolesByCompany']);
-        Route::post('store', [UserRoleController::class, 'store']);
-        Route::post('destroy/{user_id}', [UserRoleController::class, 'destroy']);
+        Route::get('/list/{user_id}', [UserRoleController::class, 'index'])->middleware('permission_check:manage_role');
+        Route::get('user-role-by-company', [UserRoleController::class, 'userRolesByCompany'])->middleware('permission_check:manage_role');
+        Route::post('store', [UserRoleController::class, 'store'])->middleware('permission_check:manage_role');
+        Route::post('destroy/{user_id}', [UserRoleController::class, 'destroy'])->middleware('permission_check:manage_role');
     });
 
     Route::prefix('attendance')->group(function () {
         Route::get('list', [AttendanceController::class, 'index']);
-        Route::post('store', [AttendanceController::class, 'store']);
+        Route::post('store', [AttendanceController::class, 'store'])->middleware('permission_check:manage_attendance');
         Route::get('daily', [AttendanceController::class, 'dailyAttendance']);
         Route::post('punch-in', [AttendanceController::class, 'punchIn']);
         Route::post('punch-out', [AttendanceController::class, 'punchOut']);
     });
     Route::prefix('asset')->group(function () {
-        Route::get('list', [AssetController::class, 'index']);
-        Route::post('store', [AssetController::class, 'store'])->middleware('idp_subscription_validation:asset');
-        Route::get('show/{id}', [AssetController::class, 'show']);
-        Route::post('update/{id}', [AssetController::class, 'update']);
-        Route::post('destroy', [AssetController::class, 'destroy']);
-        Route::post('update-image/{id}', [AssetController::class, 'updateImage']);
-        Route::post('remove-image/{id}', [AssetController::class, 'removeImage']);
-        Route::post('update-warranty-image/{id}', [AssetController::class, 'updateWarrantyImage']);
-        Route::post('remove-warranty-image/{id}', [AssetController::class, 'removeWarrantyImage']);
-        Route::post('update-guarantee-image/{id}', [AssetController::class, 'updateGuaranteeImage']);
-        Route::post('remove-guarantee-image/{id}', [AssetController::class, 'removeGuaranteeImage']);
+        Route::get('list', [AssetController::class, 'index'])->middleware('permission_check:view_asset');
+        Route::post('store', [AssetController::class, 'store'])->middleware('idp_subscription_validation:asset')->middleware('permission_check:create_asset');
+        Route::get('show/{id}', [AssetController::class, 'show'])->middleware('permission_check:view_asset');
+        Route::post('update/{id}', [AssetController::class, 'update'])->middleware('permission_check:edit_asset');
+        Route::post('destroy', [AssetController::class, 'destroy'])->middleware('permission_check:delete_asset');
+        Route::post('update-image/{id}', [AssetController::class, 'updateImage'])->middleware('permission_check:edit_asset');
+        Route::post('remove-image/{id}', [AssetController::class, 'removeImage'])->middleware('permission_check:edit_asset');
+        Route::post('update-warranty-image/{id}', [AssetController::class, 'updateWarrantyImage'])->middleware('permission_check:edit_asset');
+        Route::post('remove-warranty-image/{id}', [AssetController::class, 'removeWarrantyImage'])->middleware('permission_check:edit_asset');
+        Route::post('update-guarantee-image/{id}', [AssetController::class, 'updateGuaranteeImage'])->middleware('permission_check:edit_asset');
+        Route::post('remove-guarantee-image/{id}', [AssetController::class, 'removeGuaranteeImage'])->middleware('permission_check:edit_asset');
 
         Route::prefix('category')->group(function () {
             Route::get('list', [AssetCategoryController::class, 'index']);
-            Route::post('store', [AssetCategoryController::class, 'store']);
-            Route::post('update/{id}', [AssetCategoryController::class, 'update']);
+            Route::post('store', [AssetCategoryController::class, 'store'])->middleware('permission_check:manage_asset');
+            Route::post('update/{id}', [AssetCategoryController::class, 'update'])->middleware('permission_check:manage_asset');
             Route::get('show/{id}', [AssetCategoryController::class, 'show']);
-            Route::post('destroy', [AssetCategoryController::class, 'destroy']);
+            Route::post('destroy', [AssetCategoryController::class, 'destroy'])->middleware('permission_check:manage_asset');
         });
 
         Route::prefix('vendor')->group(function () {
             Route::get('list', [VendorController::class, 'index']);
-            Route::post('store', [VendorController::class, 'store']);
+            Route::post('store', [VendorController::class, 'store'])->middleware('permission_check:manage_asset');
             Route::get('show/{id}', [VendorController::class, 'show']);
-            Route::post('update/{id}', [VendorController::class, 'update']);
-            Route::post('destroy', [VendorController::class, 'destroy']);
+            Route::post('update/{id}', [VendorController::class, 'update'])->middleware('permission_check:manage_asset');
+            Route::post('destroy', [VendorController::class, 'destroy'])->middleware('permission_check:manage_asset');
         });
 
         Route::prefix('dispose')->group(function () {
             Route::get('list', [AssetDisposeController::class, 'index']);
-            Route::post('store', [AssetDisposeController::class, 'store']);
+            Route::post('store', [AssetDisposeController::class, 'store'])->middleware('permission_check:manage_asset');
             Route::get('show/{id}', [AssetDisposeController::class, 'show']);
-            Route::post('update/{id}', [AssetDisposeController::class, 'update']);
-            Route::post('destroy', [AssetDisposeController::class, 'destroy']);
+            Route::post('update/{id}', [AssetDisposeController::class, 'update'])->middleware('permission_check:manage_asset');
+            Route::post('destroy', [AssetDisposeController::class, 'destroy'])->middleware('permission_check:manage_asset');
         });
 
         Route::prefix('sale')->group(function () {
             Route::get('list', [AssetSaleController::class, 'index']);
-            Route::post('store', [AssetSaleController::class, 'store']);
+            Route::post('store', [AssetSaleController::class, 'store'])->middleware('permission_check:manage_asset');
             Route::get('show/{id}', [AssetSaleController::class, 'show']);
-            Route::post('update/{id}', [AssetSaleController::class, 'update']);
-            Route::post('destroy', [AssetSaleController::class, 'destroy']);
+            Route::post('update/{id}', [AssetSaleController::class, 'update'])->middleware('permission_check:manage_asset');
+            Route::post('destroy', [AssetSaleController::class, 'destroy'])->middleware('permission_check:manage_asset');
         });
 
         Route::prefix('maintenance')->group(function () {
             Route::get('list', [AssetMaintenanceController::class, 'index']);
-            Route::post('store', [AssetMaintenanceController::class, 'store']);
+            Route::post('store', [AssetMaintenanceController::class, 'store'])->middleware('permission_check:manage_asset');
             Route::get('show/{id}', [AssetMaintenanceController::class, 'show']);
-            Route::post('update/{id}', [AssetMaintenanceController::class, 'update']);
-            Route::patch('toggle-status/{id}', [AssetMaintenanceController::class, 'toggleMaintenanceStatus']);
-            Route::post('destroy', [AssetMaintenanceController::class, 'destroy']);
+            Route::post('update/{id}', [AssetMaintenanceController::class, 'update'])->middleware('permission_check:manage_asset');
+            Route::patch('toggle-status/{id}', [AssetMaintenanceController::class, 'toggleMaintenanceStatus'])->middleware('permission_check:manage_asset');
+            Route::post('destroy', [AssetMaintenanceController::class, 'destroy'])->middleware('permission_check:manage_asset');
         });
 
         Route::prefix('usage')->group(function () {
             Route::get('list', [AssetUsageController::class, 'index']);
-            Route::post('store', [AssetUsageController::class, 'store']);
+            Route::post('store', [AssetUsageController::class, 'store'])->middleware('permission_check:manage_asset');
             Route::get('show/{id}', [AssetUsageController::class, 'show']);
-            Route::post('update/{id}', [AssetUsageController::class, 'update']);
-            Route::patch('toggle-status/{id}', [AssetUsageController::class, 'toggleUsageStatus']);
-            Route::post('destroy', [AssetUsageController::class, 'destroy']);
+            Route::post('update/{id}', [AssetUsageController::class, 'update'])->middleware('permission_check:manage_asset');
+            Route::patch('toggle-status/{id}', [AssetUsageController::class, 'toggleUsageStatus'])->middleware('permission_check:manage_asset');
+            Route::post('destroy', [AssetUsageController::class, 'destroy'])->middleware('permission_check:manage_asset');
         });
     });
 
@@ -321,29 +314,29 @@ Route::group(['middleware' => ['auth:api']], function () {
     });
 
     Route::prefix('company-profile')->group(function () {
-        Route::post('upsert', [CompanyProfileController::class, 'upsert']);
-        Route::get('show',[CompanyProfileController::class, 'showCompanyProfile']);
+        Route::post('upsert', [CompanyProfileController::class, 'upsert'])->middleware('permission_check:manage_company_profile');
+        Route::get('show',[CompanyProfileController::class, 'showCompanyProfile'])->middleware('permission_check:view_company_profile');
         Route::get('country-policy',[CompanyProfileController::class, 'showCompanyCountryPolicy']);
     });
 
     Route::prefix('company-holiday')->group(function () {
-        Route::get('list', [CompanyHolidayController::class, 'index']);
-        Route::post('store', [CompanyHolidayController::class, 'store']);
-        Route::get('show/{id}', [CompanyHolidayController::class, 'show']);
-        Route::post('update/{id}', [CompanyHolidayController::class, 'update']);
-        Route::post('destroy', [CompanyHolidayController::class, 'destroy']);
+        Route::get('list', [CompanyHolidayController::class, 'index'])->middleware('permission_check:view_holiday');
+        Route::post('store', [CompanyHolidayController::class, 'store'])->middleware('permission_check:create_holiday');
+        Route::get('show/{id}', [CompanyHolidayController::class, 'show'])->middleware('permission_check:view_holiday');
+        Route::post('update/{id}', [CompanyHolidayController::class, 'update'])->middleware('permission_check:edit_holiday');
+        Route::post('destroy', [CompanyHolidayController::class, 'destroy'])->middleware('permission_check:delete_holiday');
     });
 
     Route::prefix('company-leave')->group(function () {
-       Route::get('list', [CompanyLeaveController::class, 'index']);
-       Route::post('store', [CompanyLeaveController::class, 'store']);
-       Route::get('show/{id}', [CompanyLeaveController::class, 'show']);
-       Route::post('update/{id}', [CompanyLeaveController::class, 'update']);
-       Route::post('destroy', [CompanyLeaveController::class, 'destroy']);
+       Route::get('list', [CompanyLeaveController::class, 'index'])->middleware('permission_check:view_leave');
+       Route::post('store', [CompanyLeaveController::class, 'store'])->middleware('permission_check:create_leave');
+       Route::get('show/{id}', [CompanyLeaveController::class, 'show'])->middleware('permission_check:view_leave');
+       Route::post('update/{id}', [CompanyLeaveController::class, 'update'])->middleware('permission_check:edit_leave');
+       Route::post('destroy', [CompanyLeaveController::class, 'destroy'])->middleware('permission_check:delete_leave');
     });
 
     Route::prefix('payroll-setting')->group(function () {
-        Route::get('show',[PayrollSettingController::class, 'showPayrollSetting']);
-        Route::post('upsert',[PayrollSettingController::class,'upsert']);
+        Route::get('show',[PayrollSettingController::class, 'showPayrollSetting'])->middleware('permission_check:view_payroll');
+        Route::post('upsert',[PayrollSettingController::class,'upsert'])->middleware('permission_check:manage_payroll');
     });
 });

@@ -49,24 +49,60 @@ class AttendanceController extends Controller
     }
     public function store(AttendanceRequest $request){
         try {
-            $data = $request->except('date','date_nepali');
+            $data = $request->except('date','date_nepali','punch_in_at','punch_out_at');
             $date  = $request->date_nepali ? DateHelper::nepaliToEnglish($request->date_nepali) : $request->date ?? now()->format('Y-m-d');
-            DB::beginTransaction();
-            foreach ($data['attendance'] as $item) {
-                $attendance = Attendance::updateOrCreate([
-                    'date' => $date,
-                    'employee_id' => $item['employee_id'],
-                ],[
-                    'status' => $item['status'],
-                    ]
-                );
+            if (Attendance::whereDate('date',$date)->where('employee_id',$request->employee_id)->exists()) {
+                return response()->json(['error'=>true,'message'=>'Attendance already exists'],404);
             }
-            DB::commit();
+            $punch_in_at = $request->punch_in_at ? Carbon::parse($request->punch_in_at)->format('H:i:s') : null;
+            $punch_out_at = $request->punch_out_at ? Carbon::parse($request->punch_out_at)->format('H:i:s') : null;
+            $data['date'] = $date;
+            $data['punch_in_at'] = $punch_in_at;
+            $data['punch_out_at'] = $punch_out_at;
+            $data['punch_in_ip'] = $request->ip();
+            $data['punch_out_ip'] = $request->punch_out_at ? $request->ip() : null;
+            $data['is_approved'] = true;
+            $data['created_by'] = Auth::id();
+            $company_profile = CompanyProfile::where('company_id', Auth::user()->selectedCompany->company_id)->first();
+            $startTime = Carbon::createFromFormat('H:i:s', $company_profile->start_time);
+            $minutesDifference = max($startTime->diffInMinutes($punch_in_at, false), 0);
+
+            $data['late_punch_in'] = $minutesDifference;
+            $attendance = new Attendance();
+            $attendance->fill($data);
+            $attendance->save();
             return response()->json(['success'=>true,'message'=>'Attendance added successfully.'],201);
         }catch (\Exception $exception){
-            DB::rollBack();
             Log::error("Unable to store attendance: ".$exception->getMessage());
             return response()->json(['error'=>true,'message'=>'Unable to store attendance'],500);
+        }
+    }
+
+    public function update(AttendanceRequest $request, $id)
+    {
+        try{
+            $attendance = Attendance::find($id);
+            if (!$attendance) {
+                return response()->json(['error'=>true,'message'=>'No attendance found'],404);
+            }
+            $data = $request->only('is_present');
+            $punch_in_at = $request->punch_in_at ? Carbon::parse($request->punch_in_at)->format('H:i:s') : null;
+            $punch_out_at = $request->punch_out_at ? Carbon::parse($request->punch_out_at)->format('H:i:s') : null;
+            $data['punch_in_at'] = $punch_in_at;
+            $data['punch_out_at'] = $punch_out_at;
+            $data['punch_in_ip'] = $request->ip();
+            $data['punch_out_ip'] = $punch_out_at ? $request->ip() : null;
+            $company_profile = CompanyProfile::where('company_id', Auth::user()->selectedCompany->company_id)->first();
+            $startTime = Carbon::createFromFormat('H:i:s', $company_profile->start_time);
+            $minutesDifference = max($startTime->diffInMinutes($punch_in_at, false), 0);
+
+            $data['late_punch_in'] = $minutesDifference;
+            $attendance->fill($data);
+            $attendance->update();
+            return response()->json(['success'=>true,'message'=>'Attendance updated successfully.'],200);
+        }catch (\Exception $exception){
+            Log::error("Unable to update attendance: ".$exception->getMessage());
+            return response()->json(['error'=>true,'message'=>'Unable to update attendance'],500);
         }
     }
     public function punchIn(Request $request)

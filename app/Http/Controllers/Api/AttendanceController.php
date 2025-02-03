@@ -50,7 +50,7 @@ class AttendanceController extends Controller
     public function store(AttendanceRequest $request){
         try {
             $data = $request->except('date','date_nepali','punch_in_at','punch_out_at');
-            $date  = $request->date_nepali ? DateHelper::nepaliToEnglish($request->date_nepali) : $request->date ?? now()->format('Y-m-d');
+            $date  = Carbon::parse($request->punch_in_at)->format('Y-m-d');
             if (Attendance::whereDate('date',$date)->where('employee_id',$request->employee_id)->exists()) {
                 return response()->json(['error'=>true,'message'=>'Attendance already exists'],404);
             }

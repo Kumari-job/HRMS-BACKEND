@@ -24,7 +24,6 @@ class AttendanceRequest extends FormRequest
         return [
             'employee_id' => 'required|integer|exists:users,id',
             'is_present' => 'required|boolean',
-            'date' => 'required|date_format:Y-m-d|before_or_equal:today',
             'punch_in_at' => 'required|date',
             'punch_out_at' => 'nullable|date',
 

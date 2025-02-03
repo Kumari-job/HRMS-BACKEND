@@ -23,6 +23,7 @@ class Attendance extends Model
       'punch_in_ip',
       'punch_out_ip',
       'late_punch_in',
+      'is_approved'
     ];
 
     public function employee(): BelongsTo

@@ -8,6 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Employee;
 use App\Models\SelectedCompany;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -46,6 +47,14 @@ class UserController extends Controller
         $user = User::find($id);
 
         return new UserResource($user);
+    }
+
+    public function listUserEmployees(Request $request)
+    {
+        $query = User::with(['attendances'=>function ($query) {
+            $query->whereDate('date',Carbon::today());
+        },'employee:id,company_id,image','employee.departments'])->get();
+        return UserResource::collection($query);
     }
 
     public function migrateEmployeeData(Request $request)

@@ -21,6 +21,8 @@ class CompanyProfileResource extends JsonResource
             'fiscal_start_month' => $this->fiscal_start_month,
             'week_start_day' => $this->week_start_day,
             'week_end_day' => $this->week_end_day,
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
             'weekly_leaves' => json_decode($this->weekly_leaves),
             'country' => $this->country
         ];

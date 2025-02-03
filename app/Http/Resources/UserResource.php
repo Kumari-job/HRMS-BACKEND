@@ -30,6 +30,8 @@ class UserResource extends JsonResource
             'last_login' => Carbon::parse($this->last_login)->diffForHumans(),
             'attendance' => AttendanceResource::collection($this->whenLoaded('attendances')),
             'employee' => new EmployeeResource($this->whenLoaded('employee')),
+            'role' => RoleResource::collection($this->whenLoaded('roles'))
+
         ];
     }
 }

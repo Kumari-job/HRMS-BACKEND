@@ -23,7 +23,7 @@ class PermissionCheck
         }
 
         // bypass if role is super-admin
-        if($role->name == "admin"){
+        if($role->name == "super-admin"){
             return $next($request);
         }
 

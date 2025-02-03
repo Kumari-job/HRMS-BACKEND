@@ -21,7 +21,9 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $query = User::query();
+        $query = User::with(['roles'=>function ($query) {
+            $query->where('company_id',Auth::user()->selectedCompany->company_id);
+        }]);
 
         if (!empty($request->except('page', 'page_size'))) {
             foreach ($request->except('page', 'page_size') as $key => $value) {

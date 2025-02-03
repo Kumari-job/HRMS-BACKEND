@@ -26,6 +26,7 @@ class UserResource extends JsonResource
             'employee_id' => $this->employee_id,
             'selected_company' => Auth::user()->selectedCompany,
             'is_password_changed' => Auth::user()->is_password_changed,
+            'role' => RoleResource::collection($this->whenLoaded('roles'))
         ];
     }
 }

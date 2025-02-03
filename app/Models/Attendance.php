@@ -18,11 +18,16 @@ class Attendance extends Model
       'is_present',
       'status',
       'created_by',
+      'punch_in_at',
+      'punch_out_at',
+      'punch_in_ip',
+      'punch_out_ip',
+      'late_punch_in',
     ];
 
     public function employee(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'employee_id');
     }
 
     public function createdBy(): BelongsTo

@@ -237,6 +237,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::prefix('attendance')->group(function () {
         Route::get('list', [AttendanceController::class, 'index']);
         Route::post('store', [AttendanceController::class, 'store'])->middleware('permission_check:manage_attendance');
+        Route::post('update/{id}', [AttendanceController::class, 'update'])->middleware('permission_check:manage_attendance');
         Route::get('daily', [AttendanceController::class, 'dailyAttendance']);
         Route::post('punch-in', [AttendanceController::class, 'punchIn']);
         Route::post('punch-out', [AttendanceController::class, 'punchOut']);

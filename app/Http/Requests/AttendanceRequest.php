@@ -22,11 +22,12 @@ class AttendanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'attendance'=>'required|array',
-            'attendance.*.employee_id' => 'required|integer|exists:employees,id',
-            'attendance.*.status' => 'required|in:present,absent,late',
-            'date' => 'required_without:date_nepali|date|before_or_equal:today',
-            'date_nepali' => 'required_without:date|date',
+            'employee_id' => 'required|integer|exists:users,id',
+            'is_present' => 'required|boolean',
+            'date' => 'required|date_format:Y-m-d|before_or_equal:today',
+            'punch_in_at' => 'required|date',
+            'punch_out_at' => 'nullable|date',
+
         ];
     }
 }
